@@ -1,0 +1,352 @@
+# Roadmap: Agent Directives
+
+Implementation plan for extracting reusable directives, skills, and templates
+from `eslint-plugin-llm-core` into this standalone collection.
+
+**Source repo:** `/Users/robsimpson/Repos/eslint-plugin-llm-core`
+
+---
+
+## Phase 0 — Scaffolding
+
+Create the directory structure. No content yet — just the bones.
+
+| Task | Deliverable | Done |
+|------|-------------|------|
+| 0.1 | Create `directives/` directory | [ ] |
+| 0.2 | Create `skills/` directory | [ ] |
+| 0.3 | Create `templates/` directory | [ ] |
+| 0.4 | Create `docs/` directory | [ ] |
+
+**Verify:** All four directories exist. `ls -d directives/ skills/ templates/ docs/` succeeds.
+
+---
+
+## Phase 1 — Directives (7 files)
+
+Each directive is adapted from a source file in
+`eslint-plugin-llm-core/.agents/directives/`. Every file must:
+
+- Be usable standalone (no prerequisites from other directives)
+- Include a source-traceability comment at the top
+- Contain zero project-specific content (no npm scripts, no ESLint references,
+  no `src/rules/` paths, no external step-number references)
+- Use generic descriptions where the source uses specific commands or paths
+
+### 1.1 `directives/test-driven-development.md`
+
+**Source:** `TEST_DRIVEN_DEVELOPMENT.md` (247 lines)
+
+**Key adaptations:**
+- Remove AGENTS.md step-number prerequisite callout → replace with "When to load" note
+- Remove cross-reference to TYPE_DRIVEN_DEVELOPMENT.md in cycle diagram
+- Replace `npm test && npm run lint && npm run build` with generic GATES description
+- Remove `npm run update:eslint-docs` reference
+- Keep verbatim: all 7 TDD rules, forbidden-patterns table, quick-reference table
+
+**Acceptance criteria (from REQUIREMENTS §2.1):**
+- [ ] All 7 TDD rules present
+- [ ] Forbidden-patterns table present
+- [ ] Quick-reference table present
+- [ ] RED/GREEN/REFACTOR cycle description present
+- [ ] "TDD applies to fixes and review changes too" section present
+- [ ] No specific npm scripts
+- [ ] No AGENTS.md step numbers
+- [ ] No type-first prerequisite
+- [ ] GATES phase described generically
+
+### 1.2 `directives/type-driven-development.md`
+
+**Source:** `TYPE_DRIVEN_DEVELOPMENT.md` (150 lines)
+
+**Key adaptations:**
+- Remove AGENTS.md step-number reference
+- Replace `tsc --noEmit` with generic type-check description (keep `tsc --noEmit` as example)
+- Keep: define-verify-confirm-handoff flow, forbidden-patterns table, error-handling pattern, "when types are complex" confirmation gate
+
+**Acceptance criteria (from REQUIREMENTS §2.2):**
+- [ ] 5-step type-first flow present
+- [ ] Forbidden-patterns table present
+- [ ] Error-handling pattern guidance present
+- [ ] "When types are complex" confirmation gate present
+- [ ] Type-check commands generic with TypeScript as example
+- [ ] No AGENTS.md step numbers
+- [ ] Hand-off references TDD generically (not a file path)
+
+### 1.3 `directives/task-framing.md`
+
+**Source:** `TASK_FRAMING.md` (107 lines)
+
+**Key adaptations:**
+- Remove AGENTS.md prerequisite callout
+- Remove "Repo-Specific Triggers" section
+- Remove "Supplemental References" links
+- Generalize evidence-order hierarchy: replace `.agents/directives/` and `.github/instructions/` with generic descriptions
+
+**Acceptance criteria (from REQUIREMENTS §2.3):**
+- [ ] 8-point framing checklist present
+- [ ] "When a proposal should precede implementation" section present
+- [ ] Evidence-order hierarchy with generic descriptions present
+- [ ] No specific project file paths
+- [ ] No AGENTS.md step numbers
+- [ ] No project-specific trigger list
+
+### 1.4 `directives/error-memory.md`
+
+**Source:** `ERROR_MEMORY.md` (147 lines)
+
+**Key adaptations:**
+- Remove AGENTS.md prerequisite callout
+- Generalize "Can an ESLint rule catch it?" to "Can a linter rule, type guard, or CI check catch it?"
+- Generalize CODEBASE_NAVIGATION phase name cross-reference to "during the codebase survey/orientation phase"
+- Keep: 4-condition write criteria, file format, entry structure, monthly review, retirement, compaction pipeline
+
+**Acceptance criteria (from REQUIREMENTS §2.4):**
+- [ ] 4-condition write criteria present
+- [ ] "When NOT to write" exclusion list present
+- [ ] Entry structure template present
+- [ ] Monthly review with retirement mechanism present
+- [ ] Compaction-pipeline integration present
+- [ ] Prevention strategies reference generic tooling
+- [ ] No AGENTS.md step numbers
+- [ ] Cross-references use descriptive phrases (not phase names)
+
+### 1.5 `directives/session-decisions.md`
+
+**Source:** `SESSION_DECISIONS.md` (164 lines)
+
+**Key adaptations:**
+- Remove AGENTS.md prerequisite callout
+- Generalize "Repo-Specific Triggers" to generic "cross-cutting areas" description
+- Keep: 4-condition write criteria, exclusion list, frontmatter schema, naming convention, template reference, progressive-disclosure workflow, forbidden-patterns table
+
+**Acceptance criteria (from REQUIREMENTS §2.5):**
+- [ ] 4-condition write criteria present
+- [ ] "When NOT to write" exclusion list present
+- [ ] Complete frontmatter schema present
+- [ ] File-naming convention present (`docs/decisions/YYYY-MM-DD-<topic>.md`)
+- [ ] 5 required sections for each log entry present
+- [ ] Progressive-disclosure retrieval workflow present
+- [ ] Forbidden-patterns table present
+- [ ] No AGENTS.md step numbers
+- [ ] No specific project file paths
+
+### 1.6 `directives/codebase-navigation.md`
+
+**Source:** `CODEBASE_NAVIGATION.md` (269 lines) — most project-specific coupling
+
+**Key adaptations:**
+- Remove AGENTS.md prerequisite callout
+- Keep SAFE pattern structure with token budgets
+- Keep context-discipline rules (5 rules)
+- Replace ALL ESLint-specific file-path examples with generic equivalents
+- Remove "If the task is a new rule" section entirely
+- Replace ast-grep references with generic AST-aware search note
+- Keep forbidden-patterns table
+
+**Acceptance criteria (from REQUIREMENTS §2.6):**
+- [ ] SAFE pattern with token budgets present
+- [ ] Context-discipline rules (5 rules) present
+- [ ] All file-path examples are generic
+- [ ] No ESLint-specific task checklists
+- [ ] Forbidden-patterns table present
+- [ ] Quick-reference table with generic descriptions present
+
+### 1.7 `directives/verification.md`
+
+**Source:** `VERIFICATION.md` (176 lines) — most heavily ESLint-specific
+
+**Key adaptations:**
+- Keep core concept (structured evidence, 30-second scan, PR output location)
+- Replace ESLint-specific proof sections with generic framework:
+  - Functional proof
+  - Test coverage proof
+  - Integration proof
+  - Documentation proof (if applicable)
+- Keep "For Bug Fixes" and "For Docs / Chore Changes" sections (generalize commands)
+- Keep forbidden-patterns table
+
+**Acceptance criteria (from REQUIREMENTS §2.7):**
+- [ ] Core concept (structured evidence, 30-second scan) present
+- [ ] PR output location requirement present
+- [ ] Generic proof framework with examples present
+- [ ] "For Bug Fixes" section present
+- [ ] "For Docs / Chore Changes" section present
+- [ ] Forbidden-patterns table present
+- [ ] No ESLint-specific proof sections
+- [ ] No specific npm commands (generic descriptions with examples marked as such)
+
+---
+
+## Phase 2 — Skills (1 file)
+
+### 2.1 `skills/test-reviewer.md`
+
+**Source:** `skills/test-reviewer.md` (237 lines)
+
+**Key adaptations:** None. Copy verbatim.
+
+**Acceptance criteria (from REQUIREMENTS §3.1):**
+- [ ] Content identical to source
+- [ ] No ESLint-specific references
+- [ ] Covers all 4 rules
+- [ ] Contains 6-step review process
+- [ ] Contains output format for flagged tests
+
+---
+
+## Phase 3 — Templates (4 files)
+
+All templates use `<!-- FILL IN: description -->` placeholders. Templates are
+the ONLY files that contain placeholders.
+
+### 3.1 `templates/AGENTS.md`
+
+**Source:** `AGENTS.md` from eslint-plugin-llm-core (125 lines)
+
+**Structure to replicate:**
+- Comment block at top explaining purpose and usage
+- Why / What / Commands / Mandatory Workflow sections
+- Commands table with placeholder rows (build, test, lint, + extra)
+- Light Path table (4 steps: BASELINE → FIX → GATES → COMMIT)
+- Full Path table (steps: ORIENT → BASELINE → TYPES → RED → GREEN → REFACTOR → VERIFY → GATES → COMMIT)
+- Directives table listing all 7 directives with relative paths
+- Skills table listing test-reviewer with relative path
+- Task Framing section
+- Decision Log Lookup section
+
+**Acceptance criteria (from REQUIREMENTS §4.1):**
+- [ ] All source sections present
+- [ ] `grep -c "FILL IN"` returns ≥ 10
+- [ ] Light Path and Full Path tables present with step numbers
+- [ ] All 7 directives in Directives table
+- [ ] test-reviewer in Skills table
+- [ ] No ESLint-specific content
+- [ ] Comment block at top
+
+### 3.2 `templates/CLAUDE.md`
+
+**Structure:** Same as AGENTS.md but:
+- Directives listed by name with one-line descriptions (not file-path table)
+- Instruction: "Load the relevant directive from the directives/ directory before each task."
+
+**Acceptance criteria (from REQUIREMENTS §4.2):**
+- [ ] Why, What, Commands, Mandatory Workflow sections present
+- [ ] Uses `<!-- FILL IN -->` placeholders
+- [ ] Directives listed by name with one-line descriptions
+- [ ] Light Path and Full Path tables present
+- [ ] No ESLint-specific content
+
+### 3.3 `templates/copilot-instructions.md`
+
+**Structure:** Condensed version. Key rules inlined (TDD, types first, no
+skipping steps). Points to `directives/` for details.
+
+**Acceptance criteria (from REQUIREMENTS §4.3):**
+- [ ] Light Path and Full Path tables present
+- [ ] Key rules summary present
+- [ ] References directives/ directory
+- [ ] Uses `<!-- FILL IN -->` placeholders
+- [ ] No ESLint-specific content
+
+### 3.4 `templates/decision-log.md`
+
+**Structure:** Blank template matching frontmatter schema and 5 required sections
+from session-decisions.md.
+
+**Acceptance criteria (from REQUIREMENTS §4.4):**
+- [ ] Full frontmatter schema present
+- [ ] All 5 required sections with placeholder guidance present
+- [ ] No real decision content — all placeholder text is clearly instructional
+
+---
+
+## Phase 4 — README
+
+### 4.1 `README.md`
+
+**Structure:**
+1. What this is (one paragraph)
+2. What's included (table: Workflow / Navigation / Memory / Skills)
+3. Quick start (5 steps)
+4. Directive details (2-3 sentences each)
+5. Customization guidance
+6. Tool compatibility note
+
+**Acceptance criteria (from REQUIREMENTS §5):**
+- [ ] Answers what / included / how-to-use
+- [ ] Directive/skill summary table present
+- [ ] 5-step quick-start present
+- [ ] Customization guidance present
+- [ ] Tool-compatibility note present
+- [ ] Under 200 lines
+
+---
+
+## Phase 5 — Cross-Cutting Verification
+
+Run after all content is in place.
+
+### 5.1 No Circular Dependencies
+
+- [ ] `grep -rn "Prerequisite: Load" directives/` returns zero matches
+- [ ] Every "When to load" section describes task context (not workflow step numbers)
+
+### 5.2 No Project-Specific Content
+
+- [ ] `grep -rn "npm run" directives/ skills/` returns zero matches
+- [ ] `grep -rn "src/rules\|src/index\|createRule\|eslint-docs" directives/ skills/` returns zero matches
+- [ ] `grep -rn "Step [0-9]" directives/ skills/` returns zero matches
+- [ ] Technology names only appear as examples with context
+
+### 5.3 Placeholder Convention
+
+- [ ] All templates use `<!-- FILL IN: description -->` consistently
+- [ ] `grep -c "FILL IN" templates/AGENTS.md` returns ≥ 10
+- [ ] Every placeholder includes a description
+
+### 5.4 Source Traceability
+
+- [ ] Every file in `directives/` and `skills/` has source-traceability comment at top
+- [ ] Comment includes: source path, last-synced date, list of adaptations
+
+---
+
+## Dependency Order
+
+```
+Phase 0 (scaffolding)     ← no dependencies, do first
+  │
+  ├── Phase 1 (directives) ← all 7 can be done in parallel
+  ├── Phase 2 (skills)     ← independent, can parallel with Phase 1
+  │
+  ├── Phase 3 (templates)  ← depends on Phase 1 (needs directive names/paths)
+  ├── Phase 4 (README)     ← depends on Phase 1 + 2 (needs summary of all content)
+  │
+  └── Phase 5 (verification) ← depends on everything above
+```
+
+**Parallelizable groups:**
+- Group A (do together): Phase 0 → Phase 1 + Phase 2
+- Group B (after Group A): Phase 3 + Phase 4
+- Group C (after Group B): Phase 5
+
+---
+
+## Effort Estimates
+
+| Phase | Files | Complexity | Notes |
+|-------|-------|------------|-------|
+| 0 | 0 files (dirs only) | Trivial | `mkdir -p` |
+| 1.1–1.5 | 5 directives | Moderate | Remove project coupling, keep structure |
+| 1.6 | 1 directive | High | Most ESLint-specific — heavy rewrite of examples |
+| 1.7 | 1 directive | High | Heavily ESLint-specific — replace proof framework |
+| 2.1 | 1 skill | Trivial | Verbatim copy |
+| 3.1 | 1 template | Moderate | Structure from source, fill with placeholders |
+| 3.2–3.3 | 2 templates | Low | Adapt AGENTS.md template, remove directive tables |
+| 3.4 | 1 template | Low | Extract schema from session-decisions.md |
+| 4.1 | 1 README | Moderate | Summarize everything, stay under 200 lines |
+| 5.1–5.4 | Verification | Low | `grep` checks, fix any failures |
+
+**Highest-risk items:** §1.6 (codebase-navigation) and §1.7 (verification) —
+these have the most project-specific content to strip while preserving value.

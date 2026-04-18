@@ -1,5 +1,7 @@
 # Requirements: Agent Directives
 
+**NOTE**: all of the files needed to start the directives are located at /Users/robsimpson/Repos/eslint-plugin-llm-core.
+
 A reusable collection of directives, skills, and templates that give coding
 agents disciplined TDD workflows, structured codebase navigation, persistent
 error memory, and durable decision logging. Extracted from production use in
