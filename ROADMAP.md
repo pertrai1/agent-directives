@@ -216,13 +216,13 @@ the ONLY files that contain placeholders.
 - Decision Log Lookup section
 
 **Acceptance criteria (from REQUIREMENTS §4.1):**
-- [ ] All source sections present
-- [ ] `grep -c "FILL IN"` returns ≥ 10
-- [ ] Light Path and Full Path tables present with step numbers
-- [ ] All 7 directives in Directives table
-- [ ] test-reviewer in Skills table
-- [ ] No ESLint-specific content
-- [ ] Comment block at top
+- [x] All source sections present
+- [x] `grep -c "FILL IN"` returns ≥ 10
+- [x] Light Path and Full Path tables present with step numbers
+- [x] All 7 directives in Directives table
+- [x] test-reviewer in Skills table
+- [x] No ESLint-specific content
+- [x] Comment block at top
 
 ### 3.2 `templates/CLAUDE.md`
 
@@ -231,11 +231,11 @@ the ONLY files that contain placeholders.
 - Instruction: "Load the relevant directive from the directives/ directory before each task."
 
 **Acceptance criteria (from REQUIREMENTS §4.2):**
-- [ ] Why, What, Commands, Mandatory Workflow sections present
-- [ ] Uses `<!-- FILL IN -->` placeholders
-- [ ] Directives listed by name with one-line descriptions
-- [ ] Light Path and Full Path tables present
-- [ ] No ESLint-specific content
+- [x] Why, What, Commands, Mandatory Workflow sections present
+- [x] Uses `<!-- FILL IN -->` placeholders
+- [x] Directives listed by name with one-line descriptions
+- [x] Light Path and Full Path tables present
+- [x] No ESLint-specific content
 
 ### 3.3 `templates/copilot-instructions.md`
 
@@ -243,11 +243,11 @@ the ONLY files that contain placeholders.
 skipping steps). Points to `directives/` for details.
 
 **Acceptance criteria (from REQUIREMENTS §4.3):**
-- [ ] Light Path and Full Path tables present
-- [ ] Key rules summary present
-- [ ] References directives/ directory
-- [ ] Uses `<!-- FILL IN -->` placeholders
-- [ ] No ESLint-specific content
+- [x] Light Path and Full Path tables present
+- [x] Key rules summary present
+- [x] References directives/ directory
+- [x] Uses `<!-- FILL IN -->` placeholders
+- [x] No ESLint-specific content
 
 ### 3.4 `templates/decision-log.md`
 
@@ -255,9 +255,9 @@ skipping steps). Points to `directives/` for details.
 from session-decisions.md.
 
 **Acceptance criteria (from REQUIREMENTS §4.4):**
-- [ ] Full frontmatter schema present
-- [ ] All 5 required sections with placeholder guidance present
-- [ ] No real decision content — all placeholder text is clearly instructional
+- [x] Full frontmatter schema present
+- [x] All 5 required sections with placeholder guidance present
+- [x] No real decision content — all placeholder text is clearly instructional
 
 ---
 
@@ -301,9 +301,9 @@ Run after all content is in place.
 
 ### 5.3 Placeholder Convention
 
-- [ ] All templates use `<!-- FILL IN: description -->` consistently
-- [ ] `grep -c "FILL IN" templates/AGENTS.md` returns ≥ 10
-- [ ] Every placeholder includes a description
+- [x] All templates use `<!-- FILL IN: description -->` consistently
+- [x] `grep -c "FILL IN" templates/AGENTS.md` returns ≥ 10
+- [x] Every placeholder includes a description
 
 ### 5.4 Source Traceability
 
