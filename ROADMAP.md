@@ -274,12 +274,12 @@ from session-decisions.md.
 6. Tool compatibility note
 
 **Acceptance criteria (from REQUIREMENTS §5):**
-- [ ] Answers what / included / how-to-use
-- [ ] Directive/skill summary table present
-- [ ] 5-step quick-start present
-- [ ] Customization guidance present
-- [ ] Tool-compatibility note present
-- [ ] Under 200 lines
+- [x] Answers what / included / how-to-use
+- [x] Directive/skill summary table present
+- [x] 5-step quick-start present
+- [x] Customization guidance present
+- [x] Tool-compatibility note present
+- [x] Under 200 lines
 
 ---
 
