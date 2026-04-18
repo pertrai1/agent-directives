@@ -23,6 +23,16 @@ dependencies between files.
 4. **Fill in the placeholders** — every `<!-- FILL IN: ... -->` is a project-specific value you need to provide
 5. **Customize** — remove directives you don't need, adjust rules to match your team's conventions
 
+## Directives vs Skills
+
+| | Directive | Skill |
+|---|---|---|
+| **Nature** | Rule you follow | Persona you adopt |
+| **When** | At a workflow phase | For a task type |
+| **Output** | Constrained behavior | Structured findings |
+| **Tone** | "Never do X" / "Always do Y" | "You are a specialist in..." |
+| **Format** | Rules + forbidden patterns table | Frontmatter + review process + output format |
+
 ## Directives
 
 ### Test-Driven Development (`directives/test-driven-development.md`)
