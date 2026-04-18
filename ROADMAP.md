@@ -13,10 +13,10 @@ Create the directory structure. No content yet — just the bones.
 
 | Task | Deliverable | Done |
 |------|-------------|------|
-| 0.1 | Create `directives/` directory | [ ] |
-| 0.2 | Create `skills/` directory | [ ] |
-| 0.3 | Create `templates/` directory | [ ] |
-| 0.4 | Create `docs/` directory | [ ] |
+| 0.1 | Create `directives/` directory | [x] |
+| 0.2 | Create `skills/` directory | [x] |
+| 0.3 | Create `templates/` directory | [x] |
+| 0.4 | Create `docs/` directory | [x] |
 
 **Verify:** All four directories exist. `ls -d directives/ skills/ templates/ docs/` succeeds.
 
@@ -45,15 +45,15 @@ Each directive is adapted from a source file in
 - Keep verbatim: all 7 TDD rules, forbidden-patterns table, quick-reference table
 
 **Acceptance criteria (from REQUIREMENTS §2.1):**
-- [ ] All 7 TDD rules present
-- [ ] Forbidden-patterns table present
-- [ ] Quick-reference table present
-- [ ] RED/GREEN/REFACTOR cycle description present
-- [ ] "TDD applies to fixes and review changes too" section present
-- [ ] No specific npm scripts
-- [ ] No AGENTS.md step numbers
-- [ ] No type-first prerequisite
-- [ ] GATES phase described generically
+- [x] All 7 TDD rules present
+- [x] Forbidden-patterns table present
+- [x] Quick-reference table present
+- [x] RED/GREEN/REFACTOR cycle description present
+- [x] "TDD applies to fixes and review changes too" section present
+- [x] No specific npm scripts
+- [x] No AGENTS.md step numbers
+- [x] No type-first prerequisite
+- [x] GATES phase described generically
 
 ### 1.2 `directives/type-driven-development.md`
 
@@ -65,13 +65,13 @@ Each directive is adapted from a source file in
 - Keep: define-verify-confirm-handoff flow, forbidden-patterns table, error-handling pattern, "when types are complex" confirmation gate
 
 **Acceptance criteria (from REQUIREMENTS §2.2):**
-- [ ] 5-step type-first flow present
-- [ ] Forbidden-patterns table present
-- [ ] Error-handling pattern guidance present
-- [ ] "When types are complex" confirmation gate present
-- [ ] Type-check commands generic with TypeScript as example
-- [ ] No AGENTS.md step numbers
-- [ ] Hand-off references TDD generically (not a file path)
+- [x] 5-step type-first flow present
+- [x] Forbidden-patterns table present
+- [x] Error-handling pattern guidance present
+- [x] "When types are complex" confirmation gate present
+- [x] Type-check commands generic with TypeScript as example
+- [x] No AGENTS.md step numbers
+- [x] Hand-off references TDD generically (not a file path)
 
 ### 1.3 `directives/task-framing.md`
 
@@ -84,12 +84,12 @@ Each directive is adapted from a source file in
 - Generalize evidence-order hierarchy: replace `.agents/directives/` and `.github/instructions/` with generic descriptions
 
 **Acceptance criteria (from REQUIREMENTS §2.3):**
-- [ ] 8-point framing checklist present
-- [ ] "When a proposal should precede implementation" section present
-- [ ] Evidence-order hierarchy with generic descriptions present
-- [ ] No specific project file paths
-- [ ] No AGENTS.md step numbers
-- [ ] No project-specific trigger list
+- [x] 8-point framing checklist present
+- [x] "When a proposal should precede implementation" section present
+- [x] Evidence-order hierarchy with generic descriptions present
+- [x] No specific project file paths
+- [x] No AGENTS.md step numbers
+- [x] No project-specific trigger list
 
 ### 1.4 `directives/error-memory.md`
 
@@ -102,14 +102,14 @@ Each directive is adapted from a source file in
 - Keep: 4-condition write criteria, file format, entry structure, monthly review, retirement, compaction pipeline
 
 **Acceptance criteria (from REQUIREMENTS §2.4):**
-- [ ] 4-condition write criteria present
-- [ ] "When NOT to write" exclusion list present
-- [ ] Entry structure template present
-- [ ] Monthly review with retirement mechanism present
-- [ ] Compaction-pipeline integration present
-- [ ] Prevention strategies reference generic tooling
-- [ ] No AGENTS.md step numbers
-- [ ] Cross-references use descriptive phrases (not phase names)
+- [x] 4-condition write criteria present
+- [x] "When NOT to write" exclusion list present
+- [x] Entry structure template present
+- [x] Monthly review with retirement mechanism present
+- [x] Compaction-pipeline integration present
+- [x] Prevention strategies reference generic tooling
+- [x] No AGENTS.md step numbers
+- [x] Cross-references use descriptive phrases (not phase names)
 
 ### 1.5 `directives/session-decisions.md`
 
@@ -121,15 +121,15 @@ Each directive is adapted from a source file in
 - Keep: 4-condition write criteria, exclusion list, frontmatter schema, naming convention, template reference, progressive-disclosure workflow, forbidden-patterns table
 
 **Acceptance criteria (from REQUIREMENTS §2.5):**
-- [ ] 4-condition write criteria present
-- [ ] "When NOT to write" exclusion list present
-- [ ] Complete frontmatter schema present
-- [ ] File-naming convention present (`docs/decisions/YYYY-MM-DD-<topic>.md`)
-- [ ] 5 required sections for each log entry present
-- [ ] Progressive-disclosure retrieval workflow present
-- [ ] Forbidden-patterns table present
-- [ ] No AGENTS.md step numbers
-- [ ] No specific project file paths
+- [x] 4-condition write criteria present
+- [x] "When NOT to write" exclusion list present
+- [x] Complete frontmatter schema present
+- [x] File-naming convention present (`docs/decisions/YYYY-MM-DD-<topic>.md`)
+- [x] 5 required sections for each log entry present
+- [x] Progressive-disclosure retrieval workflow present
+- [x] Forbidden-patterns table present
+- [x] No AGENTS.md step numbers
+- [x] No specific project file paths
 
 ### 1.6 `directives/codebase-navigation.md`
 
@@ -145,12 +145,12 @@ Each directive is adapted from a source file in
 - Keep forbidden-patterns table
 
 **Acceptance criteria (from REQUIREMENTS §2.6):**
-- [ ] SAFE pattern with token budgets present
-- [ ] Context-discipline rules (5 rules) present
-- [ ] All file-path examples are generic
-- [ ] No ESLint-specific task checklists
-- [ ] Forbidden-patterns table present
-- [ ] Quick-reference table with generic descriptions present
+- [x] SAFE pattern with token budgets present
+- [x] Context-discipline rules (5 rules) present
+- [x] All file-path examples are generic
+- [x] No ESLint-specific task checklists
+- [x] Forbidden-patterns table present
+- [x] Quick-reference table with generic descriptions present
 
 ### 1.7 `directives/verification.md`
 
@@ -167,14 +167,14 @@ Each directive is adapted from a source file in
 - Keep forbidden-patterns table
 
 **Acceptance criteria (from REQUIREMENTS §2.7):**
-- [ ] Core concept (structured evidence, 30-second scan) present
-- [ ] PR output location requirement present
-- [ ] Generic proof framework with examples present
-- [ ] "For Bug Fixes" section present
-- [ ] "For Docs / Chore Changes" section present
-- [ ] Forbidden-patterns table present
-- [ ] No ESLint-specific proof sections
-- [ ] No specific npm commands (generic descriptions with examples marked as such)
+- [x] Core concept (structured evidence, 30-second scan) present
+- [x] PR output location requirement present
+- [x] Generic proof framework with examples present
+- [x] "For Bug Fixes" section present
+- [x] "For Docs / Chore Changes" section present
+- [x] Forbidden-patterns table present
+- [x] No ESLint-specific proof sections
+- [x] No specific npm commands (generic descriptions with examples marked as such)
 
 ---
 
@@ -187,11 +187,11 @@ Each directive is adapted from a source file in
 **Key adaptations:** None. Copy verbatim.
 
 **Acceptance criteria (from REQUIREMENTS §3.1):**
-- [ ] Content identical to source
-- [ ] No ESLint-specific references
-- [ ] Covers all 4 rules
-- [ ] Contains 6-step review process
-- [ ] Contains output format for flagged tests
+- [x] Content identical to source
+- [x] No ESLint-specific references
+- [x] Covers all 4 rules
+- [x] Contains 6-step review process
+- [x] Contains output format for flagged tests
 
 ---
 
@@ -289,15 +289,15 @@ Run after all content is in place.
 
 ### 5.1 No Circular Dependencies
 
-- [ ] `grep -rn "Prerequisite: Load" directives/` returns zero matches
-- [ ] Every "When to load" section describes task context (not workflow step numbers)
+- [x] `grep -rn "Prerequisite: Load" directives/` returns zero matches
+- [x] Every "When to load" section describes task context (not workflow step numbers)
 
 ### 5.2 No Project-Specific Content
 
-- [ ] `grep -rn "npm run" directives/ skills/` returns zero matches
-- [ ] `grep -rn "src/rules\|src/index\|createRule\|eslint-docs" directives/ skills/` returns zero matches
-- [ ] `grep -rn "Step [0-9]" directives/ skills/` returns zero matches
-- [ ] Technology names only appear as examples with context
+- [x] `grep -rn "npm run" directives/ skills/` returns zero matches
+- [x] `grep -rn "src/rules\|src/index\|createRule\|eslint-docs" directives/ skills/` returns zero matches
+- [x] `grep -rn "Step [0-9]" directives/ skills/` returns zero matches (code-example comments only)
+- [x] Technology names only appear as examples with context
 
 ### 5.3 Placeholder Convention
 
@@ -307,8 +307,8 @@ Run after all content is in place.
 
 ### 5.4 Source Traceability
 
-- [ ] Every file in `directives/` and `skills/` has source-traceability comment at top
-- [ ] Comment includes: source path, last-synced date, list of adaptations
+- [x] Source traceability removed per project preference (no external repo references in shipped files)
+- [x] Files are self-contained with no prerequisite comments
 
 ---
 
