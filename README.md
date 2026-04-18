@@ -9,10 +9,10 @@ dependencies between files.
 
 | Category | Files | What they do |
 |----------|-------|--------------|
-| **Workflow** | 7 directives | Govern how the agent works: TDD, type-first, verification, task framing |
+| **Workflow** | 9 directives | Govern how the agent works: TDD, type-first, spec-driven, verification, task framing, exploration |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
-| **Skills** | 1 skill | Test reviewer for catching shallow or redundant tests |
+| **Skills** | 2 skills | Test reviewer and spec reviewer for catching issues before merge |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 
 ## Quick Start
@@ -49,6 +49,19 @@ SAFE exploration pattern (Survey, Assess, Focus, Execute) with token budgets.
 Five context-discipline rules that prevent the agent from reading too much
 irrelevant code before starting work.
 
+### Exploration Mode (`directives/exploration-mode.md`)
+
+Pre-implementation investigation stance for thinking through problems before
+committing to an approach. Curious, grounded, visual — no code during exploration.
+Fills the gap between codebase navigation (how to search) and task framing
+(how to scope).
+
+### Specification-Driven Development (`directives/specification-driven-development.md`)
+
+Write specifications before code, implement against specs, verify after.
+Five-phase loop: propose, design, specify, implement, verify. Operates above
+TDD (correctness) and type-driven (shapes) — this directive defines what and why.
+
 ### Verification Protocol (`directives/verification.md`)
 
 Structured evidence of correctness before running quality gates. Produces a
@@ -67,13 +80,20 @@ Durable decision capture at task completion. Four-condition write criteria, YAML
 frontmatter schema for retrieval, progressive-disclosure workflow, and five
 required sections (Title, Context, Decision, Rejected Alternatives, Consequences).
 
-## Skill
+## Skills
 
 ### Test Reviewer (`skills/test-reviewer.md`)
 
 Detects tests that duplicate production logic, use shallow assertions, skip edge
 cases, or assert on mocks instead of behavior. Six-step review process with
 output format for flagged tests.
+
+### Spec Reviewer (`skills/spec-reviewer.md`)
+
+Reviews implementation against written specifications. Three-dimensional check:
+completeness (all requirements implemented), correctness (code matches spec
+intent), and coherence (design decisions followed). Natural pairing with
+test-reviewer — one reviews tests, the other reviews implementation against specs.
 
 ## Templates
 

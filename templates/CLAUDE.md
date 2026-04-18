@@ -67,11 +67,13 @@ Steps 2–6 repeat for each behavior. Do not batch.
 Load the relevant directive from the `directives/` directory before each task.
 
 - **Codebase Navigation** — SAFE exploration pattern before implementation (`directives/codebase-navigation.md`)
-- **Error Memory** — Persistent memory for repeated mistakes (`directives/error-memory.md`)
+- **Exploration Mode** — Pre-implementation investigation and thinking stance (`directives/exploration-mode.md`)
 - **Task Framing** — Intake checklist for non-trivial work (`directives/task-framing.md`)
+- **Specification-Driven Development** — Write specs before code, implement against specs, verify after (`directives/specification-driven-development.md`)
 - **Type-First Development** — Define types before writing implementation code (`directives/type-driven-development.md`)
 - **Test-Driven Development** — Strict RED/GREEN/REFACTOR cycle for all code changes (`directives/test-driven-development.md`)
 - **Verification Protocol** — Structured evidence of correctness before GATES (`directives/verification.md`)
+- **Error Memory** — Persistent memory for repeated mistakes (`directives/error-memory.md`)
 - **Session Decisions** — Durable decision capture at task completion (`directives/session-decisions.md`)
 
 ## Task Framing (Mandatory for Non-Trivial Work)

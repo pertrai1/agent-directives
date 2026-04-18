@@ -88,11 +88,13 @@ For detailed guidance on each workflow rule, load the corresponding directive
 from the `directives/` directory:
 
 - `codebase-navigation.md` — SAFE exploration pattern
-- `error-memory.md` — Persistent memory for repeated mistakes
+- `exploration-mode.md` — Pre-implementation investigation stance
 - `task-framing.md` — Intake checklist for non-trivial work
+- `specification-driven-development.md` — Write specs before code, verify after
 - `type-driven-development.md` — Types before implementation
 - `test-driven-development.md` — RED/GREEN/REFACTOR cycle
 - `verification.md` — Evidence of correctness before GATES
+- `error-memory.md` — Persistent memory for repeated mistakes
 - `session-decisions.md` — Durable decision capture
 
 ## Decision Log Lookup

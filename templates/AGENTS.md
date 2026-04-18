@@ -66,23 +66,26 @@ Steps 2–6 repeat for each behavior. Do not batch.
 
 Read and follow every directive before implementing. They govern **how** you work.
 
-| Directive               | What it governs                             | File                                         |
-| ----------------------- | ------------------------------------------- | -------------------------------------------- |
-| Codebase Navigation     | SAFE exploration before implementation      | `directives/codebase-navigation.md`          |
-| Error Memory            | Persistent memory for repeated mistakes     | `directives/error-memory.md`                 |
-| Task Framing            | Intake checklist for non-trivial work       | `directives/task-framing.md`                 |
-| Type-First Development  | Types before implementation                 | `directives/type-driven-development.md`      |
-| Test-Driven Development | RED/GREEN/REFACTOR for all code changes     | `directives/test-driven-development.md`      |
-| Verification Protocol   | Evidence of correctness before GATES        | `directives/verification.md`                 |
-| Session Decisions       | Durable decision capture at task completion | `directives/session-decisions.md`            |
+| Directive                    | What it governs                             | File                                         |
+| ---------------------------- | ------------------------------------------- | -------------------------------------------- |
+| Codebase Navigation          | SAFE exploration before implementation      | `directives/codebase-navigation.md`          |
+| Exploration Mode             | Pre-implementation investigation stance     | `directives/exploration-mode.md`             |
+| Task Framing                 | Intake checklist for non-trivial work       | `directives/task-framing.md`                 |
+| Specification-Driven Dev     | Write specs before code, verify after       | `directives/specification-driven-development.md` |
+| Type-First Development       | Types before implementation                 | `directives/type-driven-development.md`      |
+| Test-Driven Development      | RED/GREEN/REFACTOR for all code changes     | `directives/test-driven-development.md`      |
+| Verification Protocol        | Evidence of correctness before GATES        | `directives/verification.md`                 |
+| Error Memory                 | Persistent memory for repeated mistakes     | `directives/error-memory.md`                 |
+| Session Decisions            | Durable decision capture at task completion | `directives/session-decisions.md`            |
 
 ## Skills (Mandatory)
 
 Load the relevant skill before performing any task it covers.
 
-| Skill         | When                                 | File                       |
-| ------------- | ------------------------------------ | -------------------------- |
-| Test Reviewer | Before writing or reviewing any test | `skills/test-reviewer.md`  |
+| Skill         | When                                          | File                       |
+| ------------- | --------------------------------------------- | -------------------------- |
+| Test Reviewer | Before writing or reviewing any test           | `skills/test-reviewer.md`  |
+| Spec Reviewer | Before merging when a written spec exists      | `skills/spec-reviewer.md`  |
 
 ## Task Framing (Mandatory for Non-Trivial Work)
 
