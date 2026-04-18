@@ -1,1 +1,107 @@
-# agent directives
+# Agent Directives
+
+A collection of reusable directives, skills, and templates for AI coding agents.
+Extract the parts you need, drop them into your project, and customize the
+placeholders. Everything works standalone — no framework lock-in, no hidden
+dependencies between files.
+
+## What's Included
+
+| Category | Files | What they do |
+|----------|-------|--------------|
+| **Workflow** | 7 directives | Govern how the agent works: TDD, type-first, verification, task framing |
+| **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
+| **Memory** | 2 directives | Error memory and session decisions for persistent learning |
+| **Skills** | 1 skill | Test reviewer for catching shallow or redundant tests |
+| **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
+
+## Quick Start
+
+1. **Copy directives** into your project — e.g. `.agents/directives/` or any directory your agent reads
+2. **Copy skills** alongside them — e.g. `.agents/skills/`
+3. **Pick a template** — `AGENTS.md`, `CLAUDE.md`, or `copilot-instructions.md` depending on your tool
+4. **Fill in the placeholders** — every `<!-- FILL IN: ... -->` is a project-specific value you need to provide
+5. **Customize** — remove directives you don't need, adjust rules to match your team's conventions
+
+## Directives
+
+### Test-Driven Development (`directives/test-driven-development.md`)
+
+Strict RED/GREEN/REFACTOR cycle for all code changes. Defines 7 TDD rules, a
+forbidden-patterns table, and makes TDD mandatory for fixes and review changes
+too — not just new features.
+
+### Type-First Development (`directives/type-driven-development.md`)
+
+Define types before writing implementation code. Five-step flow: check, define,
+verify, confirm (for complex types), and hand off to TDD. Keeps type-check
+commands generic with TypeScript as an example.
+
+### Task Framing (`directives/task-framing.md`)
+
+Intake checklist for non-trivial work. Eight-point framing checklist that
+catches ambiguous requirements before implementation starts. Defines when a
+proposal must precede implementation.
+
+### Codebase Navigation (`directives/codebase-navigation.md`)
+
+SAFE exploration pattern (Survey, Assess, Focus, Execute) with token budgets.
+Five context-discipline rules that prevent the agent from reading too much
+irrelevant code before starting work.
+
+### Verification Protocol (`directives/verification.md`)
+
+Structured evidence of correctness before running quality gates. Produces a
+verification summary a reviewer can scan in 30 seconds. Generic proof framework
+covering functional, test coverage, integration, and documentation proof.
+
+### Error Memory (`directives/error-memory.md`)
+
+Persistent memory for repeated mistakes. Four-condition write criteria prevent
+the agent from logging trivial errors. Includes compaction pipeline and monthly
+review with retirement mechanism.
+
+### Session Decisions (`directives/session-decisions.md`)
+
+Durable decision capture at task completion. Four-condition write criteria, YAML
+frontmatter schema for retrieval, progressive-disclosure workflow, and five
+required sections (Title, Context, Decision, Rejected Alternatives, Consequences).
+
+## Skill
+
+### Test Reviewer (`skills/test-reviewer.md`)
+
+Detects tests that duplicate production logic, use shallow assertions, skip edge
+cases, or assert on mocks instead of behavior. Six-step review process with
+output format for flagged tests.
+
+## Templates
+
+| Template | For | Key difference |
+|----------|-----|----------------|
+| `templates/AGENTS.md` | Codex / general agents | Full directive table with file paths, skills table |
+| `templates/CLAUDE.md` | Claude Code | Directives by name with one-line descriptions |
+| `templates/copilot-instructions.md` | GitHub Copilot | Condensed — key rules inlined, points to directives/ for details |
+| `templates/decision-log.md` | Any | Blank template matching the session-decisions frontmatter schema |
+
+## Customization
+
+These directives are opinionated defaults. Adjust them to fit your project:
+
+- **Remove what you don't need** — if your project doesn't use TypeScript, drop type-driven-development
+- **Relax rules for prototyping** — TDD and verification can slow down throwaway work
+- **Add project-specific sections** — the templates have placeholder rows for extra commands
+- **Change thresholds** — token budgets in codebase-navigation, condition counts in error-memory
+
+Every directive works standalone. There are no cross-file dependencies.
+
+## Tool Compatibility
+
+These files work with any tool that reads markdown instructions:
+
+- **Claude Code** — drop into project root as `CLAUDE.md` or load from `.claude/`
+- **GitHub Copilot** — use as `.github/copilot-instructions.md`
+- **Codex / OpenAI agents** — use as `AGENTS.md`
+- **Cursor / Windsurf / other IDE agents** — load from the tool's instruction directory
+
+No special syntax, no tool-specific features required. Just markdown.
