@@ -70,7 +70,8 @@ Use for: everything else. No skipping steps.
 | 2    | RED          | Write ONE failing test                   | Test fails                                                   |
 | 3    | GREEN        | Write minimum code to pass               | All tests pass, type-check passes                            |
 | 4    | REFACTOR     | Clean up if needed                       | All tests still pass                                         |
-| 4.5  | **VERIFY**   | **Produce verification summary**         | See verification directive for protocol                      |
+| 4.5  | **SELF-AUDIT** | **Triage weakest assumptions and anomalies** | See `skills/self-audit/SKILL.md` — route: 🔁 fix → step 2, 📋 document, or 🧑 ask human |
+| 4.75 | **VERIFY**   | **Produce verification summary**         | See verification directive — target 📋 documented Jenga entries |
 | 5    | GATES        | Run quality gates                        | <!-- FILL IN: gates commands -->                             |
 | 6    | COMMIT       | Atomic commit                            | One behavior per commit                                      |
 
@@ -96,6 +97,14 @@ from the `directives/` directory:
 - `verification.md` — Evidence of correctness before GATES
 - `error-memory.md` — Persistent memory for repeated mistakes
 - `session-decisions.md` — Durable decision capture
+
+## Skills
+
+Load the relevant skill for the task type.
+
+- `skills/test-reviewer/SKILL.md` — Before writing or reviewing any test
+- `skills/spec-reviewer/SKILL.md` — Before merging when a written spec exists
+- `skills/self-audit/SKILL.md` — After REFACTOR, before VERIFY on every Full Path cycle
 
 ## Decision Log Lookup
 

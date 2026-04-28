@@ -56,7 +56,8 @@ No skipping steps:
 | 2    | RED          | Write ONE failing test                   | Test fails                                                                   |
 | 3    | GREEN        | Write minimum code to pass               | New test passes, all existing tests still pass, type-check passes             |
 | 4    | REFACTOR     | Clean up if needed                       | All tests still pass                                                         |
-| 4.5  | **VERIFY**   | **Produce verification summary**         | See `directives/verification.md` for protocol                                |
+| 4.5  | **SELF-AUDIT** | **Triage weakest assumptions and anomalies** | See `skills/self-audit/SKILL.md` — route findings: 🔁 fix → step 2, 📋 document, or 🧑 ask human |
+| 4.75 | **VERIFY**   | **Produce verification summary**         | See `directives/verification.md` for protocol — target 📋 documented Jenga entries |
 | 5    | GATES        | Run quality gates                        | <!-- FILL IN: gates commands -->                                             |
 | 6    | COMMIT       | Atomic commit                            | One behavior per commit                                                      |
 
@@ -84,8 +85,9 @@ Load the relevant skill before performing any task it covers.
 
 | Skill         | When                                          | File                       |
 | ------------- | --------------------------------------------- | -------------------------- |
-| Test Reviewer | Before writing or reviewing any test           | `skills/test-reviewer.md`  |
-| Spec Reviewer | Before merging when a written spec exists      | `skills/spec-reviewer.md`  |
+| Test Reviewer | Before writing or reviewing any test           | `skills/test-reviewer/SKILL.md`  |
+| Spec Reviewer | Before merging when a written spec exists      | `skills/spec-reviewer/SKILL.md`  |
+| Self-Audit    | After REFACTOR, before VERIFY (every Full Path cycle) | `skills/self-audit/SKILL.md` |
 
 ## Task Framing (Mandatory for Non-Trivial Work)
 

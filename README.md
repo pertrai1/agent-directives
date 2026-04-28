@@ -12,7 +12,7 @@ dependencies between files.
 | **Workflow** | 9 directives | Govern how the agent works: TDD, type-first, spec-driven, verification, task framing, exploration |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
-| **Skills** | 2 skills | Test reviewer and spec reviewer for catching issues before merge |
+| **Skills** | 3 skills | Test reviewer, spec reviewer, and self-audit for catching issues before merge |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 
 ## Quick Start
@@ -92,18 +92,26 @@ required sections (Title, Context, Decision, Rejected Alternatives, Consequences
 
 ## Skills
 
-### Test Reviewer (`skills/test-reviewer.md`)
+### Test Reviewer (`skills/test-reviewer/SKILL.md`)
 
 Detects tests that duplicate production logic, use shallow assertions, skip edge
 cases, or assert on mocks instead of behavior. Six-step review process with
 output format for flagged tests.
 
-### Spec Reviewer (`skills/spec-reviewer.md`)
+### Spec Reviewer (`skills/spec-reviewer/SKILL.md`)
 
 Reviews implementation against written specifications. Three-dimensional check:
 completeness (all requirements implemented), correctness (code matches spec
 intent), and coherence (design decisions followed). Natural pairing with
 test-reviewer — one reviews tests, the other reviews implementation against specs.
+
+### Self-Audit (`skills/self-audit/SKILL.md`)
+
+Triage point between TDD and verification. After GREEN/REFACTOR, identifies the
+single weakest assumption (Jenga Test), logs anomalies that passing tests mask,
+and checks for sunk-cost trajectory across cycles. Each finding is routed: fix
+now (loop back to RED), document for the PR reviewer, or ask the human. Output
+goes in the PR body before the verification section.
 
 ## Templates
 
