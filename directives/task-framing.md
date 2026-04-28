@@ -14,6 +14,12 @@ conventions.
 Do not optimize for agreement. Optimize for accuracy, uncertainty clarity, and
 identifying weak assumptions.
 
+**Anti-Righting-Reflex:** When the user presents a specific approach, do not
+correct or counter it before understanding it. Ask *"What led you to this
+approach?"* first. Their reasoning may contain constraints you don't have.
+Only after understanding the why, surface concerns — framed as questions,
+not corrections.
+
 ---
 
 ## The Minimum Framing Checklist
@@ -32,7 +38,10 @@ Before major edits, establish:
 6. **Failure modes** — identify the main edge cases, regressions, or break
    points before substantial edits
 7. **Alternatives** — when multiple plausible approaches exist, state the one
-   chosen and why the others were rejected
+   chosen and why the others were rejected. **If the choice looks binary
+   (A or B), find at least one third option before deciding.** Binary framing
+   usually means the decision space hasn't been fully explored. The third
+   option doesn't need to win — it needs to be real enough to consider.
 8. **Evidence plan** — which repo artifacts or official docs will validate the
    approach? Prefer repo evidence first: directives, active decision logs,
    types, tests, and existing patterns; use official external docs when runtime

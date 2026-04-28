@@ -69,7 +69,10 @@ is too big — break it into smaller changes.
 
 **Gate:** Read the proposal back. Does a competent developer understand what
 to build without asking clarifying questions? If not, fill the gaps before
-proceeding.
+proceeding. **Wobble check:** If you or the user hold strong conviction on any
+design choice in the proposal, introduce one credible dissenting perspective
+before locking it. If the conviction survives the challenge, it's stronger.
+If it doesn't, the proposal just avoided a blind spot.
 
 ### Phase 2: Design
 
@@ -84,7 +87,11 @@ The design should be concrete enough that an implementer can work from it
 without making architectural decisions.
 
 **Gate:** Trace through the design mentally. Can you walk from trigger to
-outcome without hitting a gap? If not, fill the gap.
+outcome without hitting a gap? If not, fill the gap. **Counterfactual check:**
+For at least one key decision, ask: *"Would this hold if the system used a
+different architecture, language, or data model?"* Decisions that only make
+sense under current assumptions should be noted as such — they're valid, but
+they're load-bearing.
 
 ### Phase 3: Specify
 
