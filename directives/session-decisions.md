@@ -140,7 +140,15 @@ Every decision log MUST contain all five sections:
 | **Context**               | 2–4 sentences on the problem, constraints, and why this was a real choice.                |
 | **Decision**              | One paragraph. Specific reasoning — name the properties that made this option preferable. |
 | **Rejected Alternatives** | At least one entry. Name the alternative and the specific reason it was disqualified.     |
-| **Consequences**          | Easier / Harder / Watch for — what this decision makes true going forward.                |
+| **Consequences**          | Easier / Harder / Watch for / **Unlearn** — what this decision makes true going forward.  |
+
+**The Unlearn entry in Consequences:** After writing Easier / Harder / Watch for,
+ask: *"What assumption worked for this task that should NOT be carried forward
+as a default?"* If the answer is "none," skip it. If an assumption was valid
+here but context-dependent (e.g., "we denormalized because reads dominate — but
+that won't hold if writes increase"), name it. Future sessions encountering
+this decision log should verify the Unlearn entry still holds before inheriting
+the approach.
 
 ---
 
