@@ -22,6 +22,7 @@ design tool that forces clarity about requirements, scope, and success criteria
 before any code is written.
 
 The specification serves three audiences:
+
 1. **The implementer** (you, possibly in a different session) — knows exactly what to build
 2. **The reviewer** — can verify the implementation against an explicit contract
 3. **Future readers** — understand why the system works this way
@@ -30,7 +31,7 @@ The specification serves three audiences:
 
 ## The Specification Loop
 
-```
+```text
 ┌─────────────────────────────────────────┐
 │         SPECIFICATION LOOP              │
 ├─────────────────────────────────────────┤
@@ -88,8 +89,8 @@ without making architectural decisions.
 
 **Gate:** Trace through the design mentally. Can you walk from trigger to
 outcome without hitting a gap? If not, fill the gap. **Counterfactual check:**
-For at least one key decision, ask: *"Would this hold if the system used a
-different architecture, language, or data model?"* Decisions that only make
+For at least one key decision, ask: _"Would this hold if the system used a
+different architecture, language, or data model?"_ Decisions that only make
 sense under current assumptions should be noted as such — they're valid, but
 they're load-bearing.
 
@@ -144,11 +145,11 @@ After implementation, verify the result against the specification (see
 verification directive for the general protocol). For spec-driven development,
 verification checks three dimensions:
 
-| Dimension    | Question                              | Method                              |
-| ------------ | ------------------------------------- | ----------------------------------- |
-| Completeness | Are all requirements implemented?     | Check each requirement has code     |
-| Correctness  | Does the code do what the spec says?  | Trace scenarios to implementations  |
-| Coherence    | Does the code follow the design?      | Check architecture matches design   |
+| Dimension    | Question                             | Method                             |
+| ------------ | ------------------------------------ | ---------------------------------- |
+| Completeness | Are all requirements implemented?    | Check each requirement has code    |
+| Correctness  | Does the code do what the spec says? | Trace scenarios to implementations |
+| Coherence    | Does the code follow the design?     | Check architecture matches design  |
 
 ---
 
@@ -157,12 +158,12 @@ verification checks three dimensions:
 Not every change needs all five phases. Scale the specification to the
 complexity of the change:
 
-| Change Size        | Proposal | Design | Detailed Spec | Phases  |
-| ------------------ | -------- | ------ | ------------- | ------- |
-| Small (single fn)  | Yes      | Skip   | Brief         | 1, 3-5  |
-| Medium (feature)   | Yes      | Yes    | Yes           | 1-5     |
-| Large (cross-cut)  | Yes      | Yes    | Yes           | 1-5     |
-| Fix (bug)          | Brief    | Skip   | Skip          | 1, 4-5  |
+| Change Size       | Proposal | Design | Detailed Spec | Phases |
+| ----------------- | -------- | ------ | ------------- | ------ |
+| Small (single fn) | Yes      | Skip   | Brief         | 1, 3-5 |
+| Medium (feature)  | Yes      | Yes    | Yes           | 1-5    |
+| Large (cross-cut) | Yes      | Yes    | Yes           | 1-5    |
+| Fix (bug)         | Brief    | Skip   | Skip          | 1, 4-5 |
 
 **Rule of thumb:** If you can hold the full change in your head, a brief
 proposal is sufficient. If you can't, write the design and spec.
@@ -173,7 +174,7 @@ proposal is sufficient. If you can't, write the design and spec.
 
 Store specifications where the project expects them. Common patterns:
 
-```
+```text
 project/
 ├── docs/
 │   └── specs/           # Specification documents
@@ -206,6 +207,7 @@ is valuable — it means the specification caught a bad assumption early.
 5. **Resume implementation** — work from the updated spec
 
 **Do not:**
+
 - Silently implement something different from the spec
 - Keep implementing on top of a spec you know is wrong
 - Throw away the spec because "code is the real documentation"
@@ -214,14 +216,14 @@ is valuable — it means the specification caught a bad assumption early.
 
 ## Relationship to Other Directives
 
-| Directive                  | Relationship                                              |
-| -------------------------- | --------------------------------------------------------- |
-| Test-Driven Development    | Spec scenarios feed into TDD test cases                   |
-| Type-Driven Development    | Spec requirements define what types should express         |
-| Task Framing               | Proposal phase overlaps with task framing — either works   |
-| Codebase Navigation        | Use SAFE pattern during design to understand the system    |
-| Verification               | Phase 5 uses the verification protocol for spec checking   |
-| Exploration Mode           | Use exploration during proposal/design to investigate      |
+| Directive               | Relationship                                             |
+| ----------------------- | -------------------------------------------------------- |
+| Test-Driven Development | Spec scenarios feed into TDD test cases                  |
+| Type-Driven Development | Spec requirements define what types should express       |
+| Task Framing            | Proposal phase overlaps with task framing — either works |
+| Codebase Navigation     | Use SAFE pattern during design to understand the system  |
+| Verification            | Phase 5 uses the verification protocol for spec checking |
+| Exploration Mode        | Use exploration during proposal/design to investigate    |
 
 These directives compose. Spec-driven development provides the overall shape;
 the others fill in specific mechanics.
@@ -232,24 +234,24 @@ the others fill in specific mechanics.
 
 | Pattern                                        | Why Forbidden                                              |
 | ---------------------------------------------- | ---------------------------------------------------------- |
-| Implementing before writing any specification   | Skips the clarity that spec-first thinking provides        |
-| Writing specs after implementation              | Documentation, not specification — misses the design value |
-| Vague requirements without testable criteria    | Untestable requirements are unimplementable requirements   |
-| Silently diverging from the spec during coding  | Defeats the purpose of having a spec                       |
-| Skipping verification against the spec          | Unverified specs are aspirations, not contracts            |
-| Writing a spec and never reading it again       | The spec is a living document, not a ceremony              |
+| Implementing before writing any specification  | Skips the clarity that spec-first thinking provides        |
+| Writing specs after implementation             | Documentation, not specification — misses the design value |
+| Vague requirements without testable criteria   | Untestable requirements are unimplementable requirements   |
+| Silently diverging from the spec during coding | Defeats the purpose of having a spec                       |
+| Skipping verification against the spec         | Unverified specs are aspirations, not contracts            |
+| Writing a spec and never reading it again      | The spec is a living document, not a ceremony              |
 
 ---
 
 ## Quick Reference
 
-| Phase       | Output                    | Gate                                    |
-| ----------- | ------------------------- | --------------------------------------- |
-| Propose     | What, why, scope, risks   | Could someone else build from this?     |
-| Design      | Architecture, decisions   | Can you trace trigger to outcome?       |
-| Specify     | Requirements, scenarios   | Could you write a test for each?        |
-| Implement   | Code and tests            | Does each test map to a scenario?       |
-| Verify      | Verification report       | All requirements covered? All pass?     |
+| Phase     | Output                  | Gate                                |
+| --------- | ----------------------- | ----------------------------------- |
+| Propose   | What, why, scope, risks | Could someone else build from this? |
+| Design    | Architecture, decisions | Can you trace trigger to outcome?   |
+| Specify   | Requirements, scenarios | Could you write a test for each?    |
+| Implement | Code and tests          | Does each test map to a scenario?   |
+| Verify    | Verification report     | All requirements covered? All pass? |
 
 ---
 

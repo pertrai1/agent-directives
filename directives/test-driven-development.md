@@ -1,16 +1,36 @@
 # Test Driven Development Directive
 
-**When to load:** Load this directive before writing or modifying any implementation code.
+## When to Use
+
+- New features
+- Bug fixes
+- Refactoring
+- Behavior changes
+
+**Exceptions (ask the user first):**
+
+- Throwaway prototypes
+- Generated code
+- Configuration files
+
+Thinking "skip TDD just this once"? Stop. That's rationalization.
 
 ---
 
 ## ⚠️ MANDATORY: Strict RED/GREEN TDD
 
-You MUST follow strict Test-Driven Development. This is non-negotiable.
+You MUST follow strict Test-Driven Development. This is MANDATORY. Never skip.
+
+**Requirements:**
+
+- One behavior per test
+- Clear descriptive name ("and" in name? Split it)
+- Real code, not mocks (unless truly unavoidable)
+- Name describes behavior, not implementation
 
 ### The Cycle
 
-```
+```text
 ┌─────────────────────────────────────────────────────┐
 │                                                     │
 │  ┌─────────┐      ┌─────────┐      ┌─────────┐     │
@@ -38,7 +58,7 @@ Before writing ANY implementation code:
 2. Run the test — it MUST fail (RED)
 3. Only then write implementation
 
-```
+```text
 ❌ WRONG: Implement first, test later
 ✅ RIGHT: Test fails first, then implement
 ```
@@ -128,7 +148,7 @@ failure.
 
 ### Step-by-Step Process
 
-```
+```text
 1. Pick ONE method/behavior to implement
 
 2. RED Phase:
@@ -143,6 +163,10 @@ failure.
 
 4. REFACTOR Phase (skip only if code is already clean):
    - Clean up implementation
+   - Remove duplication
+   - Improve readability
+   - Extract helpers
+   - Simplify expressions
    - Run all tests: MUST still pass
    - Run type check: MUST still pass
 
@@ -216,6 +240,21 @@ Small commits = easy to review, easy to revert, easy to understand.
 
 ---
 
+## Verification Checklist
+
+Before marking work complete:
+
+- [ ] Every new function/method has a test
+- [ ] Watched each test fail before implementing
+- [ ] Each test failed for expected reason (feature missing, not typo)
+- [ ] Wrote minimal code to pass each test
+- [ ] All tests pass
+- [ ] Output pristine (no errors, warnings)
+- [ ] Tests use real code (mocks only if unavoidable)
+- [ ] Edge cases and errors covered
+
+Can't check all boxes? You skipped TDD. Start over.
+
 ## Quick Reference
 
 | Phase    | Action                                        | Must Be                         |
@@ -228,4 +267,11 @@ Small commits = easy to review, easy to revert, easy to understand.
 
 ---
 
-_This directive is mandatory for all code generation tasks._
+## Final Rule
+
+```text
+Production code → test exists and failed first
+Otherwise → not TDD
+```
+
+No exceptions without the user's explicit permission.
