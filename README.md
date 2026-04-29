@@ -12,7 +12,7 @@ dependencies between files.
 | **Workflow** | 9 directives | Govern how the agent works: TDD, type-first, spec-driven, verification, task framing, exploration |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
-| **Skills** | 3 skills | Test reviewer, spec reviewer, and self-audit for catching issues before merge |
+| **Skills** | 4 skills | Test reviewer, spec reviewer, self-audit, and systematic debugging for catching issues before merge |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 
 ## Quick Start
@@ -112,6 +112,13 @@ single weakest assumption (Jenga Test), logs anomalies that passing tests mask,
 and checks for sunk-cost trajectory across cycles. Each finding is routed: fix
 now (loop back to RED), document for the PR reviewer, or ask the human. Output
 goes in the PR body before the verification section.
+
+### Systematic Debugging (`skills/systematic-debugging/SKILL.md`)
+
+Root-cause debugging process for bugs, failing tests, CI failures, regressions,
+flaky behavior, and unexpected system behavior. Four phases — reproduce and
+observe, localize the fault, form and test one hypothesis, then fix and prove —
+prevent guess-and-check patches and require evidence before code changes.
 
 ## Templates
 
