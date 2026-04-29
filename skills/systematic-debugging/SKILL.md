@@ -45,6 +45,33 @@ workflow instead.
 Complete each phase in order. If a later phase invalidates your understanding,
 return to Phase 1 instead of layering on more fixes.
 
+## Output Handling
+
+The phase output blocks below are **required working notes**, not automatic file
+writes. Handle them explicitly according to this lifecycle:
+
+1. **During the investigation:** keep each phase output in the active session,
+   scratchpad, issue comment draft, or PR comment draft. The agent must be able
+   to refer back to these notes before implementing the fix.
+2. **Before committing a fix:** condense the phase outputs into the final
+   `## Debugging Summary` template in this skill. Do not commit raw scratch notes
+   unless the project has an explicit debugging-log convention.
+3. **When opening or updating a PR for a bug fix:** include the condensed
+   `## Debugging Summary` in the PR body or a PR comment. This is the default
+   durable location for debugging output.
+4. **When no PR exists:** include the condensed `## Debugging Summary` in the
+   issue, ticket, handoff note, or final response to the human.
+5. **When the investigation reveals a recurring mistake:** promote only the
+   reusable lesson to the project's error-memory location. Do not copy the whole
+   phase log.
+6. **When the fix changes a durable convention or architecture decision:** record
+   that decision using the project's decision-log practice.
+
+Do **not** create new files for phase outputs unless the repository already has a
+specific convention for debugging logs. In ordinary use, phase outputs are
+temporary evidence; the durable artifact is the condensed Debugging Summary plus
+any targeted error-memory or decision-log entries.
+
 ### Phase 1: Reproduce and Observe
 
 Goal: make the failure concrete and collect trustworthy evidence.
