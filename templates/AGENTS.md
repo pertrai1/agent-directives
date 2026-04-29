@@ -88,6 +88,7 @@ Load the relevant skill before performing any task it covers.
 | Test Reviewer | Before writing or reviewing any test           | `skills/test-reviewer/SKILL.md`  |
 | Spec Reviewer | Before merging when a written spec exists      | `skills/spec-reviewer/SKILL.md`  |
 | Self-Audit    | After REFACTOR, before VERIFY (every Full Path cycle) | `skills/self-audit/SKILL.md` |
+| Systematic Debugging | Before fixing bugs, failing tests, CI failures, or regressions | `skills/systematic-debugging/SKILL.md` |
 
 ## Task Framing (Mandatory for Non-Trivial Work)
 

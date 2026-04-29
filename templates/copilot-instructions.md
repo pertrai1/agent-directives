@@ -105,6 +105,7 @@ Load the relevant skill for the task type.
 - `skills/test-reviewer/SKILL.md` — Before writing or reviewing any test
 - `skills/spec-reviewer/SKILL.md` — Before merging when a written spec exists
 - `skills/self-audit/SKILL.md` — After REFACTOR, before VERIFY on every Full Path cycle
+- `skills/systematic-debugging/SKILL.md` — Before fixing bugs, failing tests, CI failures, or regressions
 
 ## Decision Log Lookup
 
