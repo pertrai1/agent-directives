@@ -67,6 +67,7 @@ Example:
 ### 5) PR / branch / diff review
 - Route: Review Path
 - Skill selection by changed surface:
+  - baseline PR/branch/diff review -> code-reviewer
   - tests changed -> test-reviewer
   - spec-governed work -> spec-reviewer
   - boundary-sensitive changes -> architecture-boundary-reviewer
