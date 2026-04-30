@@ -25,6 +25,39 @@ dependencies between files.
 6. **Compact handoffs when needed** — use `directives/context-handoff.md` for long tasks, major phase changes, or new-session handoffs
 7. **Customize** — remove directives you don't need, adjust rules to match your team's conventions
 
+## Updating Existing Copies
+
+If you copied these files into another repository, use the sync script to pick up
+new upstream additions without manually hunting for new skills or directives:
+
+```bash
+python3 <(curl -fsSL https://raw.githubusercontent.com/pertrai1/agent-directives/main/scripts/sync-agent-directives.py) \
+  --target .agents \
+  --dry-run
+```
+
+Remove `--dry-run` to add missing files. By default the script is conservative:
+it adds missing files, skips unchanged files, and reports changed local files as
+`CHANGED` without overwriting project customizations. Pass `--force` only when you
+want to replace changed local files with the upstream version.
+
+Common update commands after the script has been synced into `.agents/`:
+
+```bash
+# Add/update only skills, preserving changed local files
+python3 .agents/scripts/sync-agent-directives.py --target .agents --only skills
+
+# Check whether a consuming repo is missing or diverged from upstream
+python3 .agents/scripts/sync-agent-directives.py --target .agents --check
+
+# Sync from a local checkout instead of GitHub, useful while testing changes
+python3 scripts/sync-agent-directives.py --source-dir /path/to/agent-directives --target .agents
+```
+
+The canonical file list lives in `agent-directives-manifest.json`. When this repo
+adds a file such as `skills/code-reviewer/SKILL.md`, the manifest lets consuming
+repositories discover and add it on the next sync.
+
 ## Directives vs Skills
 
 | | Directive | Skill |
@@ -184,6 +217,8 @@ These directives are opinionated defaults. Adjust them to fit your project:
 - **Relax rules for prototyping** — TDD and verification can slow down throwaway work
 - **Add project-specific sections** — the templates have placeholder rows for extra commands
 - **Change thresholds** — token budgets in codebase-navigation, condition counts in error-memory
+- **Sync cautiously** — rerun the sync script to discover new upstream files, then
+  review `CHANGED` files manually before deciding whether to use `--force`
 
 Every directive works standalone. There are no hidden runtime dependencies. Directive
 and skill frontmatter fields provide machine-readable routing hints, but the

@@ -19,6 +19,7 @@ This repository is a portable library of AI coding-agent instructions: reusable 
 | `git status --short` | Baseline check before edits and final cleanliness check. |
 | `git diff --check` | Detect whitespace errors in changed files. |
 | `bash -n evals/run-scenario.sh` | Syntax-check the eval helper script when touched. |
+| `python3 scripts/validate-sync-workflow.py` | Validate the sync manifest and conservative sync behavior when touched. |
 | `evals/run-scenario.sh <scenario-name>` | Manually exercise a directive/skill scenario in a temporary workspace. |
 | `python3 - <<'PY' ... PY` | Use small repo-local validation scripts for Markdown frontmatter, routing metadata, or link/path checks when no dedicated validator exists. |
 
