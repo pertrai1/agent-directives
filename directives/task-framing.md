@@ -21,8 +21,8 @@ It applies when the task is non-trivial, ambiguous, high-risk, or cross-cutting.
 docs-only wording change.
 
 Load this directive when selected by `directives/adaptive-routing.md` before a
-non-trivial task — new features, cross-cutting refactors, ambiguous requests, or
-anything affecting repo-wide conventions.
+non-trivial, ambiguous, high-risk, or cross-cutting task — including new
+features, cross-cutting refactors, and anything affecting repo-wide conventions.
 
 Do not optimize for agreement. Optimize for accuracy, uncertainty clarity, and
 identifying weak assumptions.

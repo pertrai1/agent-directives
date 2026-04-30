@@ -51,9 +51,9 @@ Load `directives/adaptive-routing.md` first. It selects Light Path, Full Path, o
 
 ### Light Path
 
-Use when: ≤2 files changed, no new exports, no type changes, no logic changes.
-Typical: typo fixes, docs-only changes, formatting-only changes, or mechanical
-edits with no behavior change.
+Use for low-risk, non-behavioral changes: typo fixes, docs-only changes,
+formatting-only changes, comments, or mechanical edits with no behavior change.
+Do not use for bug fixes, behavior changes, public API changes, or dependency changes.
 
 | Step | Phase        | Action                         | Verify                                                |
 | ---- | ------------ | ------------------------------ | ----------------------------------------------------- |
@@ -90,20 +90,20 @@ Use for: everything else. No skipping steps.
 
 ## Directives
 
-For detailed guidance on each workflow rule, load `adaptive-routing.md` first,
-then load only the selected directive from the `directives/` directory:
+For detailed guidance on each workflow rule, load `directives/adaptive-routing.md` first,
+then load only the selected directive:
 
-- `adaptive-routing.md` — Selects workflow path and required directives/skills
-- `codebase-navigation.md` — SAFE exploration pattern
-- `architecture-boundaries.md` — Preserve dependency DAG and import rules
-- `exploration-mode.md` — Pre-implementation investigation stance
-- `task-framing.md` — Intake checklist for non-trivial work
-- `specification-driven-development.md` — Write specs before code, verify after
-- `type-driven-development.md` — Types before implementation
-- `test-driven-development.md` — RED/GREEN/REFACTOR cycle
-- `verification.md` — Evidence of correctness before GATES
-- `error-memory.md` — Persistent memory for repeated mistakes
-- `session-decisions.md` — Durable decision capture
+- `directives/adaptive-routing.md` — Selects workflow path and required directives/skills
+- `directives/codebase-navigation.md` — SAFE exploration pattern
+- `directives/architecture-boundaries.md` — Preserve dependency DAG and import rules
+- `directives/exploration-mode.md` — Pre-implementation investigation stance
+- `directives/task-framing.md` — Intake checklist for non-trivial work
+- `directives/specification-driven-development.md` — Write specs before code, verify after
+- `directives/type-driven-development.md` — Types before implementation
+- `directives/test-driven-development.md` — RED/GREEN/REFACTOR cycle
+- `directives/verification.md` — Evidence of correctness before GATES
+- `directives/error-memory.md` — Persistent memory for repeated mistakes
+- `directives/session-decisions.md` — Durable decision capture
 
 ## Skills
 
