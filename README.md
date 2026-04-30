@@ -9,7 +9,7 @@ dependencies between files.
 
 | Category | Files | What they do |
 |----------|-------|--------------|
-| **Workflow** | 8 directives | Govern how the agent works: adaptive routing, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
+| **Workflow** | 9 directives | Govern how the agent works: adaptive routing, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
 | **Skills** | 6 skills | Test reviewer, spec reviewer, self-audit, systematic debugging, architecture boundary reviewer, and codebase health reviewer |
@@ -22,7 +22,8 @@ dependencies between files.
 3. **Pick a template** — `AGENTS.md`, `CLAUDE.md`, or `copilot-instructions.md` depending on your tool
 4. **Fill in the placeholders** — every `<!-- FILL IN: ... -->` is a project-specific value you need to provide
 5. **Route first** — load `directives/adaptive-routing.md` before implementation so the agent selects the right workflow instead of reading everything
-6. **Customize** — remove directives you don't need, adjust rules to match your team's conventions
+6. **Compact handoffs when needed** — use `directives/context-handoff.md` for long tasks, major phase changes, or new-session handoffs
+7. **Customize** — remove directives you don't need, adjust rules to match your team's conventions
 
 ## Directives vs Skills
 
@@ -42,6 +43,15 @@ Runs first and selects the lightest safe workflow based on task intent, risk,
 and touched surfaces. Prevents loading every directive by default while still
 escalating to Full, Debugging, Boundary, Review, Exploration, or Policy paths
 when the task requires stronger evidence.
+
+
+### Context Handoff (`directives/context-handoff.md`)
+
+Compacts task state at directive, phase, PR, or session boundaries so later phases
+can continue from a current handoff instead of accumulated chat history. Defines
+`.agents/handoff.md` as the preferred active handoff file, rewrites it instead of
+appending forever, and treats optional handoff logs as historical rather than
+authoritative.
 
 ### Test-Driven Development (`directives/test-driven-development.md`)
 
@@ -169,9 +179,11 @@ These directives are opinionated defaults. Adjust them to fit your project:
 - **Add project-specific sections** — the templates have placeholder rows for extra commands
 - **Change thresholds** — token budgets in codebase-navigation, condition counts in error-memory
 
-Every directive works standalone. There are no cross-file dependencies. Directive
+Every directive works standalone. There are no hidden runtime dependencies. Directive
 and skill frontmatter fields provide machine-readable routing hints, but the
-markdown body remains the source of truth for human-readable instructions.
+markdown body remains the source of truth for human-readable instructions. Some
+directives intentionally reference optional follow-on phases, such as context
+handoff after long or multi-phase work.
 
 ## Tool Compatibility
 

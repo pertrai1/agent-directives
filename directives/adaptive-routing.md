@@ -1,6 +1,6 @@
 ---
 name: adaptive-routing
-description: Selects the lightest safe workflow path and the relevant directives/skills based on task intent, risk, and touched surfaces.
+description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
 version: 1.0.0
 triggers:
   - every-task
@@ -40,6 +40,7 @@ Before major edits, output a short route decision:
 - Required directives: <paths>
 - Required skills: <paths, if any>
 - Evidence required: <tests/checks/proofs>
+- Handoff required: <yes/no and why>
 - Confirmation needed: <yes/no and why>
 ```
 
@@ -62,7 +63,10 @@ full block.
    Light Path gates.
 5. **Prefer evidence over ritual.** Do not emit boilerplate sections with no
    information. Show the proof that matches the selected path.
-6. **Ask only when necessary.** If classification is uncertain and affects safety
+6. **Compact context at boundaries.** Use `directives/context-handoff.md` when
+   switching major phases, handing work to another session/agent, or continuing
+   long-running work where stale context could drift.
+7. **Ask only when necessary.** If classification is uncertain and affects safety
    or scope, ask one concise clarifying question. Otherwise choose the safer path
    and state the assumption.
 
@@ -86,6 +90,7 @@ Required:
 - make the change
 - run the relevant project quality gate when available
 - provide concise verification
+- skip handoff unless work will continue in another session or the user requests it
 
 Do **not** use Light Path for bug fixes, behavior changes, public API changes,
 dependency changes, boundary changes, or security/data/auth work.
@@ -107,6 +112,7 @@ Required directives:
 - `directives/type-driven-development.md` for typed projects or public contracts
 - `directives/test-driven-development.md` for behavior-changing code
 - `directives/verification.md`
+- `directives/context-handoff.md` when switching major phases or handing off work
 
 Required skills:
 
@@ -131,6 +137,7 @@ Required:
 - add or identify a failing regression test when behavior changed
 - use `directives/test-driven-development.md` for the fix when production behavior changes
 - use `directives/verification.md` for fix proof and no-regression evidence
+- use `directives/context-handoff.md` after reproduction, before a risky fix, or before resuming in a new session
 
 ### Boundary Path
 
@@ -148,6 +155,7 @@ Required:
 - `directives/architecture-boundaries.md`
 - `skills/architecture-boundary-reviewer/SKILL.md` before merge/review
 - boundary proof in `directives/verification.md`
+- compact changed dependency-edge evidence with `directives/context-handoff.md` before boundary review or session transfer
 
 ### Review Path
 
@@ -160,7 +168,7 @@ Required skills depend on changed surfaces:
 - `skills/architecture-boundary-reviewer/SKILL.md` for imports/exports/packages/shared code
 - `skills/codebase-health-reviewer/SKILL.md` for TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes
 
-Do not edit code during Review Path unless the user asks for fixes.
+Do not edit code during Review Path unless the user asks for fixes. Use `directives/context-handoff.md` for compact PR/review handoffs when review findings will be fixed later or transferred to another session.
 
 ### Exploration Path
 
@@ -173,7 +181,7 @@ Required:
 - `directives/codebase-navigation.md` when repo context is needed
 
 Do not edit files during Exploration Path unless the user explicitly switches to
-implementation.
+implementation. Use `directives/context-handoff.md` when exploration produces decisions, constraints, or risks that an implementation session should inherit.
 
 ### Policy Path
 
@@ -191,6 +199,7 @@ Required:
 - proposal before major edits when tradeoffs exist
 - `directives/session-decisions.md` if the accepted change establishes or changes durable policy
 - `directives/verification.md` before PR
+- `directives/context-handoff.md` for multi-phase directive/workflow changes or new-session handoff
 
 ---
 
@@ -206,7 +215,7 @@ Escalate to Full Path or add a specialized path when any of these are true:
 | Imports, shared utilities, packages, folders, services | Boundary Path |
 | Failing CI/test/build/lint/type-check | Debugging Path |
 | Cross-cutting policy or workflow | Policy Path |
-| Large diff or broad refactor | Full Path + Self-Audit + Codebase Health Review |
+| Large diff or broad refactor | Full Path + Self-Audit + Codebase Health Review + Context Handoff |
 
 ---
 
@@ -239,6 +248,7 @@ classification and avoid making the current change worse.
 | Using Light Path for behavior or bug fixes | Skips necessary proof |
 | Treating "quick" as permission to skip safety | Risk depends on impact, not wording |
 | Producing boilerplate verification with no evidence | Ritual is not proof |
+| Appending active handoffs forever | Recreates context drift under a different filename |
 | Ignoring lint/type/test/build feedback as "just tooling" | Tool output is implementation feedback |
 | Adding cross-cutting tooling/config as a drive-by change | Policy changes need explicit review |
 
@@ -255,4 +265,4 @@ classification and avoid making the current change worse.
 | Import/export/package/shared change | Boundary + relevant base path | boundary proof |
 | PR/diff review | Review | structured findings |
 | Investigation/explanation | Exploration | repo evidence, no edits |
-| Directive/workflow/policy change | Policy | proposal/tradeoffs, verification, decision log if durable |
+| Directive/workflow/policy change | Policy | proposal/tradeoffs, verification, handoff for multi-phase work, decision log if durable |

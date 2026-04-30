@@ -1,6 +1,6 @@
 ---
 name: codebase-navigation
-description: Guides progressive codebase orientation with the SAFE pattern before implementation or unfamiliar work.
+description: Guides progressive codebase orientation with the SAFE pattern before implementation, review, or unfamiliar work.
 version: 1.0.0
 triggers:
   - orientation
@@ -12,7 +12,7 @@ routing:
 
 # Codebase Navigation Directive
 
-**When to load:** Load this directive before starting any task in an unfamiliar codebase, or when beginning a new session with multiple tasks ahead.
+**When to load:** Load this directive for unfamiliar codebases or new multi-task sessions unless adaptive routing determines the task is purely conversational, docs-only, or the agent is already oriented.
 
 This directive governs how the agent explores and reads the codebase before
 starting repo-based implementation or review work. Adaptive routing may skip it
