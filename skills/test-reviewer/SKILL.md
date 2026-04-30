@@ -1,6 +1,17 @@
 ---
 name: "test-reviewer"
 description: "Use this skill when writing or reviewing tests. Detects tests that duplicate production logic, use shallow assertions, skip edge cases, or assert on mocks instead of behavior."
+version: 1.0.0
+routing:
+  triggers:
+  - tests
+  - test-review
+  - tdd
+  - coverage
+  - assertions
+  paths:
+    - full-path
+    - review-path
 ---
 
 # Test Reviewer

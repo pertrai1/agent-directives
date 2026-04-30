@@ -1,6 +1,18 @@
 ---
 name: "architecture-boundary-reviewer"
 description: "Use this skill when reviewing whether code changes preserve architectural boundaries, dependency direction, public APIs, and package/service DAG constraints."
+version: 1.0.0
+routing:
+  triggers:
+  - imports
+  - exports
+  - packages
+  - shared-code
+  - service-boundaries
+  - architecture-review
+  paths:
+    - boundary-path
+    - review-path
 ---
 
 # Architecture Boundary Reviewer

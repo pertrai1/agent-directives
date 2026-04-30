@@ -28,12 +28,15 @@ Delete this comment block when done.
 
 **NEVER commit directly to `main`.** Work on a feature branch. No exceptions.
 
-**All code changes follow one of these sequences:**
+**Load `directives/adaptive-routing.md` first.** It selects the lightest safe workflow and the required directives/skills for the task. Do not load every directive by default.
+
+**Code changes follow one of these routed sequences:**
 
 ### Light Path
 
 Use when: ≤2 files changed, no new exports, no type changes, no logic changes.
-Typical: typo fixes, one-line bug fixes, docs-only changes.
+Typical: typo fixes, docs-only changes, formatting-only changes, or mechanical
+edits with no behavior change.
 
 | Step | Phase        | Action                         | Verify                                                |
 | ---- | ------------ | ------------------------------ | ----------------------------------------------------- |
@@ -66,8 +69,9 @@ Steps 2–6 repeat for each behavior. Do not batch.
 
 ## Directives
 
-Load the relevant directive from the `directives/` directory before each task.
+Load `directives/adaptive-routing.md` first, then load only the directives it selects for the current task.
 
+- **Adaptive Routing** — Selects workflow path and required directives/skills (`directives/adaptive-routing.md`)
 - **Codebase Navigation** — SAFE exploration pattern before implementation (`directives/codebase-navigation.md`)
 - **Architecture Boundaries** — Preserve dependency DAG and import rules (`directives/architecture-boundaries.md`)
 - **Exploration Mode** — Pre-implementation investigation and thinking stance (`directives/exploration-mode.md`)
@@ -81,7 +85,7 @@ Load the relevant directive from the `directives/` directory before each task.
 
 ## Skills
 
-Load the relevant skill for the task type.
+Load the relevant skill selected by adaptive routing for the task type.
 
 - **Test Reviewer** — Before writing or reviewing any test (`skills/test-reviewer/SKILL.md`)
 - **Spec Reviewer** — Before merging when a written spec exists (`skills/spec-reviewer/SKILL.md`)

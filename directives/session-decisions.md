@@ -1,3 +1,16 @@
+---
+name: session-decisions
+description: Captures durable decisions for repo policy, architecture, workflow, and cross-cutting conventions.
+version: 1.0.0
+triggers:
+  - policy-change
+  - architecture-decision
+  - workflow-change
+  - cross-cutting-convention
+routing:
+  load: conditional
+---
+
 # Session Decisions Directive
 
 **When to load:** Load this directive when making changes that affect repo policy, architecture, contributor workflow, or cross-cutting conventions.

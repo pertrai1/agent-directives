@@ -9,7 +9,7 @@ dependencies between files.
 
 | Category | Files | What they do |
 |----------|-------|--------------|
-| **Workflow** | 7 directives | Govern how the agent works: TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
+| **Workflow** | 8 directives | Govern how the agent works: adaptive routing, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
 | **Skills** | 6 skills | Test reviewer, spec reviewer, self-audit, systematic debugging, architecture boundary reviewer, and codebase health reviewer |
@@ -21,7 +21,8 @@ dependencies between files.
 2. **Copy skills** alongside them — e.g. `.agents/skills/`
 3. **Pick a template** — `AGENTS.md`, `CLAUDE.md`, or `copilot-instructions.md` depending on your tool
 4. **Fill in the placeholders** — every `<!-- FILL IN: ... -->` is a project-specific value you need to provide
-5. **Customize** — remove directives you don't need, adjust rules to match your team's conventions
+5. **Route first** — load `directives/adaptive-routing.md` before implementation so the agent selects the right workflow instead of reading everything
+6. **Customize** — remove directives you don't need, adjust rules to match your team's conventions
 
 ## Directives vs Skills
 
@@ -35,11 +36,19 @@ dependencies between files.
 
 ## Directives
 
+### Adaptive Routing (`directives/adaptive-routing.md`)
+
+Runs first and selects the lightest safe workflow based on task intent, risk,
+and touched surfaces. Prevents loading every directive by default while still
+escalating to Full, Debugging, Boundary, Review, Exploration, or Policy paths
+when the task requires stronger evidence.
+
 ### Test-Driven Development (`directives/test-driven-development.md`)
 
-Strict RED/GREEN/REFACTOR cycle for all code changes. Defines 7 TDD rules, a
-forbidden-patterns table, and makes TDD mandatory for fixes and review changes
-too — not just new features.
+Strict RED/GREEN/REFACTOR cycle for behavior-changing code. Defines TDD rules, a
+forbidden-patterns table, and makes TDD the default for fixes and review changes
+that affect runtime behavior — while allowing adaptive routing to choose a lighter
+path for purely mechanical or non-behavioral edits.
 
 ### Type-First Development (`directives/type-driven-development.md`)
 
@@ -160,7 +169,9 @@ These directives are opinionated defaults. Adjust them to fit your project:
 - **Add project-specific sections** — the templates have placeholder rows for extra commands
 - **Change thresholds** — token budgets in codebase-navigation, condition counts in error-memory
 
-Every directive works standalone. There are no cross-file dependencies.
+Every directive works standalone. There are no cross-file dependencies. Directive
+and skill frontmatter fields provide machine-readable routing hints, but the
+markdown body remains the source of truth for human-readable instructions.
 
 ## Tool Compatibility
 

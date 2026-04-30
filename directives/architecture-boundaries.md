@@ -1,3 +1,18 @@
+---
+name: architecture-boundaries
+description: Preserves architecture DAG boundaries for imports, exports, packages, services, shared code, and dependency direction.
+version: 1.0.0
+triggers:
+  - imports
+  - exports
+  - packages
+  - architecture
+  - shared-code
+  - dependency-direction
+routing:
+  load: conditional
+---
+
 # Architecture Boundaries Directive
 
 **When to load:** Load this directive before modifying imports, exports, module
@@ -31,7 +46,8 @@ Forbidden by default unless the project explicitly allows it:
 If the project has explicit boundary rules, those override these defaults. If the
 project has no explicit rules, infer the likely DAG from directory names,
 package boundaries, and existing import patterns; document the inference before
-changing code.
+changing code. If the inferred boundary materially changes the implementation
+approach, ask the human or propose the inferred rule before coding.
 
 ---
 

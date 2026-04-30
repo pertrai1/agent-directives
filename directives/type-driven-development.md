@@ -1,3 +1,16 @@
+---
+name: type-driven-development
+description: Requires type and contract definition before implementation in typed projects or public API work.
+version: 1.0.0
+triggers:
+  - types
+  - public-api
+  - typed-project
+  - service-boundary
+routing:
+  load: conditional
+---
+
 # Type-First Development Directive
 
 **When to load:** Load this directive before defining types for a new feature, module, or service boundary.

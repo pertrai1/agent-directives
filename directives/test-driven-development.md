@@ -1,25 +1,42 @@
+---
+name: test-driven-development
+description: Defines RED/GREEN/REFACTOR expectations for behavior-changing implementation work and bug fixes.
+version: 1.0.0
+triggers:
+  - behavior-change
+  - new-feature
+  - bug-fix
+  - refactor-with-behavior
+routing:
+  load: conditional
+---
+
 # Test Driven Development Directive
 
 ## When to Use
 
+Use TDD by default for behavior-changing code:
+
 - New features
 - Bug fixes
-- Refactoring
-- Behavior changes
+- Refactors that intentionally preserve or alter behavior
+- Edge-case patches
+- Review changes that affect runtime behavior
 
-**Exceptions (ask the user first):**
+TDD is not required for purely mechanical or non-behavioral work selected by
+`directives/adaptive-routing.md`, such as docs-only edits, formatting-only
+changes, generated files, metadata-only updates, or mechanical renames with no
+behavior/API change. Those tasks still need the relevant quality gates.
 
-- Throwaway prototypes
-- Generated code
-- Configuration files
-
-Thinking "skip TDD just this once"? Stop. That's rationalization.
+If you are unsure whether a change affects behavior, choose TDD or ask one
+concise clarifying question.
 
 ---
 
-## ⚠️ MANDATORY: Strict RED/GREEN TDD
+## ⚠️ DEFAULT: Strict RED/GREEN TDD for Behavior Changes
 
-You MUST follow strict Test-Driven Development. This is MANDATORY. Never skip.
+For behavior-changing work, follow strict Test-Driven Development. Do not skip
+RED because the change seems obvious.
 
 **Requirements:**
 
@@ -52,7 +69,7 @@ You MUST follow strict Test-Driven Development. This is MANDATORY. Never skip.
 
 ### Rule 1: No Implementation Without a Failing Test
 
-Before writing ANY implementation code:
+Before writing behavior-changing implementation code:
 
 1. Write a test that describes ONE behavior
 2. Run the test — it MUST fail (RED)
@@ -244,7 +261,7 @@ Small commits = easy to review, easy to revert, easy to understand.
 
 Before marking work complete:
 
-- [ ] Every new function/method has a test
+- [ ] Every behavior-changing function/method has a test
 - [ ] Watched each test fail before implementing
 - [ ] Each test failed for expected reason (feature missing, not typo)
 - [ ] Wrote minimal code to pass each test
@@ -253,7 +270,7 @@ Before marking work complete:
 - [ ] Tests use real code (mocks only if unavoidable)
 - [ ] Edge cases and errors covered
 
-Can't check all boxes? You skipped TDD. Start over.
+Can't check all boxes for behavior-changing work? You skipped TDD. Start over.
 
 ## Quick Reference
 
@@ -270,8 +287,8 @@ Can't check all boxes? You skipped TDD. Start over.
 ## Final Rule
 
 ```text
-Production code → test exists and failed first
+Behavior-changing production code → test exists and failed first
 Otherwise → not TDD
 ```
 
-No exceptions without the user's explicit permission.
+No exceptions for behavior-changing work without the user's explicit permission.

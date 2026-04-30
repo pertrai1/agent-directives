@@ -1,6 +1,15 @@
 ---
 name: "self-audit"
 description: "Triage your own weakest assumptions and anomalies after GREEN/REFACTOR, before verification. Use after TDD cycle completes or before opening a PR."
+version: 1.0.0
+routing:
+  triggers:
+  - after-refactor
+  - before-verification
+  - full-path
+  - pre-pr
+  paths:
+    - full-path
 ---
 
 # Self-Audit
@@ -110,7 +119,8 @@ Each destination fires on a specific condition:
 
 | When | Route to | What |
 | --- | --- | --- |
-| **Always**, when opening a PR | `## Self-Audit` in the PR body, **before** `## Verification` | Full Jenga + Anomaly Register + Sunk Cost (if triggered). Reviewer sees uncertainty before proof. |
+| **Always**, when opening a PR and self-audit produced routed findings | `## Self-Audit` in the PR body, **before** `## Verification` | Full Jenga + Anomaly Register + Sunk Cost (if triggered). Reviewer sees uncertainty before proof. |
+| **When** self-audit has no routed findings | One-line PR note | `Self-audit completed; no routed findings.` Avoid boilerplate sections with no information. |
 | **Always**, when running verification after self-audit | Verification focus areas (same session) | Verification's functional proof must target any 📋 documented Jenga assumption. |
 | **When** an anomaly matches one you've seen in a previous PR's self-audit | `docs/ERRORS.md` (error-memory format) | Recurrence across PRs promotes an anomaly from one-time observation to systemic pattern. Check by grepping recent merged PRs for the same warning text. |
 | **When** the human decides to change approach after a Sunk Cost Signal | `docs/decisions/` (session-decisions format) | Captures why the approach changed. If the human says "continue," no log needed — the signal is already in the PR body. |

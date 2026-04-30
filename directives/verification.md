@@ -1,3 +1,16 @@
+---
+name: verification
+description: Requires structured evidence of correctness before quality gates and pull requests.
+version: 1.0.0
+triggers:
+  - verification
+  - pre-pr
+  - quality-gates
+  - implementation-complete
+routing:
+  load: conditional
+---
+
 # Verification Protocol
 
 **When to load:** Load this directive after completing the REFACTOR phase and before running final quality gates (GATES).
@@ -186,6 +199,22 @@ Do not open the PR until verification is complete.
 
 For bug fixes and docs/chore changes, include a shorter verification
 block in the same PR section.
+
+---
+
+## Quality Gate Feedback
+
+Run the project-native gates selected by `directives/adaptive-routing.md`.
+Treat test, lint, type-check, build, static-analysis, and review-bot output as
+implementation feedback, not ceremony.
+
+When a linter or static-analysis rule explains an issue, fix the underlying
+pattern. Do not suppress the rule, weaken configuration, or make superficial
+rewrites unless the project explicitly allows that exception and the reason is
+documented.
+
+If a finding is pre-existing or outside the task scope, state that classification
+and show that the current change did not make it worse.
 
 ---
 

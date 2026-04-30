@@ -1,6 +1,18 @@
 ---
 name: "codebase-health-reviewer"
 description: "Use this skill when reviewing TypeScript/JavaScript codebase health with Fallow: dead code, duplication, complexity, circular dependencies, and architecture drift."
+version: 1.0.0
+routing:
+  triggers:
+  - typescript
+  - javascript
+  - refactor
+  - cleanup
+  - fallow
+  - codebase-health
+  paths:
+    - full-path
+    - review-path
 ---
 
 # Codebase Health Reviewer

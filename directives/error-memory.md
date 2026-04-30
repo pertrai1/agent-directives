@@ -1,3 +1,15 @@
+---
+name: error-memory
+description: Captures repeated mistakes in durable error memory only when recurrence and prevention criteria are met.
+version: 1.0.0
+triggers:
+  - repeated-mistakes
+  - error-memory
+  - post-task-learning
+routing:
+  load: conditional
+---
+
 # Error Memory Directive
 
 **When to load:** Load this directive when setting up a new project or when writing to the error memory file for the first time in a session.
