@@ -111,6 +111,7 @@ then load only the selected directive:
 
 Load the relevant skill selected by adaptive routing for the task type.
 
+- `skills/code-reviewer/SKILL.md` — Before reviewing PRs, branches, diffs, or local changes
 - `skills/test-reviewer/SKILL.md` — Before writing or reviewing any test
 - `skills/spec-reviewer/SKILL.md` — Before merging when a written spec exists
 - `skills/self-audit/SKILL.md` — After REFACTOR, before VERIFY on every Full Path cycle

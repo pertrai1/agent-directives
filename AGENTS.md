@@ -98,6 +98,7 @@ Load the relevant skill selected by adaptive routing before performing any task 
 
 | Skill | When | File |
 | ----- | ---- | ---- |
+| Code Reviewer | Before reviewing pull requests, branches, diffs, or local changes for merge risk | `skills/code-reviewer/SKILL.md` |
 | Test Reviewer | Before writing or reviewing eval scenarios, tests, or test-like checklists | `skills/test-reviewer/SKILL.md` |
 | Spec Reviewer | Before merging when a written spec or requirements document governs the change | `skills/spec-reviewer/SKILL.md` |
 | Self-Audit | After REFACTOR, before VERIFY for Full Path work | `skills/self-audit/SKILL.md` |

@@ -1,11 +1,22 @@
 ---
 name: "code-reviewer"
-description: "Review pull requests for bugs, security issues, and code quality"
+description: "Use this skill when reviewing pull requests, branches, diffs, or local changes for correctness, security, maintainability, and merge risk."
+version: 1.0.0
+routing:
+  triggers:
+  - pull-request
+  - pr-review
+  - code-review
+  - branch-review
+  - diff-review
+  - merge-risk
+  paths:
+    - review-path
 ---
 
 # Code Review Guidelines
 
-When reviewing a pull request:
+When reviewing a pull request, branch, diff, or local change:
 
 ## What to Check
 

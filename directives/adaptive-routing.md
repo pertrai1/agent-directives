@@ -170,8 +170,9 @@ Required:
 
 Use when the user asks to review a PR, branch, diff, or local changes.
 
-Required skills depend on changed surfaces:
+Required skills:
 
+- `skills/code-reviewer/SKILL.md` for baseline PR/branch/diff/local-change review
 - `skills/test-reviewer/SKILL.md` for tests
 - `skills/spec-reviewer/SKILL.md` for spec-backed work
 - `skills/architecture-boundary-reviewer/SKILL.md` for imports/exports/packages/shared code

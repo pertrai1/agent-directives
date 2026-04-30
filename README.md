@@ -12,7 +12,7 @@ dependencies between files.
 | **Workflow** | 9 directives | Govern how the agent works: adaptive routing, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
-| **Skills** | 6 skills | Test reviewer, spec reviewer, self-audit, systematic debugging, architecture boundary reviewer, and codebase health reviewer |
+| **Skills** | 7 skills | Code reviewer, test reviewer, spec reviewer, self-audit, systematic debugging, architecture boundary reviewer, and codebase health reviewer |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 
 ## Quick Start
@@ -118,6 +118,12 @@ frontmatter schema for retrieval, progressive-disclosure workflow, and five
 required sections (Title, Context, Decision, Rejected Alternatives, Consequences).
 
 ## Skills
+
+### Code Reviewer (`skills/code-reviewer/SKILL.md`)
+
+Baseline review skill for pull requests, branches, diffs, and local changes.
+Checks correctness, security, performance, maintainability, tests, and merge risk
+without inventing findings when the change is clean.
 
 ### Test Reviewer (`skills/test-reviewer/SKILL.md`)
 
