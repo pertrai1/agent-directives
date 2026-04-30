@@ -117,6 +117,23 @@ Only now read the specific files you'll modify or that your changes depend on.
 - Duplicating logic that already exists elsewhere
 - Missing required changes to consumer code
 
+### Optional tool-assisted architecture check
+
+If the task may change imports, exports, packages, services, shared code, or
+folder boundaries, load `directives/architecture-boundaries.md` before Execute.
+
+For TypeScript/JavaScript projects with Fallow available, use targeted checks
+when they answer boundary questions faster than manual search:
+
+```bash
+npx fallow list --boundaries
+npx fallow dead-code --boundary-violations
+npx fallow dead-code --circular-deps
+```
+
+If GitNexus is available, use graph context to identify dependents, clusters,
+services, and execution flows before making cross-cutting changes.
+
 ---
 
 ## E — Execute

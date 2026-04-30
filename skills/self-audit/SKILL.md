@@ -67,6 +67,30 @@ A suspiciously empty register is itself a signal.
 
 ---
 
+## Diff and Boundary Reality Check (required when code changed)
+
+Before finalizing self-audit, inspect the actual diff. If `difit` is available,
+prefer it for a local GitHub-style review:
+
+```bash
+npx difit .
+npx difit staged
+```
+
+Use the diff to look for:
+
+- unrelated edits that expanded beyond the task
+- imports or exports that cross an architectural boundary
+- missing tests adjacent to changed behavior
+- public API changes not reflected in docs or verification
+- risky deletions, broad rewrites, or new shared utilities
+
+If Fallow is available in a TypeScript/JavaScript project, use relevant summary
+checks as self-audit evidence for architecture drift, dead code, duplication, and
+cycles. Route any boundary uncertainty into the Jenga Test.
+
+---
+
 ## Sunk Cost Check (required after 3+ TDD cycles in a session)
 
 Assess trajectory across cycles. If two or more of these are true, surface it:

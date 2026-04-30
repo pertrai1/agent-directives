@@ -68,7 +68,40 @@ _Example (adapt to your project's structure):_
 [x] Error messages follow project conventions
 ```
 
-#### 4. Documentation Proof (if applicable)
+#### 4. Architecture Boundary Proof (if applicable)
+
+Required when the change touches imports, exports, package boundaries, shared
+code, service boundaries, or folder/layer structure. Show:
+
+- Modified zones/layers/packages
+- Changed dependency edges
+- Evidence that no upward, sideways, cyclic, or public-API-bypassing import was introduced
+- Tool evidence when available, e.g. `npx fallow dead-code --boundary-violations`
+
+_Example:_
+
+```
+[x] `feature/auth` imports only `shared` and public `domain` APIs
+[x] No sibling feature internal imports
+[x] `npx fallow dead-code --boundary-violations` reports 0 violations
+```
+
+#### 5. Codebase Health Proof (if applicable)
+
+For TypeScript/JavaScript refactors, cleanup, shared utilities, or AI-generated
+changes where Fallow is available, include concise health evidence:
+
+```bash
+npx fallow --summary
+npx fallow dupes
+npx fallow health
+```
+
+Summarize only relevant findings: new dead code, duplication, complexity, cycles,
+or boundary regressions. Separate pre-existing debt from issues introduced by
+the change.
+
+#### 6. Documentation Proof (if applicable)
 
 - [ ] API documentation updated
 - [ ] README or usage docs updated (if public-facing change)
@@ -135,6 +168,11 @@ The summary should follow this structure:
 [x] Public types match call sites
 [x] Error messages follow project conventions
 
+### Architecture Boundaries
+
+[x] Modified files stay within allowed dependency direction
+[x] No new circular dependencies or public API bypasses
+
 ### Documentation
 
 [x] JSDoc updated on createUser
@@ -156,6 +194,7 @@ block in the same PR section.
 | "Tests pass, ship it"                        | Passing tests ≠ production-ready                      |
 | Skipping functional proof                    | Must show both expected behavior AND no false positive |
 | Skipping integration proof                   | Misconfigured code passes tests but fails in production |
+| Skipping boundary proof for dependency changes | Passing tests do not prove architectural validity       |
 | Claiming verification without showing output | Evidence, not claims                                  |
 | Running GATES before verification            | Verification catches issues GATES misses              |
 

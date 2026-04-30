@@ -51,6 +51,7 @@ No skipping steps:
 | Step | Phase        | Action                                   | Verify                                                                       |
 | ---- | ------------ | ---------------------------------------- | ---------------------------------------------------------------------------- |
 | -1   | **ORIENT**   | **Navigate codebase safely**             | See codebase-navigation directive (SAFE pattern)                              |
+| -0.5 | **BOUNDARIES** | **Classify touched files and dependency edges** | See architecture-boundaries directive when imports/exports/packages/shared code may change |
 | 0    | **BASELINE** | **Verify starting state is clean**       | <!-- FILL IN: baseline verification command --> all pass                      |
 | 1    | TYPES        | Define types first                       | Type-check passes                                                            |
 | 2    | RED          | Write ONE failing test                   | Test fails                                                                   |
@@ -68,6 +69,7 @@ Steps 2–6 repeat for each behavior. Do not batch.
 Load the relevant directive from the `directives/` directory before each task.
 
 - **Codebase Navigation** — SAFE exploration pattern before implementation (`directives/codebase-navigation.md`)
+- **Architecture Boundaries** — Preserve dependency DAG and import rules (`directives/architecture-boundaries.md`)
 - **Exploration Mode** — Pre-implementation investigation and thinking stance (`directives/exploration-mode.md`)
 - **Task Framing** — Intake checklist for non-trivial work (`directives/task-framing.md`)
 - **Specification-Driven Development** — Write specs before code, implement against specs, verify after (`directives/specification-driven-development.md`)
@@ -85,6 +87,8 @@ Load the relevant skill for the task type.
 - **Spec Reviewer** — Before merging when a written spec exists (`skills/spec-reviewer/SKILL.md`)
 - **Self-Audit** — After REFACTOR, before VERIFY on every Full Path cycle (`skills/self-audit/SKILL.md`)
 - **Systematic Debugging** — Before fixing bugs, failing tests, CI failures, or regressions (`skills/systematic-debugging/SKILL.md`)
+- **Architecture Boundary Reviewer** — Before merging changes to imports, exports, packages, services, shared code, or folder boundaries (`skills/architecture-boundary-reviewer/SKILL.md`)
+- **Codebase Health Reviewer** — Before merging TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes (`skills/codebase-health-reviewer/SKILL.md`)
 
 ## Task Framing (Mandatory for Non-Trivial Work)
 

@@ -9,10 +9,10 @@ dependencies between files.
 
 | Category | Files | What they do |
 |----------|-------|--------------|
-| **Workflow** | 9 directives | Govern how the agent works: TDD, type-first, spec-driven, verification, task framing, exploration |
+| **Workflow** | 10 directives | Govern how the agent works: TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
-| **Skills** | 4 skills | Test reviewer, spec reviewer, self-audit, and systematic debugging for catching issues before merge |
+| **Skills** | 6 skills | Test reviewer, spec reviewer, self-audit, systematic debugging, architecture boundary reviewer, and codebase health reviewer |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 
 ## Quick Start
@@ -55,9 +55,17 @@ proposal must precede implementation.
 
 ### Codebase Navigation (`directives/codebase-navigation.md`)
 
-SAFE exploration pattern (Survey, Assess, Focus, Execute) with token budgets.
+SAFE exploration pattern (Survey, Anchor, Filter, Execute) with token budgets.
 Five context-discipline rules that prevent the agent from reading too much
 irrelevant code before starting work.
+
+### Architecture Boundaries (`directives/architecture-boundaries.md`)
+
+Preserve the project's directed architecture graph before changing imports,
+exports, folders, packages, services, or shared code. Requires agents to classify
+touched files into zones, identify changed dependency edges, and verify no upward,
+sideways, cyclic, or public-API-bypassing dependency was introduced. Includes
+optional Fallow and GitNexus checks for tool-assisted boundary evidence.
 
 ### Exploration Mode (`directives/exploration-mode.md`)
 
@@ -120,11 +128,25 @@ flaky behavior, and unexpected system behavior. Four phases — reproduce and
 observe, localize the fault, form and test one hypothesis, then fix and prove —
 prevent guess-and-check patches and require evidence before code changes.
 
+### Architecture Boundary Reviewer (`skills/architecture-boundary-reviewer/SKILL.md`)
+
+Reviews whether a change preserves architectural zones, dependency direction,
+public APIs, package/service boundaries, and DAG constraints. Catches illegal
+imports, public API bypasses, cycles, and shared-code pollution that tests may
+not reveal.
+
+### Codebase Health Reviewer (`skills/codebase-health-reviewer/SKILL.md`)
+
+Interprets Fallow and fallback static-analysis output for TypeScript/JavaScript
+codebase health: dead code, duplication, complexity, circular dependencies,
+boundary violations, and architecture drift. Separates new regressions from
+pre-existing cleanup follow-ups.
+
 ## Templates
 
 | Template | For | Key difference |
 |----------|-----|----------------|
-| `templates/AGENTS.md` | Codex / general agents | Full directive table with file paths, skills table |
+| `templates/AGENTS.md` | Codex / general agents | Full directive table with file paths, boundary step, skills table |
 | `templates/CLAUDE.md` | Claude Code | Directives by name with one-line descriptions |
 | `templates/copilot-instructions.md` | GitHub Copilot | Condensed — key rules inlined, points to directives/ for details |
 | `templates/decision-log.md` | Any | Blank template matching the session-decisions frontmatter schema |
