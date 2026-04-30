@@ -47,7 +47,7 @@ one commit. Each behavior gets its own test-commit + implementation-commit pair.
 
 ## Mandatory Workflow
 
-Load `directives/adaptive-routing.md` first. It selects Light Path, Full Path, or a specialized path based on task intent and risk.
+Load `directives/adaptive-routing.md` first. It selects Light Path, Full Path, or a specialized path based on task intent and risk, and decides whether `directives/context-handoff.md` is needed.
 
 ### Light Path
 
@@ -78,6 +78,7 @@ Use for: everything else. No skipping steps.
 | 4.5  | **SELF-AUDIT** | **Triage weakest assumptions and anomalies** | See `skills/self-audit/SKILL.md` — route: 🔁 fix → step 2, 📋 document, or 🧑 ask human |
 | 4.75 | **VERIFY**   | **Produce verification summary**         | See verification directive — target 📋 documented Jenga entries |
 | 5    | GATES        | Run quality gates                        | <!-- FILL IN: gates commands -->                             |
+| 5.5  | **HANDOFF**  | **Compact current task state when routed** | See `directives/context-handoff.md` for phase/session handoff |
 | 6    | COMMIT       | Atomic commit                            | One behavior per commit                                      |
 
 ## Forbidden
@@ -103,6 +104,7 @@ then load only the selected directive:
 - `directives/test-driven-development.md` — RED/GREEN/REFACTOR cycle
 - `directives/verification.md` — Evidence of correctness before GATES
 - `directives/error-memory.md` — Persistent memory for repeated mistakes
+- `directives/context-handoff.md` — Compact current task state at phase/session boundaries
 - `directives/session-decisions.md` — Durable decision capture
 
 ## Skills

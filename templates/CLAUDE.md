@@ -28,15 +28,15 @@ Delete this comment block when done.
 
 **NEVER commit directly to `main`.** Work on a feature branch. No exceptions.
 
-**Load `directives/adaptive-routing.md` first.** It selects the lightest safe workflow and the required directives/skills for the task. Do not load every directive by default.
+**Load `directives/adaptive-routing.md` first.** It selects the lightest safe workflow, required directives/skills, and whether `directives/context-handoff.md` is needed. Do not load every directive by default.
 
 **Code changes follow one of these routed sequences:**
 
 ### Light Path
 
-Use when: ≤2 files changed, no new exports, no type changes, no logic changes.
-Typical: typo fixes, docs-only changes, formatting-only changes, or mechanical
-edits with no behavior change.
+Use for low-risk, non-behavioral changes: typo fixes, docs-only changes,
+formatting-only changes, comments, or mechanical edits with no behavior change.
+Do not use for bug fixes, behavior changes, public API changes, or dependency changes.
 
 | Step | Phase        | Action                         | Verify                                                |
 | ---- | ------------ | ------------------------------ | ----------------------------------------------------- |
@@ -47,7 +47,7 @@ edits with no behavior change.
 
 ### Full Path
 
-Use for: everything else — new features, refactors, multi-file changes, type changes.
+Use for: everything else — new features, bug fixes, refactors, behavior changes, public API changes, dependency changes, or type changes.
 
 No skipping steps:
 
@@ -63,6 +63,7 @@ No skipping steps:
 | 4.5  | **SELF-AUDIT** | **Triage weakest assumptions and anomalies** | See `skills/self-audit/SKILL.md` — route findings: 🔁 fix → step 2, 📋 document, or 🧑 ask human |
 | 4.75 | **VERIFY**   | **Produce verification summary**         | See verification directive — target 📋 documented Jenga entries               |
 | 5    | GATES        | Run quality gates                        | <!-- FILL IN: gates commands -->                                             |
+| 5.5  | **HANDOFF**  | **Compact current task state when routed** | See `directives/context-handoff.md` for phase/session handoff |
 | 6    | COMMIT       | Atomic commit                            | One behavior per commit                                                      |
 
 Steps 2–6 repeat for each behavior. Do not batch.
@@ -78,9 +79,10 @@ Load `directives/adaptive-routing.md` first, then load only the directives it se
 - **Task Framing** — Intake checklist for non-trivial work (`directives/task-framing.md`)
 - **Specification-Driven Development** — Write specs before code, implement against specs, verify after (`directives/specification-driven-development.md`)
 - **Type-First Development** — Define types before writing implementation code (`directives/type-driven-development.md`)
-- **Test-Driven Development** — Strict RED/GREEN/REFACTOR cycle for all code changes (`directives/test-driven-development.md`)
+- **Test-Driven Development** — Strict RED/GREEN/REFACTOR cycle for behavior-changing code (`directives/test-driven-development.md`)
 - **Verification Protocol** — Structured evidence of correctness before GATES (`directives/verification.md`)
 - **Error Memory** — Persistent memory for repeated mistakes (`directives/error-memory.md`)
+- **Context Handoff** — Compact current task state at phase/session boundaries (`directives/context-handoff.md`)
 - **Session Decisions** — Durable decision capture at task completion (`directives/session-decisions.md`)
 
 ## Skills
