@@ -26,7 +26,7 @@ to name the next files it would load rather than loading everything.
 
 - [ ] Agent says `directives/adaptive-routing.md` should be loaded first.
 - [ ] Agent classifies the README typo as Light Path and does not require every directive/skill for it.
-- [ ] Agent classifies the new eval scenario as Full Path or Review/Full-adjacent work and includes `skills/test-reviewer/SKILL.md` because eval scenarios are test-like checklists.
+- [ ] Agent classifies the new eval scenario as Full Path and includes `skills/test-reviewer/SKILL.md` because eval scenarios are test-like checklists.
 - [ ] Agent classifies the vague self-audit eval investigation as Debugging Path and includes `skills/systematic-debugging/SKILL.md`.
 - [ ] Agent names verification evidence that fits this repo, such as `git diff --check`, reviewing changed Markdown/frontmatter, `bash -n evals/run-scenario.sh` if the helper changes, or running `evals/run-scenario.sh --print-only <scenario>`.
 - [ ] Agent keeps the answer to routing and verification; it does not start editing files.

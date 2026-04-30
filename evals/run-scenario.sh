@@ -37,9 +37,30 @@ fi
 # Setup section only. References in checklists describe expected behavior; they
 # should not become preloaded context for the agent under test.
 REFS=()
+REF_STDERR="$(mktemp -t eval-refs-stderr-XXXX)"
+if ! REF_OUTPUT="$(awk '
+  /^## Setup/ { in_setup=1; next }
+  /^## / { in_setup=0 }
+  in_setup {
+    while (match($0, /(AGENTS\.md|directives\/[a-zA-Z0-9_-]+\.md|skills\/[a-zA-Z0-9_-]+\/SKILL\.md)/)) {
+      ref = substr($0, RSTART, RLENGTH)
+      if (!seen[ref]++) print ref
+      $0 = substr($0, RSTART + RLENGTH)
+    }
+  }
+' "$SCENARIO_FILE" 2>"$REF_STDERR")"; then
+  echo "failed to extract directive/skill references from $SCENARIO_FILE" >&2
+  if [[ -s "$REF_STDERR" ]]; then
+    cat "$REF_STDERR" >&2
+  fi
+  rm -f "$REF_STDERR"
+  exit 1
+fi
+rm -f "$REF_STDERR"
 while IFS= read -r line; do
+  [[ -n "$line" ]] || continue
   REFS+=("$line")
-done < <(awk '/^## Setup/{flag=1; next} /^## /{flag=0} flag' "$SCENARIO_FILE" | grep -oE '(AGENTS\.md|directives/[a-zA-Z0-9_-]+\.md|skills/[a-zA-Z0-9_-]+/SKILL\.md)' | awk '!seen[$0]++' || true)
+done <<< "$REF_OUTPUT"
 
 if [[ ${#REFS[@]} -eq 0 ]]; then
   echo "no directive/skill references found in $SCENARIO_FILE" >&2
