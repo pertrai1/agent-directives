@@ -1,3 +1,16 @@
+---
+name: exploration-mode
+description: Supports investigation and option discovery before committing to an implementation approach.
+version: 1.0.0
+triggers:
+  - explore
+  - investigate
+  - compare-options
+  - uncertain-approach
+routing:
+  load: conditional
+---
+
 # Exploration Mode Directive
 
 **When to load:** Load this directive when the user wants to investigate, think through, or explore a problem before committing to an implementation approach. Also load when the user says "explore," "investigate," "think about," "what if," or "I'm not sure how to approach."

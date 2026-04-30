@@ -1,6 +1,16 @@
 ---
 name: "spec-reviewer"
 description: "Use this skill when reviewing implementation against a written specification. Detects missing requirements, spec-code divergence, incomplete scenarios, and design drift."
+version: 1.0.0
+routing:
+  triggers:
+  - written-spec
+  - specification
+  - acceptance-criteria
+  - design-review
+  paths:
+    - full-path
+    - review-path
 ---
 
 # Spec Reviewer

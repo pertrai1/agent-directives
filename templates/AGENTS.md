@@ -28,12 +28,15 @@ Delete this comment block when done.
 
 **NEVER commit directly to `main`.** Work on a feature branch. No exceptions.
 
-**All code changes follow one of these sequences:**
+**Load `directives/adaptive-routing.md` first.** It selects the lightest safe workflow and the required directives/skills for the task. Do not load every directive by default.
+
+**Code changes follow one of these routed sequences:**
 
 ### Light Path
 
 Use when: ≤2 files changed, no new exports, no type changes, no logic changes.
-Typical: typo fixes, one-line bug fixes, docs-only changes.
+Typical: typo fixes, docs-only changes, formatting-only changes, or mechanical
+edits with no behavior change.
 
 | Step | Phase        | Action                         | Verify                                                |
 | ---- | ------------ | ------------------------------ | ----------------------------------------------------- |
@@ -64,12 +67,14 @@ No skipping steps:
 
 Steps 2–6 repeat for each behavior. Do not batch.
 
-## Directives (Mandatory)
+## Directives (Routed)
 
-Read and follow every directive before implementing. They govern **how** you work.
+Run adaptive routing first, then load the directives selected for the task phase.
+They govern **how** you work. Do not load unrelated directives just to satisfy ceremony.
 
 | Directive                    | What it governs                             | File                                         |
 | ---------------------------- | ------------------------------------------- | -------------------------------------------- |
+| Adaptive Routing             | Selects workflow path and required directives/skills | `directives/adaptive-routing.md`             |
 | Codebase Navigation          | SAFE exploration before implementation      | `directives/codebase-navigation.md`          |
 | Architecture Boundaries      | Preserve dependency DAG and import rules    | `directives/architecture-boundaries.md`      |
 | Exploration Mode             | Pre-implementation investigation stance     | `directives/exploration-mode.md`             |
@@ -83,7 +88,7 @@ Read and follow every directive before implementing. They govern **how** you wor
 
 ## Skills (Mandatory)
 
-Load the relevant skill before performing any task it covers.
+Load the relevant skill selected by adaptive routing before performing any task it covers.
 
 | Skill         | When                                          | File                       |
 | ------------- | --------------------------------------------- | -------------------------- |

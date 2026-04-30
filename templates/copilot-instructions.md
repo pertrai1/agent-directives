@@ -12,8 +12,8 @@ Delete this comment block when done.
 
 ## Key Rules
 
-These rules are non-negotiable. For detailed guidance, load the corresponding
-directive from the `directives/` directory.
+These rules are routed by `directives/adaptive-routing.md`. Load that directive
+first, then load the corresponding detailed directive from `directives/`.
 
 ### Types First
 
@@ -22,14 +22,14 @@ before proceeding to tests.
 
 ### Strict TDD
 
-Follow the RED/GREEN/REFACTOR cycle for ALL code changes:
+Follow the RED/GREEN/REFACTOR cycle for behavior-changing code:
 
 1. Write ONE failing test → confirm it fails
 2. Write minimum code to pass → confirm ALL tests pass
 3. Clean up if needed → confirm all tests still pass
 4. Repeat for each behavior — do not batch
 
-**Never** write implementation before a failing test exists.
+**Never** write behavior-changing implementation before a failing test exists.
 
 ### No Skipping Steps
 
@@ -47,9 +47,13 @@ one commit. Each behavior gets its own test-commit + implementation-commit pair.
 
 ## Mandatory Workflow
 
+Load `directives/adaptive-routing.md` first. It selects Light Path, Full Path, or a specialized path based on task intent and risk.
+
 ### Light Path
 
 Use when: ≤2 files changed, no new exports, no type changes, no logic changes.
+Typical: typo fixes, docs-only changes, formatting-only changes, or mechanical
+edits with no behavior change.
 
 | Step | Phase        | Action                         | Verify                                                |
 | ---- | ------------ | ------------------------------ | ----------------------------------------------------- |
@@ -81,14 +85,15 @@ Use for: everything else. No skipping steps.
 - `any` type or implicit `any`
 - `it.skip()` in tests
 - Fake assertions (`expect(true).toBe(true)`)
-- Writing implementation before a failing test exists
+- Writing behavior-changing implementation before a failing test exists
 - Batching multiple behaviors into one commit
 
 ## Directives
 
-For detailed guidance on each workflow rule, load the corresponding directive
-from the `directives/` directory:
+For detailed guidance on each workflow rule, load `adaptive-routing.md` first,
+then load only the selected directive from the `directives/` directory:
 
+- `adaptive-routing.md` — Selects workflow path and required directives/skills
 - `codebase-navigation.md` — SAFE exploration pattern
 - `architecture-boundaries.md` — Preserve dependency DAG and import rules
 - `exploration-mode.md` — Pre-implementation investigation stance
@@ -102,7 +107,7 @@ from the `directives/` directory:
 
 ## Skills
 
-Load the relevant skill for the task type.
+Load the relevant skill selected by adaptive routing for the task type.
 
 - `skills/test-reviewer/SKILL.md` — Before writing or reviewing any test
 - `skills/spec-reviewer/SKILL.md` — Before merging when a written spec exists

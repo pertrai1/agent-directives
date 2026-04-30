@@ -1,3 +1,16 @@
+---
+name: task-framing
+description: Frames non-trivial, ambiguous, high-risk, or cross-cutting tasks before substantial edits.
+version: 1.0.0
+triggers:
+  - non-trivial-task
+  - ambiguous-task
+  - high-risk-task
+  - cross-cutting-change
+routing:
+  load: conditional
+---
+
 # Task Framing Directive
 
 ## Prerequisite: Before Major Edits on Non-Trivial Work
@@ -7,9 +20,9 @@ It applies when the task is non-trivial, ambiguous, high-risk, or cross-cutting.
 'Non-trivial' typically means anything beyond a single-file typo fix or a
 docs-only wording change.
 
-Load this directive before starting any non-trivial task — new features,
-cross-cutting refactors, ambiguous requests, or anything affecting repo-wide
-conventions.
+Load this directive when selected by `directives/adaptive-routing.md` before a
+non-trivial task — new features, cross-cutting refactors, ambiguous requests, or
+anything affecting repo-wide conventions.
 
 Do not optimize for agreement. Optimize for accuracy, uncertainty clarity, and
 identifying weak assumptions.

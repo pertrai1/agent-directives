@@ -1,6 +1,16 @@
 ---
 name: "systematic-debugging"
 description: "Use this skill when diagnosing bugs, test failures, build failures, regressions, flaky behavior, or unexpected system behavior. Enforces root-cause investigation before fixes."
+version: 1.0.0
+routing:
+  triggers:
+  - bug
+  - failing-test
+  - ci-failure
+  - regression
+  - flaky-behavior
+  paths:
+    - debugging-path
 ---
 
 # Systematic Debugging

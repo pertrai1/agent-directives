@@ -1,3 +1,16 @@
+---
+name: specification-driven-development
+description: Requires written specifications for features or changes large enough that build-and-see would risk rework.
+version: 1.0.0
+triggers:
+  - new-feature
+  - api-addition
+  - cross-cutting-change
+  - specification
+routing:
+  load: conditional
+---
+
 # Specification-Driven Development Directive
 
 **When to load:** Load this directive when building features or changes that are large enough to benefit from written specifications before implementation. Applies to new features, cross-cutting changes, API additions, and any work where "build it and see" risks significant rework.
