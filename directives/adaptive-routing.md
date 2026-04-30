@@ -29,6 +29,16 @@ intent, risk level, and touched surfaces.
 
 ## Router Output
 
+After routing, briefly display the active workflow path and directive/skill files
+being used so reviewers can verify the agent loaded the expected guidance. Keep
+this as routing evidence, not ceremony.
+
+For tiny low-risk edits, one sentence is enough:
+
+```md
+Route: Light Path; using `directives/adaptive-routing.md`; no additional directives or skills required.
+```
+
 Before major edits, output a short route decision:
 
 ```md
@@ -44,9 +54,8 @@ Before major edits, output a short route decision:
 - Confirmation needed: <yes/no and why>
 ```
 
-For tiny low-risk edits, the route can be one or two sentences instead of a full
-block. For any non-trivial, ambiguous, high-risk, or cross-cutting task, use the
-full block.
+For any non-trivial, ambiguous, high-risk, or cross-cutting task, use the full
+block.
 
 ---
 
