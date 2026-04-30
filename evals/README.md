@@ -19,16 +19,17 @@ evals/
 
 ```bash
 evals/run-scenario.sh <scenario-name>      # e.g. anti-righting-reflex
+evals/run-scenario.sh --print-only <scenario-name>  # assemble and preview context without launching Claude
 ```
 
 The script:
 
-1. Finds every `directives/*.md` and `skills/*/SKILL.md` path mentioned in the
-   scenario file.
+1. Finds every `AGENTS.md`, `directives/*.md`, and `skills/*/SKILL.md` path mentioned in the
+   scenario file's `## Setup` section.
 2. Concatenates them into `CLAUDE.md` inside a fresh `mktemp` workspace.
 3. Prints the scenario's `## Prompt` block so you can paste it into Claude.
-4. Launches `claude` in that workspace.
-5. Deletes the workspace when claude exits.
+4. Launches `claude` in that workspace unless `--print-only` is used.
+5. Deletes the workspace when the script exits.
 
 After the session, copy the agent's full response and run the **judge step**:
 
@@ -98,9 +99,10 @@ to close.>
 
 ### Authoring guidelines
 
-- **Reference loadable files explicitly.** Write `directives/foo.md` or
+- **Reference loadable files explicitly.** Write `AGENTS.md`, `directives/foo.md`, or
   `skills/foo/SKILL.md` in the Setup section. The helper script greps for those
-  path patterns to decide what to load — anything else won't be picked up.
+  path patterns in `## Setup` to decide what to load — references in checklists
+  are evaluation criteria, not automatically loaded context.
 - **Pick prompts that activate the rule.** A good scenario triggers the
   directive's intended behavior on the first message. If the rule only fires
   mid-task, document the lead-in in Setup (see `jenga-test-quality.md`).

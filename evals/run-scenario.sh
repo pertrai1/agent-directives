@@ -1,17 +1,25 @@
 #!/usr/bin/env bash
 # Set up an isolated workspace for an eval scenario.
 #
-# Usage: evals/run-scenario.sh <scenario-name>
+# Usage: evals/run-scenario.sh [--print-only] <scenario-name>
 #   e.g. evals/run-scenario.sh anti-righting-reflex
+#   e.g. evals/run-scenario.sh --print-only root-agents-routing-presentation
 #
 # Creates a temp dir, concatenates every file referenced in the scenario's
 # Setup section into ./CLAUDE.md, prints the scenario's Prompt, and launches
-# `claude` in that dir. The temp dir is removed when claude exits.
+# `claude` in that dir unless --print-only is used. The temp dir is removed when
+# the script exits.
 
 set -euo pipefail
 
+PRINT_ONLY=0
+if [[ "${1:-}" == "--print-only" ]]; then
+  PRINT_ONLY=1
+  shift
+fi
+
 if [[ $# -ne 1 ]]; then
-  echo "usage: $0 <scenario-name>" >&2
+  echo "usage: $0 [--print-only] <scenario-name>" >&2
   exit 2
 fi
 
@@ -25,12 +33,34 @@ if [[ ! -f "$SCENARIO_FILE" ]]; then
   exit 1
 fi
 
-# Pull every `directives/*.md` or `skills/*/SKILL.md` path out of the file.
-# Use a read loop instead of mapfile for bash 3.2 compatibility (macOS).
+# Pull every `AGENTS.md`, `directives/*.md`, or `skills/*/SKILL.md` path out of the
+# Setup section only. References in checklists describe expected behavior; they
+# should not become preloaded context for the agent under test.
 REFS=()
+REF_STDERR="$(mktemp -t eval-refs-stderr-XXXX)"
+if ! REF_OUTPUT="$(awk '
+  /^## Setup/ { in_setup=1; next }
+  /^## / { in_setup=0 }
+  in_setup {
+    while (match($0, /(AGENTS\.md|directives\/[a-zA-Z0-9_-]+\.md|skills\/[a-zA-Z0-9_-]+\/SKILL\.md)/)) {
+      ref = substr($0, RSTART, RLENGTH)
+      if (!seen[ref]++) print ref
+      $0 = substr($0, RSTART + RLENGTH)
+    }
+  }
+' "$SCENARIO_FILE" 2>"$REF_STDERR")"; then
+  echo "failed to extract directive/skill references from $SCENARIO_FILE" >&2
+  if [[ -s "$REF_STDERR" ]]; then
+    cat "$REF_STDERR" >&2
+  fi
+  rm -f "$REF_STDERR"
+  exit 1
+fi
+rm -f "$REF_STDERR"
 while IFS= read -r line; do
+  [[ -n "$line" ]] || continue
   REFS+=("$line")
-done < <(grep -oE '(directives/[a-zA-Z0-9_-]+\.md|skills/[a-zA-Z0-9_-]+/SKILL\.md)' "$SCENARIO_FILE" | awk '!seen[$0]++')
+done <<< "$REF_OUTPUT"
 
 if [[ ${#REFS[@]} -eq 0 ]]; then
   echo "no directive/skill references found in $SCENARIO_FILE" >&2
@@ -61,6 +91,16 @@ echo "----- scenario prompt ($1) -----"
 awk '/^## Prompt/{flag=1; next} /^## /{flag=0} flag' "$SCENARIO_FILE"
 echo "----- end prompt -----"
 echo
+
+if [[ "$PRINT_ONLY" -eq 1 ]]; then
+  echo "--print-only set; not launching claude."
+  echo
+  echo "----- CLAUDE.md preview -----"
+  cat "$CLAUDE_MD"
+  echo "----- end CLAUDE.md preview -----"
+  exit 0
+fi
+
 echo "Launching claude in $WORKDIR. Workspace will be deleted on exit."
 echo "Tip: your global ~/.claude/CLAUDE.md is still loaded — move it aside if it conflicts."
 echo
