@@ -47,7 +47,7 @@ one commit. Each behavior gets its own test-commit + implementation-commit pair.
 
 ## Mandatory Workflow
 
-Load `directives/adaptive-routing.md` first. It selects Light Path, Full Path, or a specialized path based on task intent and risk, and decides whether `directives/context-handoff.md` is needed.
+Load `directives/adaptive-routing.md` first. It selects Light Path, Full Path, or a specialized path based on task intent and risk, decides whether `directives/context-handoff.md` is needed, and should briefly state the selected path plus directive/skill files being used.
 
 ### Light Path
 
