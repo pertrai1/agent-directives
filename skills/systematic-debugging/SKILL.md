@@ -7,6 +7,8 @@ routing:
   - bug
   - failing-test
   - ci-failure
+  - build-failure
+  - integration-failure
   - regression
   - flaky-behavior
   paths:
