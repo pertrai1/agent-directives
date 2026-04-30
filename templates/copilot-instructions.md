@@ -65,6 +65,7 @@ Use for: everything else. No skipping steps.
 | Step | Phase        | Action                                   | Verify                                                       |
 | ---- | ------------ | ---------------------------------------- | ------------------------------------------------------------ |
 | -1   | **ORIENT**   | **Navigate codebase safely**             | See codebase-navigation directive (SAFE pattern)             |
+| -0.5 | **BOUNDARIES** | **Classify touched files and dependency edges** | See architecture-boundaries directive when imports/exports/packages/shared code may change |
 | 0    | **BASELINE** | **Verify starting state is clean**       | <!-- FILL IN: baseline verification command --> all pass     |
 | 1    | TYPES        | Define types first                       | Type-check passes                                            |
 | 2    | RED          | Write ONE failing test                   | Test fails                                                   |
@@ -89,6 +90,7 @@ For detailed guidance on each workflow rule, load the corresponding directive
 from the `directives/` directory:
 
 - `codebase-navigation.md` — SAFE exploration pattern
+- `architecture-boundaries.md` — Preserve dependency DAG and import rules
 - `exploration-mode.md` — Pre-implementation investigation stance
 - `task-framing.md` — Intake checklist for non-trivial work
 - `specification-driven-development.md` — Write specs before code, verify after
@@ -106,6 +108,8 @@ Load the relevant skill for the task type.
 - `skills/spec-reviewer/SKILL.md` — Before merging when a written spec exists
 - `skills/self-audit/SKILL.md` — After REFACTOR, before VERIFY on every Full Path cycle
 - `skills/systematic-debugging/SKILL.md` — Before fixing bugs, failing tests, CI failures, or regressions
+- `skills/architecture-boundary-reviewer/SKILL.md` — Before merging changes to imports, exports, packages, services, shared code, or folder boundaries
+- `skills/codebase-health-reviewer/SKILL.md` — Before merging TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes
 
 ## Decision Log Lookup
 
