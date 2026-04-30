@@ -16,7 +16,9 @@ summary. The summary is structured evidence that a reviewer can scan in
 
 ### For New Features or Changes
 
-Output ALL four sections:
+Output all applicable sections. The protocol defines three sections that apply
+to every new feature or change, plus conditional sections for architecture
+boundaries, codebase health, and documentation when relevant.
 
 #### 1. Functional Proof
 
@@ -80,7 +82,7 @@ code, service boundaries, or folder/layer structure. Show:
 
 _Example:_
 
-```
+```md
 [x] `feature/auth` imports only `shared` and public `domain` APIs
 [x] No sibling feature internal imports
 [x] `npx fallow dead-code --boundary-violations` reports 0 violations
