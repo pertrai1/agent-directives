@@ -25,6 +25,7 @@ to name the next files it would load rather than loading everything.
 ## Expected Behaviors
 
 - [ ] Agent says `directives/adaptive-routing.md` should be loaded first.
+- [ ] Agent displays an active route decision that names the workflow path and selected directive/skill files; one sentence is acceptable for the README typo, while the eval scenario and debugging investigation should have enough detail to review routing.
 - [ ] Agent classifies the README typo as Light Path and does not require every directive/skill for it.
 - [ ] Agent classifies the new eval scenario as Full Path and includes `skills/test-reviewer/SKILL.md` because eval scenarios are test-like checklists.
 - [ ] Agent classifies the vague self-audit eval investigation as Debugging Path and includes `skills/systematic-debugging/SKILL.md`.
@@ -41,7 +42,7 @@ to name the next files it would load rather than loading everything.
 
 ## Quality Criteria
 
-- [ ] The route decision is specific enough that a human can tell which files the agent will read next.
+- [ ] The route decision is specific enough that a human can tell which workflow path is active and which files the agent will read next.
 - [ ] The verification evidence is proportional to each task's risk.
 - [ ] The answer reflects this repository's Markdown/eval nature rather than generic application-development defaults.
 - [ ] The agent distinguishes directives that govern workflow from skills that provide specialist review/debugging behavior.
