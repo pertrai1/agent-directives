@@ -73,11 +73,18 @@ Anchor on **types and contracts**, not implementations.
    - grep "describe\|it(" tests/path/to/area-test.ts | head -30
    - Test names are specifications — they tell you what behavior exists
 
-3. ONE reference file showing the existing pattern
+3. Existing capability search
+   - Search for existing utilities, helpers, services, validators, hooks,
+     commands, or types that already solve this problem
+   - Reuse existing behavior when it represents the same project knowledge
+   - Do not consolidate merely similar code if it represents different domain
+     concepts or would expand the scope budget
+
+4. ONE reference file showing the existing pattern
    - Pick the most similar existing file to what you're working on
    - Read its exports and public interface only (skip full body)
 
-4. Applicable directives and scoped instructions
+5. Applicable directives and scoped instructions
    - Load any project-level directives or scoped instructions that apply
 ```
 
@@ -88,6 +95,13 @@ Anchor on **types and contracts**, not implementations.
 head -25 path/to/representative-file.ts          # imports + exports
 grep "key-pattern" path/to/representative-file.ts -A 20  # relevant metadata
 grep "describe\|it(" tests/path/to/test-file.ts  # test specifications
+
+# Existing capability search: prefer AST-aware search when available
+ast-grep --pattern 'export function $NAME($$$ARGS) { $$$BODY }' src
+ast-grep --pattern 'export const $NAME = $$$VALUE' src
+
+# Portable fallback when ast-grep is unavailable
+grep -R "function .*<domain-term>\|const .*<domain-term>\|export .*<domain-term>" src tests --exclude-dir=node_modules | head -30
 ```
 
 **If your agent framework provides dedicated read/search tools** (e.g. Read
