@@ -93,6 +93,37 @@ Use a compact scope-budget line before substantial edits:
 Scope budget: I expect to touch <files/areas> with <kind of edit>; I will not change <nearby-but-out-of-scope areas> unless evidence shows they are required or the user explicitly requests it.
 ```
 
+## Depth, Risk, and Slice Gate
+
+Before substantial edits, classify the task:
+
+- **Trivial** — localized non-behavioral change → Light Path
+- **Simple** — one clear behavior or file with an existing pattern → normal Full Path
+- **Moderate** — multiple files, tests, or some ambiguity → Full Path + framing
+- **Complex** — cross-cutting, unclear architecture, migration, public API, or
+  high uncertainty → route before full implementation
+
+If risk is high or depth is complex, choose one route before full implementation:
+
+| Unknown / risk | Route first | Output constraint |
+| --- | --- | --- |
+| Need to understand existing code, runtime, or dependency behavior | Exploration Path (read-only) | No code edits until the unknown is resolved |
+| Behavior, API, or acceptance criteria unclear | Specification-Driven Development | Load `directives/specification-driven-development.md` and define the contract before coding |
+| Feasibility unknown and throwaway validation is acceptable | Exploration Path (spike) | Temporary code edits allowed for validation only; do not ship spike code without a normal implementation pass |
+| Multi-layer integration or user feedback may change the shape | Full Path | Implement a tracer bullet: the smallest end-to-end slice that proves the path |
+
+For non-trivial features, decide whether the next implementation should be a
+tracer bullet or a full feature pass:
+
+- **Tracer bullet** — build the smallest end-to-end slice that proves integration,
+  architecture, and user-visible behavior.
+- **Full feature pass** — use only when requirements are narrow, low-risk, and
+  already well understood.
+- **Spike first** — use when feasibility or external behavior is unknown.
+
+Prefer a tracer bullet when the feature crosses multiple layers, user feedback
+may change the shape, or a full implementation would require speculative code.
+
 When reasoning or research is part of the task, separate:
 
 - repo evidence
