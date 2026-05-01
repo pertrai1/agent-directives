@@ -59,6 +59,10 @@ Before major edits, establish:
    approach? Prefer repo evidence first: directives, active decision logs,
    types, tests, and existing patterns; use official external docs when runtime
    or library behavior depends on them
+9. **Scope budget** — expected files or areas changed, expected kind of change,
+   and nearby work that is intentionally out of scope. The budget should be
+   narrow enough that unrelated cleanup, broad rewrites, and speculative
+   abstractions are visibly out of bounds.
 
 If any of these materially affect the implementation and remain unknown, ask a
 concise clarifying question before major edits.
@@ -79,6 +83,14 @@ The proposal should name:
 - main assumptions
 - key alternatives rejected
 - primary regression or edge-case risks
+- scope budget: expected files/areas, expected edit type, and what will not be
+  changed unless evidence shows it is required
+
+Use a compact scope-budget line before substantial edits:
+
+```md
+Scope budget: I expect to touch <files/areas> with <kind of edit>; I will not change <nearby-but-out-of-scope areas> unless evidence shows they are required.
+```
 
 When reasoning or research is part of the task, separate:
 

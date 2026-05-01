@@ -128,6 +128,23 @@ _Example:_
 [x] README usage section updated
 ```
 
+#### 7. Scope Control Proof
+
+Confirm the final diff stayed within the planned scope budget:
+
+- Changed files match the stated scope, or scope expansion is explained with
+  evidence.
+- No unrelated cleanup, opportunistic refactor, or drive-by formatting was
+  included.
+- No new abstraction, helper layer, dependency, or configuration surface was
+  added unless required by current evidence.
+
+For small tasks, one sentence is enough:
+
+```md
+Scope control: changed only `src/foo.ts`; no unrelated cleanup or new abstraction added.
+```
+
 ---
 
 ### For Bug Fixes
