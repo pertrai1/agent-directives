@@ -78,6 +78,10 @@ block.
 7. **Ask only when necessary.** If classification is uncertain and affects safety
    or scope, ask one concise clarifying question. Otherwise choose the safer path
    and state the assumption.
+8. **Bound the implementation.** Prefer the smallest safe change that satisfies
+   the task. Do not expand scope, rewrite adjacent code, introduce abstractions,
+   apply drive-by formatting, perform whole-file rewrites, or fix unrelated
+   issues unless current evidence requires it or the user explicitly requests it.
 
 ---
 
@@ -261,6 +265,9 @@ classification and avoid making the current change worse.
 | Appending active handoffs forever | Recreates context drift under a different filename |
 | Ignoring lint/type/test/build feedback as "just tooling" | Tool output is implementation feedback |
 | Adding cross-cutting tooling/config as a drive-by change | Policy changes need explicit review |
+| Opportunistic refactors or cleanup outside the task | Increases review surface and hides behavior risk |
+| Adding abstractions for hypothetical future use | Produces unnecessary code and weakens local fit |
+| Printing or rewriting whole files when a targeted patch would work | Wastes context and increases accidental churn |
 
 ---
 

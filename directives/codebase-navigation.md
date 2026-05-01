@@ -111,6 +111,19 @@ cat tests/path/to/test-file.ts           # entire test file — wastes context
 
 Only now read the specific files you'll modify or that your changes depend on.
 
+Escalate reads from narrow to broad:
+
+1. File names and symbols
+2. Imports, exports, signatures, and frontmatter/metadata
+3. Test names, failing output, and documented examples
+4. Relevant function, section, or directive slices
+5. Whole files only when slices cannot answer the question
+
+Do not read sibling implementations merely for familiarity. The Anchor phase's
+allowance to read **ONE reference file** is a narrow exception to the Filter
+phase rule: use one representative reference file only when it directly informs
+the target change, not as general look-and-copy context.
+
 ```
 1. Find dependents:
    grep -rl "from.*my-module" src/ | head -10
@@ -261,6 +274,7 @@ digest keeps the current context window lean for the next task.
 | ------------------------------------------- | ----------------------------------------------------------- |
 | `cat` on any file over 50 lines             | Wastes context on low-information content                   |
 | Reading a file "to get familiar"            | Familiarity comes from types and tests, not implementations |
+| Reading sibling implementations without a task-specific question | Burns context and invites pattern cargo-culting             |
 | Skipping Survey to start coding immediately | Produces code that doesn't fit the codebase                 |
 | Reading full test file bodies during Anchor | Test names are the spec; bodies are for the RED phase       |
 | Loading all directives for every task       | Use progressive disclosure — load only what applies         |
