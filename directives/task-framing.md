@@ -107,9 +107,9 @@ If risk is high or depth is complex, choose one route before full implementation
 
 | Unknown / risk | Route first | Output constraint |
 | --- | --- | --- |
-| Need to understand existing code, runtime, or dependency behavior | Exploration Path | No code edits until the unknown is resolved |
+| Need to understand existing code, runtime, or dependency behavior | Exploration Path (read-only) | No code edits until the unknown is resolved |
 | Behavior, API, or acceptance criteria unclear | Specification-Driven Development | Load `directives/specification-driven-development.md` and define the contract before coding |
-| Feasibility unknown and throwaway validation is acceptable | Exploration Path | Run a disposable spike; do not ship spike code without a normal implementation pass |
+| Feasibility unknown and throwaway validation is acceptable | Exploration Path (spike) | Temporary code edits allowed for validation only; do not ship spike code without a normal implementation pass |
 | Multi-layer integration or user feedback may change the shape | Full Path | Implement a tracer bullet: the smallest end-to-end slice that proves the path |
 
 For non-trivial features, decide whether the next implementation should be a
