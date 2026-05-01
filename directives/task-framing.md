@@ -60,9 +60,10 @@ Before major edits, establish:
    types, tests, and existing patterns; use official external docs when runtime
    or library behavior depends on them
 9. **Scope budget** — expected files or areas changed, expected kind of change,
-   and nearby work that is intentionally out of scope. The budget should be
-   narrow enough that unrelated cleanup, broad rewrites, and speculative
-   abstractions are visibly out of bounds.
+   explicit non-goals (what will not be changed), and nearby work that is
+   intentionally out of scope. The budget should be narrow enough that unrelated
+   cleanup, broad rewrites, and speculative abstractions are visibly out of
+   bounds.
 
 If any of these materially affect the implementation and remain unknown, ask a
 concise clarifying question before major edits.
@@ -89,7 +90,7 @@ The proposal should name:
 Use a compact scope-budget line before substantial edits:
 
 ```md
-Scope budget: I expect to touch <files/areas> with <kind of edit>; I will not change <nearby-but-out-of-scope areas> unless evidence shows they are required.
+Scope budget: I expect to touch <files/areas> with <kind of edit>; I will not change <nearby-but-out-of-scope areas> unless evidence shows they are required or the user explicitly requests it.
 ```
 
 When reasoning or research is part of the task, separate:

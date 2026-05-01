@@ -119,8 +119,10 @@ Escalate reads from narrow to broad:
 4. Relevant function, section, or directive slices
 5. Whole files only when slices cannot answer the question
 
-Do not read sibling implementations merely for familiarity. Read one
-representative pattern only when it directly informs the target change.
+Do not read sibling implementations merely for familiarity. The Anchor phase's
+allowance to read **ONE reference file** is a narrow exception to the Filter
+phase rule: use one representative reference file only when it directly informs
+the target change, not as general look-and-copy context.
 
 ```
 1. Find dependents:

@@ -132,6 +132,8 @@ _Example:_
 
 Confirm the final diff stayed within the planned scope budget:
 
+- Planned scope budget: paste or quote the exact scope budget line used for
+  comparison.
 - Changed files match the stated scope, or scope expansion is explained with
   evidence.
 - No unrelated cleanup, opportunistic refactor, or drive-by formatting was
@@ -142,6 +144,7 @@ Confirm the final diff stayed within the planned scope budget:
 For small tasks, one sentence is enough:
 
 ```md
+Planned scope budget: touch only `src/foo.ts` with a targeted guard-clause edit.
 Scope control: changed only `src/foo.ts`; no unrelated cleanup or new abstraction added.
 ```
 
@@ -209,6 +212,11 @@ The summary should follow this structure:
 
 [x] JSDoc updated on createUser
 [x] README usage section updated
+
+### Scope Control
+
+Planned scope budget: touch `src/users/create.ts` and `tests/users/create.test.ts` for create-user validation only.
+Scope control: changed only the planned files; no unrelated cleanup, new abstraction, dependency, or configuration surface added.
 ```
 
 If anything is `[ ]` or tests are missing, the implementation is not ready.

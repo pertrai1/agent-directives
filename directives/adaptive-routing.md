@@ -80,8 +80,8 @@ block.
    and state the assumption.
 8. **Bound the implementation.** Prefer the smallest safe change that satisfies
    the task. Do not expand scope, rewrite adjacent code, introduce abstractions,
-   or fix unrelated issues unless current evidence requires it or the user
-   explicitly requests it.
+   apply drive-by formatting, perform whole-file rewrites, or fix unrelated
+   issues unless current evidence requires it or the user explicitly requests it.
 
 ---
 
