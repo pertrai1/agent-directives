@@ -97,11 +97,11 @@ grep "key-pattern" path/to/representative-file.ts -A 20  # relevant metadata
 grep "describe\|it(" tests/path/to/test-file.ts  # test specifications
 
 # Existing capability search: prefer AST-aware search when available
-ast-grep --pattern 'export function $NAME($$$ARGS) { $$$BODY }' src
-ast-grep --pattern 'export const $NAME = $$$VALUE' src
+ast-grep --pattern 'export function $NAME($$$ARGS) { $$$BODY }' path/to/source/root
+ast-grep --pattern 'export const $NAME = $$$VALUE' path/to/source/root
 
-# Portable fallback when ast-grep is unavailable
-grep -R "function .*<domain-term>\|const .*<domain-term>\|export .*<domain-term>" src tests --exclude-dir=node_modules | head -30
+# Grep fallback when ast-grep is unavailable; choose the project's source roots
+grep -R -E "function .*<domain-term>|const .*<domain-term>|export .*<domain-term>" path/to/source/root path/to/tests | head -30
 ```
 
 **If your agent framework provides dedicated read/search tools** (e.g. Read
