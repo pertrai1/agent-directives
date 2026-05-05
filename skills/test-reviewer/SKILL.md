@@ -1,6 +1,6 @@
 ---
 name: "test-reviewer"
-description: "Use this skill when writing or reviewing tests. Detects tests that duplicate production logic, use shallow assertions, skip edge cases, or assert on mocks instead of behavior."
+description: "Load when the user asks to write or review tests, TDD cases, eval scenarios, coverage, assertions, or mocks, or says tests are shallow, flaky, brittle, or too close to implementation."
 version: 1.0.0
 routing:
   triggers:

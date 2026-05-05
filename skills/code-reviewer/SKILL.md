@@ -1,6 +1,6 @@
 ---
 name: "code-reviewer"
-description: "Use this skill when reviewing pull requests, branches, diffs, or local changes for correctness, security, maintainability, and merge risk."
+description: "Load when the user asks to review a PR, branch, diff, local changes, or says approve, merge, or check this change for bugs, regressions, security, maintainability, or merge risk."
 version: 1.0.0
 routing:
   triggers:
