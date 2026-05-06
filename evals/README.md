@@ -43,6 +43,29 @@ After the session, copy the agent's full response and run the **judge step**:
      pasted from the scenario file
 4. Read the `Signal:` line of the judge's summary. That is the actionable
    revision input.
+5. Record the result under `evals/results/runs/*.json` when you want it included
+   in the generated health report. See `evals/results/README.md` for the schema.
+
+## Viewing result health
+
+Generate a static HTML dashboard from structured JSON runs and legacy Markdown
+results:
+
+```bash
+python3 evals/report-results.py
+```
+
+The script writes `evals/results/report.html` and prints a terminal summary. The
+report groups results by directive/skill target, verdict, failure tags, and any
+structured routing evidence present in JSON runs.
+
+Interpret percentages as **covered-scenario telemetry**, not global directive or
+skill accuracy:
+
+- Pass rate means passing runs divided by covered runs.
+- Routing recall means true expected loads divided by expected loads.
+- Routing precision means true expected loads divided by actual loads.
+- Always inspect the displayed `n` counts before drawing conclusions.
 
 Your global `~/.claude/CLAUDE.md` is still loaded inside the temp workspace. For
 most scenarios that is fine. If a scenario tests behavior that conflicts with
