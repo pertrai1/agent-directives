@@ -109,6 +109,32 @@ def safe_int(value: Any) -> int:
     return int(value)
 
 
+def require_mapping(value: Any, field_name: str) -> dict[str, Any]:
+    if isinstance(value, dict):
+        return value
+    raise ValueError(f"{field_name} must be an object")
+
+
+def optional_mapping(value: Any, field_name: str) -> dict[str, Any]:
+    if value in (None, ""):
+        return {}
+    return require_mapping(value, field_name)
+
+
+def optional_string_list(value: Any, field_name: str) -> list[str]:
+    if value in (None, ""):
+        return []
+    if not isinstance(value, list):
+        raise ValueError(f"{field_name} must be a list")
+    items: list[str] = []
+    for item in value:
+        if isinstance(item, (str, int, float, bool)) or item is None:
+            items.append(str(item))
+            continue
+        raise ValueError(f"{field_name} items must be scalar values")
+    return items
+
+
 def parse_bool(value: Any) -> bool:
     if isinstance(value, bool):
         return value
@@ -231,18 +257,24 @@ def targets_from_scenario_file(scenario: str) -> list[str]:
 
 
 def parse_json_result(path: Path) -> EvalRun:
-    data = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(data, dict):
-        raise ValueError("JSON result must be an object")
-    scores = data.get("scores", {}) or {}
-    checklists = data.get("checklists", {}) or {}
+    data = require_mapping(json.loads(path.read_text(encoding="utf-8")), "JSON result")
+    scores = optional_mapping(data.get("scores"), "scores")
+    checklists = optional_mapping(data.get("checklists"), "checklists")
 
     expected = ChecklistCounts.from_mapping(
-        data.get("expected") or checklists.get("expected") or scores.get("expected")
+        optional_mapping(data.get("expected"), "expected")
+        or optional_mapping(checklists.get("expected"), "checklists.expected")
+        or optional_mapping(scores.get("expected"), "scores.expected")
     )
-    anti = ChecklistCounts.from_mapping(data.get("anti") or checklists.get("anti") or scores.get("anti"))
+    anti = ChecklistCounts.from_mapping(
+        optional_mapping(data.get("anti"), "anti")
+        or optional_mapping(checklists.get("anti"), "checklists.anti")
+        or optional_mapping(scores.get("anti"), "scores.anti")
+    )
     quality = ChecklistCounts.from_mapping(
-        data.get("quality") or checklists.get("quality") or scores.get("quality")
+        optional_mapping(data.get("quality"), "quality")
+        or optional_mapping(checklists.get("quality"), "checklists.quality")
+        or optional_mapping(scores.get("quality"), "scores.quality")
     )
 
     # Support the compact shape discussed in docs: scores.expected_passed, etc.
@@ -268,7 +300,14 @@ def parse_json_result(path: Path) -> EvalRun:
         quality.failed = max(quality.total - quality.passed, 0)
 
     routing = []
-    for event in data.get("routing", []) or []:
+    routing_data = data.get("routing")
+    if routing_data in (None, ""):
+        routing_data = []
+    if not isinstance(routing_data, list):
+        raise ValueError("routing must be a list")
+    for index, event in enumerate(routing_data):
+        if not isinstance(event, dict):
+            raise ValueError(f"routing[{index}] must be an object")
         routing.append(
             RoutingEvent(
                 target=str(event.get("target", "")),
@@ -285,12 +324,12 @@ def parse_json_result(path: Path) -> EvalRun:
         judge_model=str(data.get("judge_model") or ""),
         commit=str(data.get("commit") or data.get("directive_sha") or ""),
         verdict=normalize_verdict(data.get("verdict")),
-        targets=[str(t) for t in data.get("targets", [])],
+        targets=optional_string_list(data.get("targets"), "targets"),
         expected=expected,
         anti=anti,
         quality=quality,
         routing=routing,
-        failure_tags=[str(t) for t in data.get("failure_tags", [])],
+        failure_tags=optional_string_list(data.get("failure_tags"), "failure_tags"),
         judge_summary=str(data.get("judge_summary") or data.get("summary") or ""),
     )
 
@@ -313,7 +352,7 @@ def discover_runs() -> list[EvalRun]:
             try:
                 runs.append(parse_json_result(path))
             except (json.JSONDecodeError, OSError, TypeError, ValueError) as exc:
-                print(f"warning: could not parse {path.relative_to(REPO_ROOT)}: {exc}", file=sys.stderr)
+                print(f"warning: could not parse {display_path(path)}: {exc}", file=sys.stderr)
                 runs.append(invalid_run(path, str(exc)))
     for path in sorted(RESULTS_DIR.glob("*.md")):
         if path.name.upper() == "README.MD":
@@ -321,7 +360,7 @@ def discover_runs() -> list[EvalRun]:
         try:
             runs.append(parse_markdown_result(path))
         except (OSError, ValueError) as exc:
-            print(f"warning: could not parse {path.relative_to(REPO_ROOT)}: {exc}", file=sys.stderr)
+            print(f"warning: could not parse {display_path(path)}: {exc}", file=sys.stderr)
             runs.append(invalid_run(path, str(exc)))
     runs.sort(key=lambda run: (run.date or "9999", run.scenario, run.model))
     return runs
@@ -420,7 +459,7 @@ def generate_html(runs: list[EvalRun]) -> str:
               <td>{checklist_cell(run.quality)}</td>
               <td>{', '.join(f'<code>{e(t)}</code>' for t in all_targets(run))}</td>
               <td>{e(run.judge_summary or '—')}</td>
-              <td><code>{e(str(run.source.relative_to(REPO_ROOT)))}</code></td>
+              <td><code>{e(display_path(run.source))}</code></td>
             </tr>
             """
         )
@@ -533,13 +572,20 @@ def e(value: Any) -> str:
     return html.escape(str(value), quote=True)
 
 
+def display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(REPO_ROOT))
+    except ValueError:
+        return str(path)
+
+
 def print_summary(runs: list[EvalRun], output: Path) -> None:
     verdicts = Counter(run.verdict for run in runs)
     print("Eval health summary")
     print("===================")
     print(f"Runs: {len(runs)}")
     print(f"Pass / Partial / Fail / Invalid / Unknown: {verdicts['pass']} / {verdicts['partial']} / {verdicts['fail']} / {verdicts['invalid']} / {verdicts['unknown']}")
-    print(f"Report: {output.relative_to(REPO_ROOT) if output.is_relative_to(REPO_ROOT) else output}")
+    print(f"Report: {display_path(output)}")
     rows = build_target_rows(runs)
     if rows:
         print("\nTargets:")
