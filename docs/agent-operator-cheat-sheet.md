@@ -24,7 +24,19 @@ Example:
 - Good prompt:
   - “Update wording in docs/rules/foo.md only; no behavior changes.”
 
-### 2) New feature or behavior change
+### 2) PRD/spec or implementation task planning
+- Route: Exploration Path or Full/Policy planning path; no code edits yet
+- Required skills (by phase):
+  - product-requirements-writer (turn feature idea/vague request into PRD/spec)
+  - implementation-task-planner (turn PRD/spec/issue into implementation tasks)
+- Expected behavior:
+  - Ask only essential clarifying questions for PRDs
+  - Ground task-list file paths in repo evidence or mark them tentative
+  - Include tests and validation gates in the task list
+- Good prompt:
+  - “Turn this feature idea into a PRD first; after I approve it, generate implementation tasks. Do not code yet.”
+
+### 3) New feature or behavior change
 - Route: Full Path
 - Required directive flow (typical):
   - codebase-navigation
@@ -39,7 +51,7 @@ Example:
 - Good prompt:
   - “Add feature X. Follow TDD and include full verification output.”
 
-### 3) Bug fix / regression / failing CI/build/test
+### 4) Bug fix / regression / failing CI/build/test
 - Route: Debugging Path (plus TDD for behavior fix)
 - Required skill:
   - systematic-debugging
@@ -52,7 +64,7 @@ Example:
 - Good prompt:
   - “Investigate failing test Y, show root cause, then fix with a regression test.”
 
-### 4) Imports/exports/package/shared boundary changes
+### 5) Imports/exports/package/shared boundary changes
 - Route: Boundary Path + base path (usually Full or Debugging)
 - Required directive:
   - architecture-boundaries
@@ -64,7 +76,7 @@ Example:
 - Good prompt:
   - “Refactor module boundaries for X and include architecture boundary proof.”
 
-### 5) PR / branch / diff review
+### 6) PR / branch / diff review
 - Route: Review Path
 - Skill selection by changed surface:
   - baseline PR/branch/diff review -> code-reviewer
@@ -78,7 +90,7 @@ Example:
 - Good prompt:
   - “Review this PR for merge risk and missing test coverage; do not edit code yet.”
 
-### 6) Investigation / architecture understanding / option comparison
+### 7) Investigation / architecture understanding / option comparison
 - Route: Exploration Path
 - Required directive:
   - exploration-mode
@@ -89,7 +101,7 @@ Example:
 - Good prompt:
   - “Explore options for X and recommend one with tradeoffs; no implementation yet.”
 
-### 7) Workflow/policy/directive/skill changes
+### 8) Workflow/policy/directive/skill changes
 - Route: Policy Path
 - Required directives:
   - task-framing
