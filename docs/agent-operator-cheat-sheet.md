@@ -25,7 +25,7 @@ Example:
   - “Update wording in docs/rules/foo.md only; no behavior changes.”
 
 ### 2) PRD/spec or implementation task planning
-- Route: Exploration Path or Full/Policy planning path; no code edits yet
+- Route: Exploration Path by default; use Policy Path only when changing directives, skills, templates, or repo workflow. No code edits yet.
 - Required skills (by phase):
   - product-requirements-writer (turn feature idea/vague request into PRD/spec)
   - implementation-task-planner (turn PRD/spec/issue into implementation tasks)

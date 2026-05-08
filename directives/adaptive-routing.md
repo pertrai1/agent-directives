@@ -285,7 +285,7 @@ classification and avoid making the current change worse.
 | Refactor | Full | no-behavior-change proof, tests, gates |
 | Import/export/package/shared change | Boundary + relevant base path | boundary proof |
 | PR/diff review | Review | structured findings |
-| PRD/spec writing | Exploration or Policy planning | product requirements writer, essential questions, no code edits |
-| PRD/spec/issue to task list | Exploration or Full planning | implementation task planner, repo-grounded file/test/validation tasks, no code edits |
+| PRD/spec writing | Exploration | product requirements writer, essential questions, no code edits |
+| PRD/spec/issue to task list | Exploration | implementation task planner, repo-grounded file/test/validation tasks, no code edits |
 | Investigation/explanation | Exploration | repo evidence, no edits |
 | Directive/workflow/policy change | Policy | proposal/tradeoffs, verification, handoff for multi-phase work, decision log if durable |

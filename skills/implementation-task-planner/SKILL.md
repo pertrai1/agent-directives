@@ -129,7 +129,7 @@ Use this format:
 
 - `path/to/file.ts` - Why this file is relevant.
 - `path/to/file.test.ts` - Tests for `path/to/file.ts`.
-- `tasks/prd-feature-name.md` - Source PRD for this task list.
+- `tasks/prd-[feature-name].md` - Source PRD for this task list (or the actual existing PRD path).
 ```
 
 If a file does not exist yet, mark it as `(new)`. If it is inferred, mark it as `(tentative)`.

@@ -2,7 +2,7 @@
 
 ## Directive Under Test
 
-`directives/adaptive-routing.md` plus the planning skills inventory in root and template instructions.
+`directives/adaptive-routing.md` plus the planning skills inventory exposed by root `AGENTS.md`.
 
 ## Setup
 
