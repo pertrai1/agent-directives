@@ -31,7 +31,10 @@ intent, risk level, and touched surfaces.
 
 After routing, briefly display the active workflow path and directive/skill files
 being used so reviewers can verify the agent loaded the expected guidance. Keep
-this as routing evidence, not ceremony.
+this as routing evidence, not ceremony. When a harness or runtime provides logs,
+treat its loaded-file manifest as authoritative for which directive files were
+actually presented; the agent's route disclosure is useful self-report, not proof
+of internal model attention.
 
 For tiny low-risk edits, one sentence is enough:
 

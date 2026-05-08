@@ -14,6 +14,7 @@ dependencies between files.
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
 | **Skills** | 9 skills | Code reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, self-audit, systematic debugging, architecture boundary reviewer, and codebase health reviewer |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
+| **Tooling** | TypeScript scripts | Validate directive wiring, assemble eval scenarios, record loaded-file manifests, and generate eval health reports |
 
 ## Quick Start
 
