@@ -7,7 +7,7 @@ This repository is a portable library of AI coding-agent instructions: reusable 
 ## What
 
 - Content-first Markdown repository; there is no package manager, build artifact, or runtime application.
-- `directives/*.md` define workflow rules an agent follows during phases such as routing, exploration, TDD, verification, and handoff.
+- `directives/*.md` define workflow rules an agent follows during phases such as routing, workspace isolation, exploration, TDD, verification, and handoff.
 - `skills/*/SKILL.md` define specialist personas/review processes with YAML frontmatter metadata.
 - `templates/` contains starter instruction files for different agent tools.
 - `evals/` contains manual scenario-based evaluations plus a helper script for assembling directive/skill context.
@@ -84,6 +84,7 @@ They govern **how** you work. Do not load unrelated directives just to satisfy c
 | Directive | What it governs | File |
 | --------- | --------------- | ---- |
 | Adaptive Routing | Selects workflow path and required directives/skills | `directives/adaptive-routing.md` |
+| Workspace Isolation | Protect mutable work with an isolated workspace; prefer native tools, then git fallback | `directives/workspace-isolation.md` |
 | Codebase Navigation | SAFE exploration before implementation, review, or unfamiliar work | `directives/codebase-navigation.md` |
 | Architecture Boundaries | Preserve dependency DAG, public APIs, imports/exports, and file reference integrity | `directives/architecture-boundaries.md` |
 | Exploration Mode | Pre-implementation investigation stance | `directives/exploration-mode.md` |

@@ -48,7 +48,7 @@ Before major edits, output a short route decision:
 ## Workflow Route
 
 - Intent: <feature | bug-fix | refactor | docs | review | exploration | policy-change | mechanical>
-- Path: <Light | Full | Debugging | Boundary | Review | Exploration | Policy> or combined paths
+- Path: <Light | Full | Debugging | Boundary | Workspace Isolation | Review | Exploration | Policy> or combined paths
 - Risk: <low | medium | high> with reason
 - Required directives: <paths>
 - Required skills: <paths, if any>
@@ -72,7 +72,8 @@ block.
    safety for behavior, security, data, public API, or boundary changes.
 4. **Combine paths when needed.** A bug fix that changes imports uses Debugging
    Path plus Boundary Path. A policy change with docs edits uses Policy Path plus
-   Light Path gates.
+   Light Path gates. Mutable work from a shared checkout may add Workspace
+   Isolation to the base path.
 5. **Prefer evidence over ritual.** Do not emit boilerplate sections with no
    information. Show the proof that matches the selected path.
 6. **Compact context at boundaries.** Use `directives/context-handoff.md` when
@@ -175,6 +176,24 @@ Required:
 - boundary proof in `directives/verification.md`
 - compact changed dependency-edge evidence with `directives/context-handoff.md` before boundary review or session transfer
 
+### Workspace Isolation Path
+
+Add this path whenever the task will mutate a git-backed repository from a
+checkout that may be shared or unsafe to edit in place, especially when:
+
+- the current branch is `main`, `master`, `trunk`, or another protected/default branch
+- the working tree has unrelated local changes
+- the user asks to protect the current workspace
+- a native workspace tool or `git worktree` can provide clean isolation
+
+Required:
+
+- `directives/workspace-isolation.md`
+- detect existing isolation before creating anything
+- prefer native workspace tools over manual `git worktree`
+- ask before creating a new isolated workspace when preference is unknown
+- show either isolated-workspace proof or an explicit fallback reason before editing
+
 ### Review Path
 
 Use when the user asks to review a PR, branch, diff, or local changes.
@@ -234,6 +253,7 @@ Escalate to Full Path or add a specialized path when any of these are true:
 | Database schema, migrations, persistence, queues | Full Path + explicit rollback/edge-case proof |
 | Public API, exported types, package entry points | Full Path + Integration Proof + Boundary Path |
 | Imports, shared utilities, packages, folders, services | Boundary Path |
+| Shared/default checkout, unrelated local changes, or explicit request for isolation before repo edits | Workspace Isolation Path |
 | Failing CI/test/build/lint/type-check | Debugging Path |
 | Cross-cutting policy or workflow | Policy Path |
 | Large diff or broad refactor | Full Path + Self-Audit + Codebase Health Review + Context Handoff |
@@ -287,6 +307,7 @@ classification and avoid making the current change worse.
 | Bug/regression | Debugging + TDD | reproduction, failing test/command, fix proof |
 | Refactor | Full | no-behavior-change proof, tests, gates |
 | Import/export/package/shared change | Boundary + relevant base path | boundary proof |
+| Repo edits from shared/default checkout | relevant base path + Workspace Isolation | isolation proof or explicit fallback |
 | PR/diff review | Review | structured findings |
 | PRD/spec writing | Exploration | product requirements writer, essential questions, no code edits |
 | PRD/spec/issue to task list | Exploration | implementation task planner, repo-grounded file/test/validation tasks, no code edits |
