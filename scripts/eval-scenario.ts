@@ -4,8 +4,9 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, join, relative } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
-const repoRoot = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
+const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 
 type LoadedFile = {
   path: string;
@@ -45,6 +46,10 @@ if (args[0] === '--print-only') {
 if (args.length !== 1) usage();
 
 const scenario = args[0];
+if (!/^[A-Za-z0-9_-]+$/.test(scenario)) {
+  console.error(`invalid scenario name: ${scenario}`);
+  process.exit(2);
+}
 const scenarioFile = join(repoRoot, 'evals', 'scenarios', `${scenario}.md`);
 let scenarioText = '';
 try {
@@ -96,7 +101,14 @@ for (const ref of refs) {
 }
 writeFileSync(claudeMd, assembled);
 
-const commit = spawnSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: repoRoot, encoding: 'utf8' }).stdout.trim();
+const commitResult = spawnSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: repoRoot, encoding: 'utf8' });
+const commit = commitResult.error || commitResult.status !== 0 || !commitResult.stdout.trim()
+  ? 'unknown'
+  : commitResult.stdout.trim();
+if (commit === 'unknown') {
+  const detail = commitResult.error?.message || commitResult.stderr?.trim() || `status ${commitResult.status}`;
+  console.error(`warning: unable to resolve current git commit: ${detail}`);
+}
 const safeDate = new Date().toISOString().replace(/[:.]/g, '-');
 const runDir = join(repoRoot, 'evals', 'results', 'runs', `${safeDate}-${scenario}`);
 mkdirSync(runDir, { recursive: true });

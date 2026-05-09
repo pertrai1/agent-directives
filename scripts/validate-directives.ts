@@ -1,8 +1,9 @@
 #!/usr/bin/env tsx
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const repoRoot = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
+const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const errors: string[] = [];
 const warnings: string[] = [];
 
@@ -94,7 +95,12 @@ for (const path of ['AGENTS.md', 'README.md', 'evals/README.md', 'evals/results/
 }
 for (const path of scenarios) validateScenario(path);
 
-const adaptive = read('directives/adaptive-routing.md');
+let adaptive = '';
+if (exists('directives/adaptive-routing.md')) {
+  adaptive = read('directives/adaptive-routing.md');
+} else {
+  fail('directives/adaptive-routing.md: missing required routing directive');
+}
 for (const skill of skills) {
   if (!adaptive.includes(skill)) warn(`directives/adaptive-routing.md does not mention ${skill}`);
 }

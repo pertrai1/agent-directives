@@ -2,8 +2,9 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
-const repoRoot = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
+const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const resultsDir = join(repoRoot, 'evals', 'results');
 const runsDir = join(resultsDir, 'runs');
 const defaultOutput = join(resultsDir, 'report.html');
