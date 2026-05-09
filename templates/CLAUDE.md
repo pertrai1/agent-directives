@@ -73,6 +73,7 @@ Steps 2–6 repeat for each behavior. Do not batch.
 Load `directives/adaptive-routing.md` first, then load only the directives it selects for the current task.
 
 - **Adaptive Routing** — Selects workflow path and required directives/skills (`directives/adaptive-routing.md`)
+- **Workspace Isolation** — Protect mutable work with an isolated workspace; prefer native tools, then git fallback (`directives/workspace-isolation.md`)
 - **Codebase Navigation** — SAFE exploration pattern before implementation (`directives/codebase-navigation.md`)
 - **Architecture Boundaries** — Preserve dependency DAG and import rules (`directives/architecture-boundaries.md`)
 - **Exploration Mode** — Pre-implementation investigation and thinking stance (`directives/exploration-mode.md`)

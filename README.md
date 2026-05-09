@@ -9,7 +9,7 @@ dependencies between files.
 
 | Category | Files | What they do |
 |----------|-------|--------------|
-| **Workflow** | 9 directives | Govern how the agent works: adaptive routing, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
+| **Workflow** | 10 directives | Govern how the agent works: adaptive routing, workspace isolation, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
 | **Skills** | 7 skills | Code reviewer, test reviewer, spec reviewer, self-audit, systematic debugging, architecture boundary reviewer, and codebase health reviewer |
@@ -43,6 +43,13 @@ Runs first and selects the lightest safe workflow based on task intent, risk,
 and touched surfaces. Prevents loading every directive by default while still
 escalating to Full, Debugging, Boundary, Review, Exploration, or Policy paths
 when the task requires stronger evidence.
+
+### Workspace Isolation (`directives/workspace-isolation.md`)
+
+Protects mutable work from leaking into a shared checkout. Detects existing
+isolation first, prefers native workspace/worktree tooling when available, falls
+back to `git worktree` only when needed, and requires setup/baseline proof in the
+workspace where implementation will actually run.
 
 
 ### Context Handoff (`directives/context-handoff.md`)
