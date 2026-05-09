@@ -18,18 +18,29 @@ evals/
 ## Running a scenario
 
 ```bash
-evals/run-scenario.sh <scenario-name>      # e.g. anti-righting-reflex
-evals/run-scenario.sh --print-only <scenario-name>  # assemble and preview context without launching Claude
+npm install
+npm run check
+npm run eval:scenario -- root-agents-routing-presentation
+npm run eval:scenario -- --print-only root-agents-routing-presentation
+npm run eval:report
 ```
+
+`eval:scenario` writes a deterministic run manifest under
+`evals/results/runs/<timestamp>-<scenario>/manifest.json`. The manifest records
+which directive/skill files were provided to the model, their SHA-256 hashes,
+byte counts, the assembled prompt path, and expected loads from the scenario.
+This is harness evidence; any route or loaded-file list produced by the agent is
+self-report and should be judged separately.
 
 The script:
 
-1. Finds every `AGENTS.md`, `directives/*.md`, and `skills/*/SKILL.md` path mentioned in the
+1. Extracts every `AGENTS.md`, `directives/*.md`, and `skills/*/SKILL.md` path mentioned in the
    scenario file's `## Setup` section.
 2. Concatenates them into `CLAUDE.md` inside a fresh `mktemp` workspace.
-3. Prints the scenario's `## Prompt` block so you can paste it into Claude.
-4. Launches `claude` in that workspace unless `--print-only` is used.
-5. Deletes the workspace when the script exits.
+3. Writes `evals/results/runs/<timestamp>-<scenario>/manifest.json` and
+   `assembled-prompt.md` with deterministic loaded-file metadata.
+4. Prints the scenario's `## Prompt` block so you can paste it into Claude.
+5. Launches `claude` in that workspace unless `--print-only` is used.
 
 After the session, copy the agent's full response and run the **judge step**:
 
@@ -52,7 +63,7 @@ Generate a static HTML dashboard from structured JSON runs and legacy Markdown
 results:
 
 ```bash
-python3 evals/report-results.py
+npm run eval:report
 ```
 
 The script writes `evals/results/report.html` and prints a terminal summary. The

@@ -31,7 +31,10 @@ intent, risk level, and touched surfaces.
 
 After routing, briefly display the active workflow path and directive/skill files
 being used so reviewers can verify the agent loaded the expected guidance. Keep
-this as routing evidence, not ceremony.
+this as routing evidence, not ceremony. When a harness or runtime provides logs,
+treat its loaded-file manifest as authoritative for which directive files were
+actually presented; the agent's route disclosure is useful self-report, not proof
+of internal model attention.
 
 For tiny low-risk edits, one sentence is enough:
 
@@ -130,9 +133,11 @@ Required directives:
 
 Required skills:
 
+- `skills/product-requirements-writer/SKILL.md` when turning a feature idea or vague request into a PRD/spec before planning
+- `skills/implementation-task-planner/SKILL.md` when turning a PRD/spec/issue into an implementation task list
 - `skills/self-audit/SKILL.md` after REFACTOR for Full Path work
 - `skills/test-reviewer/SKILL.md` when tests are added or substantially changed
-- `skills/spec-reviewer/SKILL.md` when a written spec exists
+- `skills/spec-reviewer/SKILL.md` when reviewing implementation against a written spec or preparing spec-governed work for merge
 
 ### Debugging Path
 
@@ -212,6 +217,8 @@ Required:
 
 - `directives/exploration-mode.md`
 - `directives/codebase-navigation.md` when repo context is needed
+- `skills/product-requirements-writer/SKILL.md` when the exploration output is a PRD/spec
+- `skills/implementation-task-planner/SKILL.md` when the exploration output is an implementation task list
 
 Do not edit files during Exploration Path unless the user explicitly switches to
 implementation. Use `directives/context-handoff.md` when exploration produces decisions, constraints, or risks that an implementation session should inherit.
@@ -302,5 +309,7 @@ classification and avoid making the current change worse.
 | Import/export/package/shared change | Boundary + relevant base path | boundary proof |
 | Repo edits from shared/default checkout | relevant base path + Workspace Isolation | isolation proof or explicit fallback |
 | PR/diff review | Review | structured findings |
+| PRD/spec writing | Exploration | product requirements writer, essential questions, no code edits |
+| PRD/spec/issue to task list | Exploration | implementation task planner, repo-grounded file/test/validation tasks, no code edits |
 | Investigation/explanation | Exploration | repo evidence, no edits |
 | Directive/workflow/policy change | Policy | proposal/tradeoffs, verification, handoff for multi-phase work, decision log if durable |

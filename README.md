@@ -12,8 +12,9 @@ dependencies between files.
 | **Workflow** | 10 directives | Govern how the agent works: adaptive routing, workspace isolation, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
-| **Skills** | 7 skills | Code reviewer, test reviewer, spec reviewer, self-audit, systematic debugging, architecture boundary reviewer, and codebase health reviewer |
+| **Skills** | 9 skills | Code reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, self-audit, systematic debugging, architecture boundary reviewer, and codebase health reviewer |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
+| **Tooling** | TypeScript scripts | Validate directive wiring, assemble eval scenarios, record loaded-file manifests, and generate eval health reports |
 
 ## Quick Start
 
@@ -144,6 +145,19 @@ Reviews implementation against written specifications. Three-dimensional check:
 completeness (all requirements implemented), correctness (code matches spec
 intent), and coherence (design decisions followed). Natural pairing with
 test-reviewer — one reviews tests, the other reviews implementation against specs.
+
+### Product Requirements Writer (`skills/product-requirements-writer/SKILL.md`)
+
+Turns rough feature ideas, product requests, vague requirements, or problem
+statements into concrete PRDs/specs before implementation planning. Asks only
+essential clarifying questions, captures goals and non-goals, and stops before
+coding.
+
+### Implementation Task Planner (`skills/implementation-task-planner/SKILL.md`)
+
+Turns a PRD, issue, acceptance criteria, or requirements document into a staged
+implementation task list with relevant files, likely tests, validation gates, and
+review checkpoints. Grounds file paths in repo evidence or marks them tentative.
 
 ### Self-Audit (`skills/self-audit/SKILL.md`)
 

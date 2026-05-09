@@ -18,11 +18,15 @@ This repository is a portable library of AI coding-agent instructions: reusable 
 | ------- | ------- |
 | `git status --short` | Baseline check before edits and final cleanliness check. |
 | `git diff --check` | Detect whitespace errors in changed files. |
-| `bash -n evals/run-scenario.sh` | Syntax-check the eval helper script when touched. |
-| `evals/run-scenario.sh <scenario-name>` | Manually exercise a directive/skill scenario in a temporary workspace. |
-| `python3 - <<'PY' ... PY` | Use small repo-local validation scripts for Markdown frontmatter, routing metadata, or link/path checks when no dedicated validator exists. |
+| `npm install` | Install TypeScript tooling for repo scripts. |
+| `npm run check` | Type-check TypeScript scripts and validate directive/skill wiring. |
+| `npm run eval:report` | Regenerate `evals/results/report.html` from structured eval results and run manifests. |
+| `bash -n evals/run-scenario.sh` | Syntax-check the eval wrapper when touched. |
+| `evals/run-scenario.sh <scenario-name>` | Manually exercise a directive/skill scenario in a temporary workspace and write a run manifest. |
 
-There is no global build/test/lint command for the whole repository today. Choose the smallest evidence that matches the touched files and state when a check is not applicable.
+Repo automation should be written in TypeScript. Avoid adding new Python scripts; if a small one-off check is needed, prefer `npm run validate` or a temporary Node/TypeScript snippet.
+
+There is no global application build command for this content-first repository today. Choose the smallest evidence that matches the touched files and state when a check is not applicable.
 
 ## Mandatory Workflow
 
@@ -102,6 +106,8 @@ Load the relevant skill selected by adaptive routing before performing any task 
 | Code Reviewer | Before reviewing pull requests, branches, diffs, or local changes for merge risk | `skills/code-reviewer/SKILL.md` |
 | Test Reviewer | Before writing or reviewing eval scenarios, tests, or test-like checklists | `skills/test-reviewer/SKILL.md` |
 | Spec Reviewer | Before merging when a written spec or requirements document governs the change | `skills/spec-reviewer/SKILL.md` |
+| Product Requirements Writer | Before turning a feature idea, product request, or vague requirement into a PRD/spec | `skills/product-requirements-writer/SKILL.md` |
+| Implementation Task Planner | Before turning a PRD, issue, acceptance criteria, or requirements doc into implementation tasks | `skills/implementation-task-planner/SKILL.md` |
 | Self-Audit | After REFACTOR, before VERIFY for Full Path work | `skills/self-audit/SKILL.md` |
 | Systematic Debugging | Before fixing bugs, failing tests, CI/build failures, regressions, or integration failures | `skills/systematic-debugging/SKILL.md` |
 | Architecture Boundary Reviewer | Before merging changes to imports, exports, packages, services, shared code, file layout, or template/reference paths | `skills/architecture-boundary-reviewer/SKILL.md` |
