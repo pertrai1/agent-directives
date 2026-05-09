@@ -28,6 +28,7 @@ type Manifest = {
   claimed_loaded_files: string[];
   completed_at?: string;
   exit_status?: number | null;
+  error_message?: string;
 };
 
 function usage(): never {
@@ -143,6 +144,15 @@ console.log('Tip: your global ~/.claude/CLAUDE.md is still loaded — move it as
 console.log('');
 const result = spawnSync('claude', { cwd: workspace, stdio: 'inherit' });
 manifest.completed_at = new Date().toISOString();
+if (result.error) {
+  const error = result.error as NodeJS.ErrnoException;
+  const exitStatus = error.code === 'ENOENT' ? 127 : 1;
+  console.error(`Failed to launch claude: ${result.error.message}`);
+  manifest.exit_status = exitStatus;
+  manifest.error_message = result.error.message;
+  writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  process.exit(exitStatus);
+}
 manifest.exit_status = result.status;
 writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 process.exit(result.status ?? 1);

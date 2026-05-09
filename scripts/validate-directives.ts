@@ -77,7 +77,14 @@ function validateScenario(path: string): void {
 const directives = readdirSync(join(repoRoot, 'directives')).filter((file) => file.endsWith('.md')).map((file) => `directives/${file}`);
 const skills = readdirSync(join(repoRoot, 'skills'), { withFileTypes: true })
   .filter((entry) => entry.isDirectory())
-  .map((entry) => `skills/${entry.name}/SKILL.md`);
+  .flatMap((entry) => {
+    const path = `skills/${entry.name}/SKILL.md`;
+    if (!exists(path)) {
+      fail(`skills/${entry.name}: missing SKILL.md`);
+      return [];
+    }
+    return [path];
+  });
 const templates = readdirSync(join(repoRoot, 'templates')).filter((file) => file.endsWith('.md')).map((file) => `templates/${file}`);
 const scenarios = readdirSync(join(repoRoot, 'evals', 'scenarios')).filter((file) => file.endsWith('.md')).map((file) => `evals/scenarios/${file}`);
 
