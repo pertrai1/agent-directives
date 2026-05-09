@@ -51,6 +51,11 @@ Before creating anything, determine whether the current checkout is already an
 isolated workspace:
 
 ```bash
+git rev-parse --is-inside-work-tree >/dev/null 2>&1 || {
+  echo "Repository is not git-backed; workspace-isolation directive does not apply."
+  exit 0
+}
+
 GIT_DIR=$(cd "$(git rev-parse --git-dir)" 2>/dev/null && pwd -P)
 GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
 BRANCH=$(git branch --show-current)
@@ -105,7 +110,8 @@ Use this priority order:
 1. An explicit user or project-instruction preference
 2. An existing project-local `.worktrees/`
 3. An existing project-local `worktrees/`
-4. A new project-local `.worktrees/`
+4. An outside-repo worktree location
+5. A new project-local `.worktrees/` only when it is already ignored or the user explicitly approves changing ignore rules
 
 #### Ignore verification
 
@@ -117,9 +123,10 @@ step:
 git check-ignore -q "$CHOSEN_DIR" 2>/dev/null
 ```
 
-If the chosen directory is not ignored, add that directory to `.gitignore`
-before creating the worktree. Do not leave project-local worktree contents
-visible to `git status`.
+If the chosen directory is not ignored, do **not** silently modify tracked repo
+files before isolation. Prefer an already-ignored directory, add an untracked
+rule in `.git/info/exclude`, or use an outside-repo location. Ask for explicit
+user consent before changing `.gitignore`.
 
 #### Create the worktree
 
