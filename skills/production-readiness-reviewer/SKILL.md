@@ -85,10 +85,10 @@ Ask what can fail even if tests pass:
   after a local timeout?
 - What happens if the deploy is partial, old and new code run together, or the
   operation runs twice?
-- What happens with large inputs, empty states, repeated retries, duplicate
-  messages, or stale caches?
-- What data can be corrupted, lost, duplicated, exposed, or made inconsistent?
-- What is the blast radius across users, tenants, services, and jobs?
+- How does the system behave with large inputs, empty states, repeated retries,
+  duplicate messages, or stale caches?
+- Which data can be corrupted, lost, duplicated, exposed, or made inconsistent?
+- How large is the blast radius across users, tenants, services, and jobs?
 
 ### Step 3: Check Observability
 
@@ -145,8 +145,11 @@ smallest production-safety fix, such as:
 ```md
 ## Production Readiness Review
 
-### Risk Class
-- <Persistence/data | External dependency | Async/background work | ...>
+### Risk Classes
+- <Persistence/data>
+- <External dependency>
+- <Async/background work>
+- <...>
 
 ### Findings
 #### BLOCKER: <production safety issue>
