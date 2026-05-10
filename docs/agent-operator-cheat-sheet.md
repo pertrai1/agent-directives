@@ -84,13 +84,26 @@ Example:
   - spec-governed work -> spec-reviewer
   - boundary-sensitive changes -> architecture-boundary-reviewer
   - TS/JS health/refactor concerns -> codebase-health-reviewer
+  - production-sensitive changes -> production-readiness-reviewer
 - Expected behavior:
   - Structured findings and risk assessment
   - No code edits unless explicitly requested
 - Good prompt:
   - “Review this PR for merge risk and missing test coverage; do not edit code yet.”
 
-### 7) Investigation / architecture understanding / option comparison
+### 7) Production-sensitive changes
+- Route: Base path + Production Readiness Reviewer skill
+- Required skill:
+  - production-readiness-reviewer
+- Use when changes touch persistence/migrations, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility.
+- Expected behavior:
+  - Identify production risk class
+  - Review failure modes, observability, rollback/recovery, compatibility, and scale
+  - Separate blockers from should-fix and follow-up operational hardening
+- Good prompt:
+  - “Review this payment retry change for production readiness before merge.”
+
+### 8) Investigation / architecture understanding / option comparison
 - Route: Exploration Path
 - Required directive:
   - exploration-mode
@@ -101,7 +114,7 @@ Example:
 - Good prompt:
   - “Explore options for X and recommend one with tradeoffs; no implementation yet.”
 
-### 8) Workflow/policy/directive/skill changes
+### 9) Workflow/policy/directive/skill changes
 - Route: Policy Path
 - Required directives:
   - task-framing

@@ -12,7 +12,7 @@ dependencies between files.
 | **Workflow** | 10 directives | Govern how the agent works: adaptive routing, workspace isolation, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
-| **Skills** | 9 skills | Code reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, self-audit, systematic debugging, architecture boundary reviewer, and codebase health reviewer |
+| **Skills** | 10 skills | Code reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, and production readiness reviewer |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 | **Tooling** | TypeScript scripts | Validate directive wiring, assemble eval scenarios, record loaded-file manifests, and generate eval health reports |
 
@@ -187,6 +187,14 @@ Interprets Fallow and fallback static-analysis output for TypeScript/JavaScript
 codebase health: dead code, duplication, complexity, circular dependencies,
 boundary violations, and architecture drift. Separates new regressions from
 pre-existing cleanup follow-ups.
+
+### Production Readiness Reviewer (`skills/production-readiness-reviewer/SKILL.md`)
+
+Reviews whether working code is safe to ship and operate when a change touches
+persistence, external services, async jobs, auth/security/privacy, infra/config,
+critical user paths, performance/scale, or cross-service compatibility. Focuses
+on failure modes, observability, rollback/recovery, data safety, compatibility,
+and scale.
 
 ## Templates
 
