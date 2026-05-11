@@ -83,7 +83,18 @@ Example format:
 
 If the user asks for the PRD immediately and the gaps are minor, state assumptions instead of blocking.
 
-### 3. Generate the PRD
+### 3. Refine Raw Ideas Before Writing
+
+When the request is still a raw idea rather than a clear feature request, do a lightweight refinement pass before generating the PRD:
+
+1. Restate the idea as a crisp "How might we..." problem statement.
+2. Offer 2-3 meaningfully different directions, including the simplest useful version.
+3. Ask the user to choose a direction if the choice changes scope, user value, or success criteria.
+4. Capture key assumptions to validate and an explicit MVP scope in the PRD.
+
+Do not run a broad ideation workshop by default. Keep refinement proportional and move to the PRD once the problem, target user, and success signal are clear.
+
+### 4. Generate the PRD
 
 Use this structure unless the repo has a stronger local convention:
 
@@ -105,6 +116,12 @@ Briefly describe the feature, problem, and intended outcome.
 ## User Stories
 - As a <user>, I want <capability>, so that <benefit>.
 
+## MVP Scope
+- <Smallest useful version that validates the core product assumption.>
+
+## Key Assumptions
+- <Assumption and how it could be validated.>
+
 ## Functional Requirements
 1. The system must <required behavior>.
 2. The system must <required behavior>.
@@ -124,7 +141,7 @@ Briefly describe the feature, problem, and intended outcome.
 
 For small internal features, keep the PRD lightweight. Do not inflate it with generic product-management boilerplate.
 
-### 4. Save the Artifact When Working in a Repo
+### 5. Save the Artifact When Working in a Repo
 
 If file editing is in scope, save the PRD under the project root as:
 
@@ -134,7 +151,7 @@ tasks/prd-[feature-name].md
 
 Use lowercase hyphenated names. If the repo already has a planning/spec directory, follow that convention instead and mention the chosen path.
 
-### 5. Stop Before Implementation
+### 6. Stop Before Implementation
 
 After producing the PRD, stop. Do not generate implementation tasks unless the user asks or routing selects `skills/implementation-task-planner/SKILL.md` as a separate follow-on step. Do not edit product code.
 
@@ -174,7 +191,7 @@ Open questions: <none or short list>
 ## Verification Checklist
 
 - [ ] Critical gaps were clarified or assumptions were stated
-- [ ] PRD has goals, non-goals, functional requirements, success metrics, and open questions
+- [ ] PRD has goals, non-goals, MVP scope, key assumptions, functional requirements, success metrics, and open questions
 - [ ] Requirements are observable and suitable for implementation planning
 - [ ] Output path follows repo convention or `tasks/prd-[feature-name].md`
 - [ ] No implementation code was changed
