@@ -138,6 +138,7 @@ Required skills:
 - `skills/self-audit/SKILL.md` after REFACTOR for Full Path work
 - `skills/test-reviewer/SKILL.md` when tests are added or substantially changed
 - `skills/spec-reviewer/SKILL.md` when reviewing implementation against a written spec or preparing spec-governed work for merge
+- `skills/production-readiness-reviewer/SKILL.md` before merge/review when a change touches persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility
 
 ### Debugging Path
 
@@ -205,6 +206,7 @@ Required skills:
 - `skills/spec-reviewer/SKILL.md` for spec-backed work
 - `skills/architecture-boundary-reviewer/SKILL.md` for imports/exports/packages/shared code
 - `skills/codebase-health-reviewer/SKILL.md` for TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes
+- `skills/production-readiness-reviewer/SKILL.md` for production-sensitive changes involving persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility
 
 Do not edit code during Review Path unless the user asks for fixes. Use `directives/context-handoff.md` for compact PR/review handoffs when review findings will be fixed later or transferred to another session.
 
@@ -249,8 +251,9 @@ Escalate to Full Path or add a specialized path when any of these are true:
 
 | Risk trigger | Add |
 | --- | --- |
-| Auth, permissions, security, privacy, payments, data loss | Full Path + stronger verification |
-| Database schema, migrations, persistence, queues | Full Path + explicit rollback/edge-case proof |
+| Auth, permissions, security, privacy, payments, data loss | Full Path + Production Readiness Review + stronger verification |
+| Database schema, migrations, persistence, queues | Full Path + Production Readiness Review + explicit rollback/edge-case proof |
+| External services, async jobs, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility | Full Path + Production Readiness Review |
 | Public API, exported types, package entry points | Full Path + Integration Proof + Boundary Path |
 | Imports, shared utilities, packages, folders, services | Boundary Path |
 | Shared/default checkout, unrelated local changes, or explicit request for isolation before repo edits | Workspace Isolation Path |

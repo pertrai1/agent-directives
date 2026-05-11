@@ -121,6 +121,7 @@ Load the relevant skill selected by adaptive routing for the task type.
 - `skills/systematic-debugging/SKILL.md` — Before fixing bugs, failing tests, CI failures, or regressions
 - `skills/architecture-boundary-reviewer/SKILL.md` — Before merging changes to imports, exports, packages, services, shared code, or folder boundaries
 - `skills/codebase-health-reviewer/SKILL.md` — Before merging TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes
+- `skills/production-readiness-reviewer/SKILL.md` — Before merging/reviewing production-sensitive changes: persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility
 
 ## Decision Log Lookup
 
