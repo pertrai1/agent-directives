@@ -89,6 +89,29 @@ block.
 
 ---
 
+## Skill Discovery Map
+
+Use this map after selecting the workflow path. Do not rely on inference when a
+listed situation matches: load every matching skill before performing work it
+covers. The path column shows where the situation commonly appears; it is not a
+filter that prevents loading a matched skill when paths are combined or escalated.
+If no row matches, state that no specialist skill is required.
+
+| Situation / intent | Common path(s) | Required skill |
+| --- | --- | --- |
+| Vague feature idea, product request, or unclear requirement needs a PRD/spec | Exploration / Full / Policy | `skills/product-requirements-writer/SKILL.md` |
+| PRD, issue, spec, or acceptance criteria needs implementation tasks | Exploration / Full / Policy | `skills/implementation-task-planner/SKILL.md` |
+| Bug, regression, failing test, failing CI/build/lint/type-check, or unexpected behavior | Debugging | `skills/systematic-debugging/SKILL.md` |
+| Reviewing a PR, branch, diff, or local changes | Review | `skills/code-reviewer/SKILL.md` |
+| Writing, changing, or reviewing tests/eval scenarios | Full / Review | `skills/test-reviewer/SKILL.md` |
+| Implementation must be checked against a written spec/PRD | Full / Review | `skills/spec-reviewer/SKILL.md` |
+| Imports, exports, package boundaries, folders, services, shared utilities, or dependency direction change | Boundary / Review | `skills/architecture-boundary-reviewer/SKILL.md` |
+| TypeScript/JavaScript refactor, cleanup, shared utilities, dead-code, duplication, complexity, or static-analysis health concern | Full / Review | `skills/codebase-health-reviewer/SKILL.md` |
+| Persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility | Full / Debugging / Review | `skills/production-readiness-reviewer/SKILL.md` |
+| Full Path work reaches post-REFACTOR pre-verification checkpoint | Full | `skills/self-audit/SKILL.md` |
+
+---
+
 ## Workflow Paths
 
 ### Light Path
