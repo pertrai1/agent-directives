@@ -9,6 +9,7 @@
 Load the following into agent context before running:
 
 - `directives/test-driven-development.md`
+- `skills/test-reviewer/SKILL.md`
 - `skills/self-audit/SKILL.md`
 
 Give the agent a small implementation task first (e.g., "build a function that
