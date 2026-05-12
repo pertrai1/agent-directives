@@ -212,7 +212,11 @@ it("should register user and send welcome email", async () => {
 
 ### Rule 5: DAMP Over DRY
 
-Tests should be descriptive and meaningful even when that means some duplication. Flag shared helpers, fixtures, or setup factories when they hide the behavior under test, force the reader to chase indirection, or make many tests fail for one helper change.
+DAMP (Descriptive And Meaningful Phrases) is usually better than DRY (Don't
+Repeat Yourself) in tests. Tests should be descriptive and meaningful even when
+that means some duplication. Flag shared helpers, fixtures, or setup factories
+when they hide the behavior under test, force the reader to chase indirection, or
+make many tests fail for one helper change.
 
 ### Rule 6: Test Outcomes, Not Internals
 

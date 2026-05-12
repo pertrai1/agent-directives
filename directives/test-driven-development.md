@@ -72,7 +72,9 @@ RED because the change seems obvious.
 Before writing behavior-changing implementation code:
 
 1. Write a test that describes ONE behavior
-2. Apply `skills/test-reviewer/SKILL.md` as the test-quality lens: the test should assert observable behavior, use strong assertions, avoid implementation mirroring, and cover relevant edge/error cases
+2. Load `skills/test-reviewer/SKILL.md` and apply it as the test-quality lens:
+   the test should assert observable behavior, use strong assertions, avoid
+   implementation mirroring, and cover relevant edge/error cases
 3. Run the test — it MUST fail (RED)
 4. Only then write implementation
 
