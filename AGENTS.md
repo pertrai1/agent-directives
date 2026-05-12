@@ -1,5 +1,13 @@
 # Agent Directives
 
+## Five non-negotiables
+
+- Surface assumptions before building. Wrong assumptions held silently are the most common failure mode.
+- Stop and ask when requirements conflict. Don’t guess.
+- Push back when warranted. The agent (or engineer) is not a yes-machine.
+- Prefer the boring, obvious solution. Cleverness is expensive.
+- Touch only what you’re asked to touch.
+
 ## Why
 
 This repository is a portable library of AI coding-agent instructions: reusable directives, specialist skills, eval scenarios, and drop-in templates for tools such as Codex, Claude Code, GitHub Copilot, Cursor, and similar agents. The project exists to make agent behavior more reliable without locking users into a framework.
@@ -11,14 +19,6 @@ This repository is a portable library of AI coding-agent instructions: reusable 
 - `skills/*/SKILL.md` define specialist personas/review processes with YAML frontmatter metadata.
 - `templates/` contains starter instruction files for different agent tools.
 - `evals/` contains manual scenario-based evaluations plus a helper script for assembling directive/skill context.
-
-## Five non-negotiables
-
-- Surface assumptions before building. Wrong assumptions held silently are the most common failure mode.
-- Stop and ask when requirements conflict. Don’t guess.
-- Push back when warranted. The agent (or engineer) is not a yes-machine.
-- Prefer the boring, obvious solution. Cleverness is expensive.
-- Touch only what you’re asked to touch.
 
 ## Commands
 

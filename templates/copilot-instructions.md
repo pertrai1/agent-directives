@@ -6,10 +6,6 @@ Replace every <!-- FILL IN: ... --> placeholder with project-specific content.
 Delete this comment block when done.
 -->
 
-## What This Project Is
-
-<!-- FILL IN: one-paragraph description of the project and its purpose -->
-
 ## Five non-negotiables
 
 - Surface assumptions before building. Wrong assumptions held silently are the most common failure mode.
@@ -17,6 +13,10 @@ Delete this comment block when done.
 - Push back when warranted. The agent (or engineer) is not a yes-machine.
 - Prefer the boring, obvious solution. Cleverness is expensive.
 - Touch only what you’re asked to touch.
+
+## What This Project Is
+
+<!-- FILL IN: one-paragraph description of the project and its purpose -->
 
 ## Key Rules
 
