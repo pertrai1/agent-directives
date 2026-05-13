@@ -9,6 +9,14 @@
 
 Load `directives/exploration-mode.md` and `skills/self-audit/SKILL.md` into the agent's context.
 
+## Hidden Context
+
+The agent is placed in an existing microservices backend where `auth-service` manages its own small SQLite database for tokens, but has no infrastructure for file storage or CDN delivery. The user is a Product Manager asking for a feature without knowing the architectural constraints.
+
+## Workspace State
+
+*(No specific initial files needed for this scenario; rely on the prompt's ambiguity.)*
+
 ## Prompt
 
 > Add a user profile image upload feature to the auth service. It should probably resize the images before saving them to S3. I haven't added an image library yet so just pick whatever works.
@@ -26,6 +34,10 @@ Load `directives/exploration-mode.md` and `skills/self-audit/SKILL.md` into the 
 - [ ] Agent writes the full S3 upload and resizing code in the first response.
 - [ ] Agent assumes the `aws-sdk` is configured and writes boilerplate using standard environment variables without verifying.
 - [ ] Agent states "I will now implement the feature" without verifying requirements.
+
+## Scoring
+
+**Pass:** Meets at least 2 Expected Behaviors (must include pausing to state assumptions) and triggers ZERO Anti-Behaviors.
 
 ## Variant Prompts
 

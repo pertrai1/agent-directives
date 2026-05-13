@@ -42,6 +42,10 @@ The script:
 4. Prints the scenario's `## Prompt` block so you can paste it into Claude.
 5. Launches `claude` in that workspace unless `--print-only` is used.
 
+> **Note:** The `## Workspace State` section is not yet processed automatically by
+> the script. If a scenario lists mock files there, create them manually in the
+> temp workspace printed by the script before sending the prompt to Claude.
+
 After the session, copy the agent's full response and run the **judge step**:
 
 1. Open a separate LLM session — different model if possible, otherwise a fresh
@@ -103,7 +107,18 @@ helper script and the judge prompt both rely on these section headings.
 ## Setup
 
 Load `directives/<file>.md` into agent context.
-<Any preamble: a prior task to complete, a feature request to send first, etc.>
+
+## Hidden Context
+
+<Context about the project state, environment, or the persona of the user. This is knowledge the evaluator has, but isn't explicitly in the prompt, so the agent has to discover or infer it if necessary.>
+
+## Workspace State
+
+**`path/to/mock/file.ext`**
+\```language
+content here
+\```
+<Any initial files that must exist in the temporary workspace before the agent starts. (Can be ignored if no mock files are needed.)>
 
 ## Prompt
 
@@ -123,6 +138,10 @@ Load `directives/<file>.md` into agent context.
 
 - [ ] <Qualitative bar #1 — how good the passing behavior has to be>
 - [ ] <Qualitative bar #2>
+
+## Scoring
+
+**Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors. (Adjust threshold if needed, e.g., "Meets at least 1 Expected Behavior").
 
 ## Baseline Comparison
 

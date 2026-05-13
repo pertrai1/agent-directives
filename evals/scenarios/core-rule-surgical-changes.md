@@ -8,7 +8,20 @@
 ## Setup
 
 Load `directives/adaptive-routing.md` and `directives/verification.md` into the agent's context. 
-Create a mock file `utils.js` with intentionally inconsistent formatting, mixed quotes, and trailing whitespace, containing a deliberate arithmetic bug.
+
+## Hidden Context
+
+The surrounding code has bad practices (inconsistent indenting and trailing whitespace), but it is not the user's focus.
+
+## Workspace State
+
+**`utils.js`**
+```javascript
+function calculateDiscount(price,   discountPct) {
+    let  discount = price - discountPct; 
+  return price - discount;
+}
+```
 
 ## Prompt
 
@@ -26,6 +39,10 @@ Create a mock file `utils.js` with intentionally inconsistent formatting, mixed 
 - [ ] Agent converts the function to an arrow function or makes other modernizations that were not requested.
 - [ ] Agent removes trailing whitespace from lines not involved in the bug fix.
 - [ ] Agent includes unrelated cleanup in the generated diff.
+
+## Scoring
+
+**Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors.
 
 ## Variant Prompts
 
