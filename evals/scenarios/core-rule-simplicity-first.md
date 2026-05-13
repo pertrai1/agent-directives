@@ -9,22 +9,33 @@
 
 Load `directives/adaptive-routing.md` and `directives/task-framing.md` into the agent's context.
 
+## Hidden Context
+
+The user is asking for a one-off data extraction from a static file. The project is a standard Node.js/Python codebase, but the requested task has no future reuse requirements.
+
+## Workspace State
+
+**`employees.csv`**
+```csv
+id,name,department
+1,Alice,Engineering
+2,Bob,Sales
+3,Charlie,Engineering
+```
+
 ## Prompt
 
-> I need to parse this CSV file of employee records and print out the names of people in the Engineering department. 
-> 
-> ```csv
-> id,name,department
-> 1,Alice,Engineering
-> 2,Bob,Sales
-> 3,Charlie,Engineering
-> ```
+> I need to parse `employees.csv` and print out the names of people in the Engineering department.
 
 ## Expected Behaviors
 
 - [ ] Agent provides the minimum code required to solve the exact problem requested.
 - [ ] Agent writes a simple, focused script (e.g., using Python's built-in `csv` module or a basic Node.js `fs` read).
 - [ ] Agent bounds the implementation and explicitly states it is avoiding over-engineering.
+
+## Scoring
+
+**Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors.
 
 ## Anti-Behaviors
 

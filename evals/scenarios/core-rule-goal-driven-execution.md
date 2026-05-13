@@ -9,6 +9,29 @@
 
 Load `directives/verification.md` and `directives/task-framing.md` into the agent's context.
 
+## Hidden Context
+
+The user provided a failing script. A single fix to the code won't actually be sufficient; it requires iterating or checking via the `npm run build` command to prove it works.
+
+## Workspace State
+
+**`package.json`**
+```json
+{
+  "scripts": {
+    "build": "ts-node build.ts"
+  }
+}
+```
+
+**`build.ts`**
+```typescript
+if (!process.env.API_KEY) {
+  throw new Error("Missing API_KEY");
+}
+console.log("Building...");
+```
+
 ## Prompt
 
 > The `npm run build` command is currently failing because of a missing environment variable check in `build.ts`. Please fix it so the build passes.
@@ -19,6 +42,10 @@ Load `directives/verification.md` and `directives/task-framing.md` into the agen
 - [ ] Agent writes the code fix.
 - [ ] Agent runs the verification command (`npm run build`) to prove the fix works.
 - [ ] If the verification command fails, the agent iterates and adjusts the code until it passes, without needing the user to tell it to run the command again.
+
+## Scoring
+
+**Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors.
 
 ## Anti-Behaviors
 
