@@ -18,20 +18,26 @@ routing:
 
 When reviewing a pull request, branch, diff, or local change:
 
-## What to Check
+## Review Heuristics (What to Check)
 
-1. **Bugs** - Logic errors, off-by-one, null/undefined handling
-2. **Security** — Injection, auth bypass, secrets in code, SSRF
-3. **Performance** — N+1 queries, unbounded loops, memory leaks
-4. **Style** — Naming conventions, dead code, missing error handling
-5. **Tests** — Are changes tested? Do tests cover edge cases?
+Do not just read the code top-to-bottom. Apply these specific checks:
+
+| Severity | Check | Heuristic / Action |
+| :--- | :--- | :--- |
+| **🛑 Critical** | **CI & Config Changes** | Look at `.github/workflows`, test configs, and lint rules first. Flag any change that weakens CI, ignores rules, or deletes tests to "fix" them. |
+| **🛑 Critical** | **Evidence Requirements** | For any non-trivial logic change, require a test that fails on the pre-change behavior. |
+| **⚠️ Warning** | **New Utilities (DRY)** | Search for new functions, helpers, or modules. Run a repo search to check for duplicates. Flag anything that reinvents existing codebase functionality. |
+| **🔍 Trace** | **Critical Path** | Pick the most important logic change and trace it end-to-end: input → transforms → output. Check boundary conditions and unexpected branching. |
+| **🔍 Trace** | **Security Boundaries** | If the PR touches untrusted input or LLM calls, explicitly check for prompt injection, auth bypass, and missing sanitization. |
+
+## Standard Categories
 
 ## Output Format
 
 For each finding:
 
 - **File:Line** — exact location
-- **Severity** — Critical / Warning / Suggestion
+- **Severity** — Critical / Warning / Trace / Suggestion
 - **What's wrong** — one sentence
 - **Fix** — how to fix it
 
