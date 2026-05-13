@@ -22,13 +22,13 @@ When reviewing a pull request, branch, diff, or local change:
 
 Do not just read the code top-to-bottom. Apply these specific checks:
 
-| Priority | Check | Heuristic / Action |
+| Severity | Check | Heuristic / Action |
 | :--- | :--- | :--- |
-| **🛑 BLOCKER** | **CI & Config Changes** | Look at `.github/workflows`, test configs, and lint rules first. Flag any change that weakens CI, ignores rules, or deletes tests to "fix" them. |
-| **🛑 BLOCKER** | **Evidence Requirements** | For any non-trivial logic change, require a test that fails on the pre-change behavior. |
-| **⚠️ WARNING** | **New Utilities (DRY)** | Search for new functions, helpers, or modules. Run a repo search to check for duplicates. Flag anything that reinvents existing codebase functionality. |
-| **🔍 TRACE** | **Critical Path** | Pick the most important logic change and trace it end-to-end: input → transforms → output. Check boundary conditions and unexpected branching. |
-| **🔍 TRACE** | **Security Boundaries** | If the PR touches untrusted input or LLM calls, explicitly check for prompt injection, auth bypass, and missing sanitization. |
+| **🛑 Critical** | **CI & Config Changes** | Look at `.github/workflows`, test configs, and lint rules first. Flag any change that weakens CI, ignores rules, or deletes tests to "fix" them. |
+| **🛑 Critical** | **Evidence Requirements** | For any non-trivial logic change, require a test that fails on the pre-change behavior. |
+| **⚠️ Warning** | **New Utilities (DRY)** | Search for new functions, helpers, or modules. Run a repo search to check for duplicates. Flag anything that reinvents existing codebase functionality. |
+| **🔍 Trace** | **Critical Path** | Pick the most important logic change and trace it end-to-end: input → transforms → output. Check boundary conditions and unexpected branching. |
+| **🔍 Trace** | **Security Boundaries** | If the PR touches untrusted input or LLM calls, explicitly check for prompt injection, auth bypass, and missing sanitization. |
 
 ## Standard Categories
 
@@ -37,7 +37,7 @@ Do not just read the code top-to-bottom. Apply these specific checks:
 For each finding:
 
 - **File:Line** — exact location
-- **Severity** — Critical / Warning / Suggestion
+- **Severity** — Critical / Warning / Trace / Suggestion
 - **What's wrong** — one sentence
 - **Fix** — how to fix it
 
