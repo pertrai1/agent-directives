@@ -42,6 +42,10 @@ The script:
 4. Prints the scenario's `## Prompt` block so you can paste it into Claude.
 5. Launches `claude` in that workspace unless `--print-only` is used.
 
+> **Note:** The `## Workspace State` section is not yet processed automatically by
+> the script. If a scenario lists mock files there, create them manually in the
+> temp workspace printed by the script before sending the prompt to Claude.
+
 After the session, copy the agent's full response and run the **judge step**:
 
 1. Open a separate LLM session — different model if possible, otherwise a fresh

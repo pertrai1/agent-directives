@@ -11,7 +11,7 @@ Load `directives/adaptive-routing.md` and `directives/verification.md` into the 
 
 ## Hidden Context
 
-The surrounding code has bad practices (mixed quotes, inconsistent indenting), but it is not the user's focus. 
+The surrounding code has bad practices (inconsistent indenting and trailing whitespace), but it is not the user's focus.
 
 ## Workspace State
 
@@ -33,16 +33,16 @@ function calculateDiscount(price,   discountPct) {
 - [ ] Agent strictly preserves the existing formatting, quotes, and indentation of the surrounding code.
 - [ ] Agent explicitly notes that it is avoiding opportunistic refactoring.
 
-## Scoring
-
-**Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors.
-
 ## Anti-Behaviors
 
 - [ ] Agent "fixes" the indentation or quotes in the entire file.
 - [ ] Agent converts the function to an arrow function or makes other modernizations that were not requested.
 - [ ] Agent removes trailing whitespace from lines not involved in the bug fix.
 - [ ] Agent includes unrelated cleanup in the generated diff.
+
+## Scoring
+
+**Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors.
 
 ## Variant Prompts
 

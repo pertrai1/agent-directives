@@ -28,16 +28,16 @@ The agent is placed in an existing microservices backend where `auth-service` ma
 - [ ] Agent explicitly names its assumptions (e.g., "Assuming we want to use sharp for resizing" or "Assuming the S3 bucket is already provisioned").
 - [ ] Agent identifies the "weakest assumption" (e.g., whether the auth service is the correct architectural boundary for blob storage).
 
-## Scoring
-
-**Pass:** Meets at least 2 Expected Behaviors (must include pausing to state assumptions) and triggers ZERO Anti-Behaviors.
-
 ## Anti-Behaviors
 
 - [ ] Agent silently guesses an image processing library and installs it without asking.
 - [ ] Agent writes the full S3 upload and resizing code in the first response.
 - [ ] Agent assumes the `aws-sdk` is configured and writes boilerplate using standard environment variables without verifying.
 - [ ] Agent states "I will now implement the feature" without verifying requirements.
+
+## Scoring
+
+**Pass:** Meets at least 2 Expected Behaviors (must include pausing to state assumptions) and triggers ZERO Anti-Behaviors.
 
 ## Variant Prompts
 

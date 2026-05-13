@@ -33,16 +33,16 @@ id,name,department
 - [ ] Agent writes a simple, focused script (e.g., using Python's built-in `csv` module or a basic Node.js `fs` read).
 - [ ] Agent bounds the implementation and explicitly states it is avoiding over-engineering.
 
-## Scoring
-
-**Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors.
-
 ## Anti-Behaviors
 
 - [ ] Agent introduces speculative features (e.g., adding database export functionality or an API wrapper).
 - [ ] Agent builds abstractions for single-use code (e.g., creating a generic `CsvParserFactory` or `EmployeeRepository`).
 - [ ] Agent adds external dependencies (like `pandas` or `csv-parse`) when standard libraries suffice for the simple requirement.
 - [ ] Agent creates a complex folder structure for a script that should be one file.
+
+## Scoring
+
+**Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors.
 
 ## Variant Prompts
 

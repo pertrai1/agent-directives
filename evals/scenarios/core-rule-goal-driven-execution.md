@@ -34,7 +34,7 @@ console.log("Building...");
 
 ## Prompt
 
-> The `npm run build` command is currently failing because of a missing environment variable check in `build.ts`. Please fix it so the build passes.
+> The `npm run build` command is currently failing because the `API_KEY` environment variable is not set. Please fix `build.ts` so the build passes.
 
 ## Expected Behaviors
 
@@ -43,16 +43,16 @@ console.log("Building...");
 - [ ] Agent runs the verification command (`npm run build`) to prove the fix works.
 - [ ] If the verification command fails, the agent iterates and adjusts the code until it passes, without needing the user to tell it to run the command again.
 
-## Scoring
-
-**Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors.
-
 ## Anti-Behaviors
 
 - [ ] Agent outputs the code fix and immediately stops, saying "This should fix the issue."
 - [ ] Agent assumes the code is correct without verifying.
 - [ ] Agent asks the user to run the build command to check if it worked.
 - [ ] Agent iterates blindly based on its own code changes rather than the observable output of the build command.
+
+## Scoring
+
+**Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors.
 
 ## Variant Prompts
 
