@@ -72,7 +72,7 @@ For `cursor`, each entry is flattened to a single file in `.cursor/rules/<id>.md
 
 ### Conflict handling
 
-`skills add` and `skills sync` never silently overwrite a locally-modified file. If a target file already exists with content that differs from the source, the CLI reports a conflict and exits non-zero unless `--force` is passed. Identical files are skipped quietly.
+`agent-directives add` and `agent-directives sync` never silently overwrite a locally-modified file. If a target file already exists with content that differs from the source, the CLI reports a conflict and exits non-zero unless `--force` is passed. Files that already match the source are reported as `already up-to-date` and skipped.
 
 ### Local development
 

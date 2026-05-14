@@ -79,7 +79,7 @@ function assertFileMissing(path: string): void {
   if (existsSync(path)) throw new Error(`expected file NOT to exist: ${path}`);
 }
 
-console.log('skills list');
+console.log('list');
 test('lists entries by default', () => {
   withTempProject((cwd) => {
     const { stdout } = runCli('list', cwd);
@@ -119,7 +119,7 @@ test('rejects invalid --tool', () => {
   });
 });
 
-console.log('\nskills add');
+console.log('\nadd');
 test('installs to entry.path for --tool claude', () => {
   withTempProject((cwd) => {
     runCli('add adaptive-routing --tool claude', cwd);
@@ -179,7 +179,7 @@ test('rejects unknown entry', () => {
   });
 });
 
-console.log('\nskills check');
+console.log('\ncheck');
 test('reports missing required in empty project', () => {
   withTempProject((cwd) => {
     const { stderr, code } = runCli('check --tool claude', cwd, { allowFail: true });
@@ -196,7 +196,7 @@ test('reports success when all required installed', () => {
   });
 });
 
-console.log('\nskills sync');
+console.log('\nsync');
 test('installs all required with --yes', () => {
   withTempProject((cwd) => {
     runCli('sync --tool claude --yes', cwd);

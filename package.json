@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "bin": {
     "agent-directives": "./src/cli.ts"
   },
@@ -24,11 +27,11 @@
     "test:cli": "tsx scripts/test-cli.ts"
   },
   "dependencies": {
-    "commander": "^14.0.3"
+    "commander": "^14.0.3",
+    "tsx": "^4.19.2"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
-    "tsx": "^4.19.2",
     "typescript": "^5.4.5"
   }
 }

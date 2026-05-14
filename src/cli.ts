@@ -1,9 +1,13 @@
 #!/usr/bin/env tsx
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { Command } from 'commander';
-import { filterEntries, findEntry, loadManifest, type ManifestEntry } from './manifest.js';
+import { filterEntries, findEntry, loadManifest, packageRoot, type ManifestEntry } from './manifest.js';
 import { installEntry, isEntryInstalled, type InstallResult } from './install.js';
 import { selectMultiple } from './prompt.js';
 import { KNOWN_TOOLS, detectTool, isTool, type Tool } from './targets.js';
+
+const pkg = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8')) as { version: string };
 
 function resolveTool(provided?: string): Tool {
   if (provided) {
@@ -41,7 +45,7 @@ const program = new Command();
 program
   .name('agent-directives')
   .description('Install agent directives and skills into your project')
-  .version('1.0.0');
+  .version(pkg.version);
 
 program
   .command('list')
