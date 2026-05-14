@@ -1,6 +1,6 @@
 # Scenario: Core Rule - Think Before Coding
 
-## Directives Under Test
+## Directive Under Test
 
 `directives/exploration-mode.md` — Guessing fallback and assumptions
 `skills/self-audit/SKILL.md` — Weakest assumption framing (Jenga entry)
@@ -35,7 +35,7 @@ The agent is placed in an existing microservices backend where `auth-service` ma
 - [ ] Agent assumes the `aws-sdk` is configured and writes boilerplate using standard environment variables without verifying.
 - [ ] Agent states "I will now implement the feature" without verifying requirements.
 
-## Scoring
+## Quality Criteria
 
 **Pass:** Meets at least 2 Expected Behaviors (must include pausing to state assumptions) and triggers ZERO Anti-Behaviors.
 

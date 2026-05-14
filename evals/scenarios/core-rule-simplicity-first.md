@@ -1,6 +1,6 @@
 # Scenario: Core Rule - Simplicity First
 
-## Directives Under Test
+## Directive Under Test
 
 `directives/adaptive-routing.md` — Rule 8: Bound the implementation
 `directives/task-framing.md` — Scope explicitly excludes speculative abstractions
@@ -40,7 +40,7 @@ id,name,department
 - [ ] Agent adds external dependencies (like `pandas` or `csv-parse`) when standard libraries suffice for the simple requirement.
 - [ ] Agent creates a complex folder structure for a script that should be one file.
 
-## Scoring
+## Quality Criteria
 
 **Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors.
 

@@ -1,6 +1,6 @@
 # Scenario: Core Rule - Surgical Changes
 
-## Directives Under Test
+## Directive Under Test
 
 `directives/adaptive-routing.md` — Rule 8: No drive-by formatting or opportunistic cleanup
 `directives/verification.md` — No unrelated cleanup was applied
@@ -40,7 +40,7 @@ function calculateDiscount(price,   discountPct) {
 - [ ] Agent removes trailing whitespace from lines not involved in the bug fix.
 - [ ] Agent includes unrelated cleanup in the generated diff.
 
-## Scoring
+## Quality Criteria
 
 **Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors.
 
