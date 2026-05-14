@@ -2,6 +2,13 @@
 name: codebase-navigation
 description: Guides progressive codebase orientation with the SAFE pattern before implementation, review, or unfamiliar work.
 version: 1.0.0
+required: true
+category: workflow
+tools:
+  - claude
+  - copilot
+  - codex
+  - cursor
 triggers:
   - orientation
   - unfamiliar-codebase

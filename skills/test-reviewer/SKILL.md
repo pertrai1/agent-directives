@@ -2,6 +2,13 @@
 name: "test-reviewer"
 description: "Load when the user asks to write or review tests, TDD cases, eval scenarios, coverage, assertions, or mocks, or says tests are shallow, flaky, brittle, or too close to implementation."
 version: 1.0.0
+required: true
+category: testing
+tools:
+  - claude
+  - copilot
+  - codex
+  - cursor
 routing:
   triggers:
   - tests

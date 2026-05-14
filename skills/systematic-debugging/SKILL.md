@@ -2,6 +2,13 @@
 name: "systematic-debugging"
 description: "Load when the user reports a bug, failing test, CI/build/lint/typecheck failure, regression, flaky behavior, unexpected behavior, or asks to fix a failure or root-cause it."
 version: 1.0.0
+required: true
+category: debugging
+tools:
+  - claude
+  - copilot
+  - codex
+  - cursor
 routing:
   triggers:
   - bug

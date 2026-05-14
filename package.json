@@ -8,7 +8,8 @@
     "typecheck": "tsc --noEmit",
     "validate": "tsx scripts/validate-directives.ts",
     "eval:scenario": "tsx scripts/eval-scenario.ts",
-    "eval:report": "tsx evals/report-results.ts"
+    "eval:report": "tsx evals/report-results.ts",
+    "manifest": "tsx scripts/generate-manifest.ts"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

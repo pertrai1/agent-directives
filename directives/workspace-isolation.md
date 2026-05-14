@@ -2,6 +2,11 @@
 name: workspace-isolation
 description: Keeps mutable work in an isolated workspace by detecting existing isolation first, preferring native tools, and falling back to git worktrees only when needed.
 version: 1.0.0
+required: false
+category: workflow
+tools:
+  - claude
+  - codex
 triggers:
   - isolated-workspace
   - worktree

@@ -2,6 +2,13 @@
 name: "spec-reviewer"
 description: "Load when the user asks whether implementation matches a spec, requirements doc, acceptance criteria, or design plan, or says check what is missing, incomplete, or divergent before merge."
 version: 1.0.0
+required: false
+category: review
+tools:
+  - claude
+  - copilot
+  - codex
+  - cursor
 routing:
   triggers:
   - written-spec

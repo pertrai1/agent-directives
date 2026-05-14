@@ -2,6 +2,13 @@
 name: test-driven-development
 description: Defines RED/GREEN/REFACTOR expectations for behavior-changing implementation work and bug fixes.
 version: 1.0.0
+required: false
+category: testing
+tools:
+  - claude
+  - copilot
+  - codex
+  - cursor
 triggers:
   - behavior-change
   - new-feature

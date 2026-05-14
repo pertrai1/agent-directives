@@ -1,0 +1,342 @@
+{
+  "version": "1.0.0",
+  "entries": [
+    {
+      "id": "adaptive-routing",
+      "type": "directive",
+      "path": "directives/adaptive-routing.md",
+      "description": "Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.",
+      "version": "1.0.0",
+      "required": true,
+      "category": "workflow",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "architecture-boundaries",
+      "type": "directive",
+      "path": "directives/architecture-boundaries.md",
+      "description": "Preserves architecture DAG boundaries for imports, exports, packages, services, shared code, and dependency direction.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "architecture",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "codebase-navigation",
+      "type": "directive",
+      "path": "directives/codebase-navigation.md",
+      "description": "Guides progressive codebase orientation with the SAFE pattern before implementation, review, or unfamiliar work.",
+      "version": "1.0.0",
+      "required": true,
+      "category": "workflow",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "context-handoff",
+      "type": "directive",
+      "path": "directives/context-handoff.md",
+      "description": "Compresses task state at directive or session boundaries so later phases can continue from a compact, current-state handoff instead of drifting through accumulated chat history.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "workflow",
+      "tools": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "error-memory",
+      "type": "directive",
+      "path": "directives/error-memory.md",
+      "description": "Captures repeated mistakes in durable error memory only when recurrence and prevention criteria are met.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "memory",
+      "tools": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "exploration-mode",
+      "type": "directive",
+      "path": "directives/exploration-mode.md",
+      "description": "Supports investigation and option discovery before committing to an implementation approach.",
+      "version": "1.0.0",
+      "required": true,
+      "category": "workflow",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "session-decisions",
+      "type": "directive",
+      "path": "directives/session-decisions.md",
+      "description": "Captures durable decisions for repo policy, architecture, workflow, and cross-cutting conventions.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "memory",
+      "tools": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "specification-driven-development",
+      "type": "directive",
+      "path": "directives/specification-driven-development.md",
+      "description": "Requires written specifications for features or changes large enough that build-and-see would risk rework.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "workflow",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "task-framing",
+      "type": "directive",
+      "path": "directives/task-framing.md",
+      "description": "Frames non-trivial, ambiguous, high-risk, or cross-cutting tasks before substantial edits.",
+      "version": "1.0.0",
+      "required": true,
+      "category": "workflow",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "test-driven-development",
+      "type": "directive",
+      "path": "directives/test-driven-development.md",
+      "description": "Defines RED/GREEN/REFACTOR expectations for behavior-changing implementation work and bug fixes.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "testing",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "type-driven-development",
+      "type": "directive",
+      "path": "directives/type-driven-development.md",
+      "description": "Requires type and contract definition before implementation in typed projects or public API work.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "testing",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "verification",
+      "type": "directive",
+      "path": "directives/verification.md",
+      "description": "Requires structured evidence of correctness before quality gates and pull requests.",
+      "version": "1.0.0",
+      "required": true,
+      "category": "workflow",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "workspace-isolation",
+      "type": "directive",
+      "path": "directives/workspace-isolation.md",
+      "description": "Keeps mutable work in an isolated workspace by detecting existing isolation first, preferring native tools, and falling back to git worktrees only when needed.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "workflow",
+      "tools": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "id": "architecture-boundary-reviewer",
+      "type": "skill",
+      "path": "skills/architecture-boundary-reviewer/SKILL.md",
+      "description": "Load when changes touch imports, exports, public APIs, file moves, packages, services, layers, shared code, dependency direction, cycles, or the user asks if architecture boundaries still hold.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "review",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "code-reviewer",
+      "type": "skill",
+      "path": "skills/code-reviewer/SKILL.md",
+      "description": "Load when the user asks to review a PR, branch, diff, local changes, or says approve, merge, or check this change for bugs, regressions, security, maintainability, or merge risk.",
+      "version": "1.0.0",
+      "required": true,
+      "category": "review",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "codebase-health-reviewer",
+      "type": "skill",
+      "path": "skills/codebase-health-reviewer/SKILL.md",
+      "description": "Load when reviewing TypeScript/JavaScript refactors, cleanup, AI-generated code, shared utilities, dead code, duplication, complexity, circular dependencies, Fallow output, or maintainability drift.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "review",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "implementation-task-planner",
+      "type": "skill",
+      "path": "skills/implementation-task-planner/SKILL.md",
+      "description": "Load when the user has a PRD, issue, acceptance criteria, or requirements doc and wants a staged implementation task list with relevant files, tests, validation steps, and review checkpoints.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "planning",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "product-requirements-writer",
+      "type": "skill",
+      "path": "skills/product-requirements-writer/SKILL.md",
+      "description": "Load when the user wants to turn a feature idea, product request, vague requirement, or problem statement into a concrete PRD/spec before implementation planning or coding.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "planning",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "production-readiness-reviewer",
+      "type": "skill",
+      "path": "skills/production-readiness-reviewer/SKILL.md",
+      "description": "Load when reviewing changes that may affect production safety: persistence, migrations, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "review",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "self-audit",
+      "type": "skill",
+      "path": "skills/self-audit/SKILL.md",
+      "description": "Load when implementation is past GREEN/REFACTOR and the user asks for pre-PR verification, self-audit, scope check, weakest-assumption review, anomaly triage, or a confidence check.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "review",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "spec-reviewer",
+      "type": "skill",
+      "path": "skills/spec-reviewer/SKILL.md",
+      "description": "Load when the user asks whether implementation matches a spec, requirements doc, acceptance criteria, or design plan, or says check what is missing, incomplete, or divergent before merge.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "review",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "systematic-debugging",
+      "type": "skill",
+      "path": "skills/systematic-debugging/SKILL.md",
+      "description": "Load when the user reports a bug, failing test, CI/build/lint/typecheck failure, regression, flaky behavior, unexpected behavior, or asks to fix a failure or root-cause it.",
+      "version": "1.0.0",
+      "required": true,
+      "category": "debugging",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "test-reviewer",
+      "type": "skill",
+      "path": "skills/test-reviewer/SKILL.md",
+      "description": "Load when the user asks to write or review tests, TDD cases, eval scenarios, coverage, assertions, or mocks, or says tests are shallow, flaky, brittle, or too close to implementation.",
+      "version": "1.0.0",
+      "required": true,
+      "category": "testing",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    }
+  ]
+}

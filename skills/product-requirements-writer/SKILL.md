@@ -2,6 +2,13 @@
 name: "product-requirements-writer"
 description: "Load when the user wants to turn a feature idea, product request, vague requirement, or problem statement into a concrete PRD/spec before implementation planning or coding."
 version: 1.0.0
+required: false
+category: planning
+tools:
+  - claude
+  - copilot
+  - codex
+  - cursor
 routing:
   triggers:
   - prd

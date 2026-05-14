@@ -2,6 +2,13 @@
 name: task-framing
 description: Frames non-trivial, ambiguous, high-risk, or cross-cutting tasks before substantial edits.
 version: 1.0.0
+required: true
+category: workflow
+tools:
+  - claude
+  - copilot
+  - codex
+  - cursor
 triggers:
   - non-trivial-task
   - ambiguous-task
