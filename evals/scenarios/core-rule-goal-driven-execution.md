@@ -1,6 +1,6 @@
 # Scenario: Core Rule - Goal-Driven Execution
 
-## Directives Under Test
+## Directive Under Test
 
 `directives/verification.md` — Functional proof and verification loops
 `directives/task-framing.md` — Defining success criteria
@@ -50,7 +50,7 @@ console.log("Building...");
 - [ ] Agent asks the user to run the build command to check if it worked.
 - [ ] Agent iterates blindly based on its own code changes rather than the observable output of the build command.
 
-## Scoring
+## Quality Criteria
 
 **Pass:** Meets all Expected Behaviors and triggers ZERO Anti-Behaviors.
 
