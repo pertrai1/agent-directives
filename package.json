@@ -1,15 +1,30 @@
 {
   "name": "agent-directives",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
+  "bin": {
+    "skills": "./src/cli.ts"
+  },
+  "files": [
+    "src/",
+    "directives/",
+    "skills/",
+    "templates/",
+    "manifest.json"
+  ],
   "scripts": {
-    "check": "npm run typecheck && npm run validate",
+    "check": "npm run typecheck && npm run validate && npm run test:cli",
     "typecheck": "tsc --noEmit",
     "validate": "tsx scripts/validate-directives.ts",
     "eval:scenario": "tsx scripts/eval-scenario.ts",
     "eval:report": "tsx evals/report-results.ts",
-    "manifest": "tsx scripts/generate-manifest.ts"
+    "manifest": "tsx scripts/generate-manifest.ts",
+    "skills": "tsx src/cli.ts",
+    "test:cli": "tsx scripts/test-cli.ts"
+  },
+  "dependencies": {
+    "commander": "^14.0.3"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

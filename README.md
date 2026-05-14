@@ -26,6 +26,62 @@ dependencies between files.
 6. **Compact handoffs when needed** — use `directives/context-handoff.md` for long tasks, major phase changes, or new-session handoffs
 7. **Customize** — remove directives you don't need, adjust rules to match your team's conventions
 
+## CLI
+
+This repo ships a `skills` CLI for installing directives and skills into a project automatically. The CLI reads `manifest.json` (the machine-readable registry of all entries) and copies the appropriate files into the right locations for your target tool.
+
+### Commands
+
+```bash
+skills list                          # List all entries grouped by category
+skills list --required               # Only show required entries
+skills list --category review        # Filter by category
+skills list --tool cursor            # Only entries supporting Cursor
+skills list --type skill             # Only directives or only skills
+
+skills add code-reviewer             # Install one entry (auto-detects tool)
+skills add code-reviewer --tool claude
+skills add code-reviewer --force     # Overwrite a locally-modified file
+
+skills check                         # Report missing required entries
+skills check --tool codex            # Specific tool
+
+skills sync --yes                    # Install all required (non-interactive)
+skills sync                          # Interactive: prompts for optional categories
+skills sync --tool claude --force    # Overwrite conflicting files
+```
+
+### Tool auto-detection
+
+When `--tool` is omitted, the CLI inspects the current directory for marker files:
+
+| Marker | Tool |
+| --- | --- |
+| `.cursor/` | `cursor` |
+| `.github/copilot-instructions.md` | `copilot` |
+| `AGENTS.md` | `codex` |
+| `CLAUDE.md` or `.claude/` | `claude` |
+
+Pass `--tool` explicitly when auto-detection is ambiguous or wrong.
+
+### Install layout
+
+For `claude`, `copilot`, and `codex`, the CLI preserves the source layout — each entry is written to its declared path (`directives/<name>.md` or `skills/<name>/SKILL.md`) relative to the current working directory. The master instruction file (`CLAUDE.md`, `AGENTS.md`, etc.) is left to you — copy one of the files in `templates/` and adapt it.
+
+For `cursor`, each entry is flattened to a single file in `.cursor/rules/<id>.mdc`.
+
+### Conflict handling
+
+`skills add` and `skills sync` never silently overwrite a locally-modified file. If a target file already exists with content that differs from the source, the CLI reports a conflict and exits non-zero unless `--force` is passed. Identical files are skipped quietly.
+
+### Local development
+
+```bash
+npm install
+npm run skills -- list                    # invoke the CLI via npm
+npm run test:cli                          # run CLI integration tests
+```
+
 ## Directives vs Skills
 
 | | Directive | Skill |
