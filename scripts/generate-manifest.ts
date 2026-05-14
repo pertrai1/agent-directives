@@ -18,15 +18,15 @@ interface ManifestEntry {
 
 interface Manifest {
   version: string;
-  generated: string;
   entries: ManifestEntry[];
 }
 
 function parseFrontmatter(text: string): Record<string, unknown> {
-  if (!text.startsWith('---\n')) return {};
-  const end = text.indexOf('\n---\n', 4);
+  const normalized = text.replace(/^﻿/, '').replace(/\r\n/g, '\n');
+  if (!normalized.startsWith('---\n')) return {};
+  const end = normalized.indexOf('\n---\n', 4);
   if (end === -1) return {};
-  const raw = text.slice(4, end);
+  const raw = normalized.slice(4, end);
   const result: Record<string, unknown> = {};
   let i = 0;
   const lines = raw.split('\n');
@@ -59,16 +59,18 @@ function readEntry(path: string, type: 'directive' | 'skill'): ManifestEntry {
   const text = readFileSync(join(repoRoot, path), 'utf8');
   const fm = parseFrontmatter(text);
   const id = String(fm.name ?? '').replace(/^['"]|['"]$/g, '');
-  return {
-    id,
-    type,
-    path,
-    description: String(fm.description ?? ''),
-    version: String(fm.version ?? ''),
-    required: fm.required === true,
-    category: String(fm.category ?? ''),
-    tools: Array.isArray(fm.tools) ? (fm.tools as string[]) : [],
-  };
+  const { description, version, required, category, tools } = fm;
+
+  if (!id) throw new Error(`Missing 'name' in ${path}`);
+  if (typeof description !== 'string' || !description) throw new Error(`Missing/invalid 'description' in ${path}`);
+  if (typeof version !== 'string' || !version) throw new Error(`Missing/invalid 'version' in ${path}`);
+  if (typeof required !== 'boolean') throw new Error(`Missing/invalid 'required' in ${path}`);
+  if (typeof category !== 'string' || !category) throw new Error(`Missing/invalid 'category' in ${path}`);
+  if (!Array.isArray(tools) || tools.length === 0 || tools.some((t) => typeof t !== 'string')) {
+    throw new Error(`Missing/invalid 'tools' in ${path}`);
+  }
+
+  return { id, type, path, description, version, required, category, tools: tools as string[] };
 }
 
 const directives = readdirSync(join(repoRoot, 'directives'))
@@ -81,7 +83,6 @@ const skills = readdirSync(join(repoRoot, 'skills'), { withFileTypes: true })
 
 const manifest: Manifest = {
   version: '1.0.0',
-  generated: new Date().toISOString(),
   entries: [...directives, ...skills],
 };
 

@@ -55,6 +55,7 @@ function validateFrontmatter(path: string): void {
   if (category && !validCategories.has(category)) fail(`${path}: unknown category '${category}' (expected: ${[...validCategories].join(', ')})`);
   const validTools = new Set(['claude', 'copilot', 'codex', 'cursor']);
   const toolsBlock = fm.match(/^tools:\s*\n((?:\s+-\s+\S+\n?)*)/m)?.[1] ?? '';
+  if (!/^\s*-\s+\S+/m.test(toolsBlock)) fail(`${path}: frontmatter key 'tools' must include at least one item`);
   for (const toolMatch of toolsBlock.matchAll(/^\s+-\s+(\S+)/gm)) {
     const tool = toolMatch[1];
     if (!validTools.has(tool)) fail(`${path}: unknown tool '${tool}' in tools list (expected: ${[...validTools].join(', ')})`);
