@@ -2,6 +2,13 @@
 name: "codebase-health-reviewer"
 description: "Load when reviewing TypeScript/JavaScript refactors, cleanup, AI-generated code, shared utilities, dead code, duplication, complexity, circular dependencies, Fallow output, or maintainability drift."
 version: 1.0.0
+required: false
+category: review
+tools:
+  - claude
+  - copilot
+  - codex
+  - cursor
 routing:
   triggers:
   - typescript

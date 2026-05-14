@@ -2,6 +2,13 @@
 name: "production-readiness-reviewer"
 description: "Load when reviewing changes that may affect production safety: persistence, migrations, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility."
 version: 1.0.0
+required: false
+category: review
+tools:
+  - claude
+  - copilot
+  - codex
+  - cursor
 routing:
   triggers:
   - production-readiness

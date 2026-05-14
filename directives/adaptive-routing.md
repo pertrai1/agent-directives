@@ -2,6 +2,13 @@
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
 version: 1.0.0
+required: true
+category: workflow
+tools:
+  - claude
+  - copilot
+  - codex
+  - cursor
 triggers:
   - every-task
   - workflow-selection

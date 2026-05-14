@@ -2,6 +2,13 @@
 name: "code-reviewer"
 description: "Load when the user asks to review a PR, branch, diff, local changes, or says approve, merge, or check this change for bugs, regressions, security, maintainability, or merge risk."
 version: 1.0.0
+required: true
+category: review
+tools:
+  - claude
+  - copilot
+  - codex
+  - cursor
 routing:
   triggers:
   - pull-request

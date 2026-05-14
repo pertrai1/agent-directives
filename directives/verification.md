@@ -2,6 +2,13 @@
 name: verification
 description: Requires structured evidence of correctness before quality gates and pull requests.
 version: 1.0.0
+required: true
+category: workflow
+tools:
+  - claude
+  - copilot
+  - codex
+  - cursor
 triggers:
   - verification
   - pre-pr

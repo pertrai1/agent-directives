@@ -2,6 +2,11 @@
 name: context-handoff
 description: Compresses task state at directive or session boundaries so later phases can continue from a compact, current-state handoff instead of drifting through accumulated chat history.
 version: 1.0.0
+required: false
+category: workflow
+tools:
+  - claude
+  - codex
 triggers:
   - directive-boundary
   - session-handoff
