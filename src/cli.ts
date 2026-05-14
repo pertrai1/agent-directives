@@ -39,7 +39,7 @@ function reportInstall(entry: ManifestEntry, result: InstallResult): void {
 const program = new Command();
 
 program
-  .name('skills')
+  .name('agent-directives')
   .description('Install agent directives and skills into your project')
   .version('1.0.0');
 
@@ -97,7 +97,7 @@ program
     const entry = findEntry(manifest.entries, id);
     if (!entry) {
       console.error(`No such entry: ${id}`);
-      console.error(`Run 'skills list' to see available entries.`);
+      console.error(`Run 'agent-directives list' to see available entries.`);
       process.exit(1);
     }
     const tool = resolveTool(opts.tool);
@@ -130,7 +130,7 @@ program
     for (const entry of missing) {
       console.error(`  - ${entry.id} (${entry.type}, category: ${entry.category})`);
     }
-    console.error(`\nRun 'skills sync --tool ${tool}' to install them.`);
+    console.error(`\nRun 'agent-directives sync --tool ${tool}' to install them.`);
     process.exit(1);
   });
 

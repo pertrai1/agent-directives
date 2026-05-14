@@ -28,27 +28,27 @@ dependencies between files.
 
 ## CLI
 
-This repo ships a `skills` CLI for installing directives and skills into a project automatically. The CLI reads `manifest.json` (the machine-readable registry of all entries) and copies the appropriate files into the right locations for your target tool.
+This repo ships an `agent-directives` CLI for installing directives and skills into a project automatically. The CLI reads `manifest.json` (the machine-readable registry of all entries) and copies the appropriate files into the right locations for your target tool.
 
 ### Commands
 
 ```bash
-skills list                          # List all entries grouped by category
-skills list --required               # Only show required entries
-skills list --category review        # Filter by category
-skills list --tool cursor            # Only entries supporting Cursor
-skills list --type skill             # Only directives or only skills
+agent-directives list                          # List all entries grouped by category
+agent-directives list --required               # Only show required entries
+agent-directives list --category review        # Filter by category
+agent-directives list --tool cursor            # Only entries supporting Cursor
+agent-directives list --type skill             # Only directives or only skills
 
-skills add code-reviewer             # Install one entry (auto-detects tool)
-skills add code-reviewer --tool claude
-skills add code-reviewer --force     # Overwrite a locally-modified file
+agent-directives add code-reviewer             # Install one entry (auto-detects tool)
+agent-directives add code-reviewer --tool claude
+agent-directives add code-reviewer --force     # Overwrite a locally-modified file
 
-skills check                         # Report missing required entries
-skills check --tool codex            # Specific tool
+agent-directives check                         # Report missing required entries
+agent-directives check --tool codex            # Specific tool
 
-skills sync --yes                    # Install all required (non-interactive)
-skills sync                          # Interactive: prompts for optional categories
-skills sync --tool claude --force    # Overwrite conflicting files
+agent-directives sync --yes                    # Install all required (non-interactive)
+agent-directives sync                          # Interactive: prompts for optional categories
+agent-directives sync --tool claude --force    # Overwrite conflicting files
 ```
 
 ### Tool auto-detection
@@ -78,7 +78,7 @@ For `cursor`, each entry is flattened to a single file in `.cursor/rules/<id>.md
 
 ```bash
 npm install
-npm run skills -- list                    # invoke the CLI via npm
+npm run cli -- list                       # invoke the CLI via npm
 npm run test:cli                          # run CLI integration tests
 ```
 

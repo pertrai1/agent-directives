@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "bin": {
-    "skills": "./src/cli.ts"
+    "agent-directives": "./src/cli.ts"
   },
   "files": [
     "src/",
@@ -20,7 +20,7 @@
     "eval:scenario": "tsx scripts/eval-scenario.ts",
     "eval:report": "tsx evals/report-results.ts",
     "manifest": "tsx scripts/generate-manifest.ts",
-    "skills": "tsx src/cli.ts",
+    "cli": "tsx src/cli.ts",
     "test:cli": "tsx scripts/test-cli.ts"
   },
   "dependencies": {
