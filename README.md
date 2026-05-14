@@ -26,6 +26,62 @@ dependencies between files.
 6. **Compact handoffs when needed** — use `directives/context-handoff.md` for long tasks, major phase changes, or new-session handoffs
 7. **Customize** — remove directives you don't need, adjust rules to match your team's conventions
 
+## CLI
+
+This repo ships an `agent-directives` CLI for installing directives and skills into a project automatically. The CLI reads `manifest.json` (the machine-readable registry of all entries) and copies the appropriate files into the right locations for your target tool.
+
+### Commands
+
+```bash
+agent-directives list                          # List all entries grouped by category
+agent-directives list --required               # Only show required entries
+agent-directives list --category review        # Filter by category
+agent-directives list --tool cursor            # Only entries supporting Cursor
+agent-directives list --type skill             # Only directives or only skills
+
+agent-directives add code-reviewer             # Install one entry (auto-detects tool)
+agent-directives add code-reviewer --tool claude
+agent-directives add code-reviewer --force     # Overwrite a locally-modified file
+
+agent-directives check                         # Report missing required entries
+agent-directives check --tool codex            # Specific tool
+
+agent-directives sync --yes                    # Install all required (non-interactive)
+agent-directives sync                          # Interactive: prompts for optional categories
+agent-directives sync --tool claude --force    # Overwrite conflicting files
+```
+
+### Tool auto-detection
+
+When `--tool` is omitted, the CLI inspects the current directory for marker files:
+
+| Marker | Tool |
+| --- | --- |
+| `.cursor/` | `cursor` |
+| `.github/copilot-instructions.md` | `copilot` |
+| `AGENTS.md` | `codex` |
+| `CLAUDE.md` or `.claude/` | `claude` |
+
+Pass `--tool` explicitly when auto-detection is ambiguous or wrong.
+
+### Install layout
+
+For `claude`, `copilot`, and `codex`, the CLI preserves the source layout — each entry is written to its declared path (`directives/<name>.md` or `skills/<name>/SKILL.md`) relative to the current working directory. The master instruction file (`CLAUDE.md`, `AGENTS.md`, etc.) is left to you — copy one of the files in `templates/` and adapt it.
+
+For `cursor`, each entry is flattened to a single file in `.cursor/rules/<id>.mdc`.
+
+### Conflict handling
+
+`agent-directives add` and `agent-directives sync` never silently overwrite a locally-modified file. If a target file already exists with content that differs from the source, the CLI reports a conflict and exits non-zero unless `--force` is passed. Files that already match the source are reported as `already up-to-date` and skipped.
+
+### Local development
+
+```bash
+npm install
+npm run cli -- list                       # invoke the CLI via npm
+npm run test:cli                          # run CLI integration tests
+```
+
 ## Directives vs Skills
 
 | | Directive | Skill |
