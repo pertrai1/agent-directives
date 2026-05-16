@@ -18,37 +18,76 @@ dependencies between files.
 
 ## Quick Start
 
-1. **Copy directives** into your project — e.g. `.agents/directives/` or any directory your agent reads
-2. **Copy skills** alongside them — e.g. `.agents/skills/`
-3. **Pick a template** — `AGENTS.md`, `CLAUDE.md`, or `copilot-instructions.md` depending on your tool
-4. **Fill in the placeholders** — every `<!-- FILL IN: ... -->` is a project-specific value you need to provide
-5. **Route first** — load `directives/adaptive-routing.md` before implementation so the agent selects the right workflow instead of reading everything
-6. **Compact handoffs when needed** — use `directives/context-handoff.md` for long tasks, major phase changes, or new-session handoffs
-7. **Customize** — remove directives you don't need, adjust rules to match your team's conventions
+The repository contains two things you install into your own project:
 
-## CLI
+1. **Directive and skill files** — copied from `directives/` and `skills/`.
+2. **A root instruction file** — copied from `templates/` and renamed for your agent
+   (`AGENTS.md`, `CLAUDE.md`, or `.github/copilot-instructions.md`).
 
-This repo ships an `agent-directives` CLI for installing directives and skills into a project automatically. The CLI reads `manifest.json` (the machine-readable registry of all entries) and copies the appropriate files into the right locations for your target tool.
+For a typical Codex/OpenAI-style project, run these commands from the repository
+that should receive the instructions:
+
+```bash
+cd /path/to/your-project
+
+# Install the required directives and skills into ./directives and ./skills.
+npx --yes github:pertrai1/agent-directives sync --tool codex --yes
+
+# Add the root instruction file, then edit every <!-- FILL IN: ... --> placeholder.
+curl -fsSL \
+  https://raw.githubusercontent.com/pertrai1/agent-directives/main/templates/AGENTS.md \
+  -o AGENTS.md
+```
+
+If your project already has an `AGENTS.md`, `CLAUDE.md`, or Copilot instruction
+file, do not overwrite it blindly. Merge the relevant sections from the matching
+template instead.
+
+After installation, open the root instruction file and:
+
+1. Fill in the project-specific placeholders.
+2. Keep `directives/adaptive-routing.md` as the first directive the agent loads.
+3. Delete directives or skills your team does not want, then remove matching rows
+   from the root instruction file.
+4. Run the check command for your target tool:
+
+```bash
+npx --yes github:pertrai1/agent-directives check --tool codex
+```
+
+## Installing for Different Tools
+
+| Tool | Install directives/skills | Root instruction file |
+| --- | --- | --- |
+| Codex / OpenAI agents | `npx --yes github:pertrai1/agent-directives sync --tool codex --yes` | `templates/AGENTS.md` → `AGENTS.md` |
+| Claude Code | `npx --yes github:pertrai1/agent-directives sync --tool claude --yes` | `templates/CLAUDE.md` → `CLAUDE.md` |
+| GitHub Copilot | `npx --yes github:pertrai1/agent-directives sync --tool copilot --yes` | `templates/copilot-instructions.md` → `.github/copilot-instructions.md` |
+| Cursor | `npx --yes github:pertrai1/agent-directives sync --tool cursor --yes` | Installed as `.cursor/rules/*.mdc` |
+
+When `--tool` is omitted, the CLI tries to auto-detect the target from marker
+files in the current directory. Passing `--tool` is safer for first-time setup.
+
+## CLI Reference
+
+The `agent-directives` CLI reads `manifest.json` and copies the requested entries
+into the current working directory. Use it from the project that should receive
+the files.
 
 ### Commands
 
 ```bash
-agent-directives list                          # List all entries grouped by category
-agent-directives list --required               # Only show required entries
-agent-directives list --category review        # Filter by category
-agent-directives list --tool cursor            # Only entries supporting Cursor
-agent-directives list --type skill             # Only directives or only skills
+npx --yes github:pertrai1/agent-directives list                 # List all entries
+npx --yes github:pertrai1/agent-directives list --required      # Only required entries
+npx --yes github:pertrai1/agent-directives list --category review
+npx --yes github:pertrai1/agent-directives list --tool cursor
+npx --yes github:pertrai1/agent-directives list --type skill
 
-agent-directives add code-reviewer             # Install one entry (auto-detects tool)
-agent-directives add code-reviewer --tool claude
-agent-directives add code-reviewer --force     # Overwrite a locally-modified file
+npx --yes github:pertrai1/agent-directives add code-reviewer --tool claude
+npx --yes github:pertrai1/agent-directives add code-reviewer --tool claude --force
 
-agent-directives check                         # Report missing required entries
-agent-directives check --tool codex            # Specific tool
-
-agent-directives sync --yes                    # Install all required (non-interactive)
-agent-directives sync                          # Interactive: prompts for optional categories
-agent-directives sync --tool claude --force    # Overwrite conflicting files
+npx --yes github:pertrai1/agent-directives check --tool codex
+npx --yes github:pertrai1/agent-directives sync --tool claude --yes
+npx --yes github:pertrai1/agent-directives sync --tool claude --force
 ```
 
 ### Tool auto-detection
@@ -66,7 +105,11 @@ Pass `--tool` explicitly when auto-detection is ambiguous or wrong.
 
 ### Install layout
 
-For `claude`, `copilot`, and `codex`, the CLI preserves the source layout — each entry is written to its declared path (`directives/<name>.md` or `skills/<name>/SKILL.md`) relative to the current working directory. The master instruction file (`CLAUDE.md`, `AGENTS.md`, etc.) is left to you — copy one of the files in `templates/` and adapt it.
+For `claude`, `copilot`, and `codex`, the CLI preserves the source layout — each
+entry is written to its declared path (`directives/<name>.md` or
+`skills/<name>/SKILL.md`) relative to the current working directory. The root
+instruction file is left to you so existing project instructions are not
+accidentally overwritten.
 
 For `cursor`, each entry is flattened to a single file in `.cursor/rules/<id>.mdc`.
 
