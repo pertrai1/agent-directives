@@ -36,28 +36,17 @@ Delete this comment block when done.
 
 **NEVER commit directly to `main`.** Work on a feature branch. No exceptions.
 
-**Load `directives/adaptive-routing.md` first.** It selects the lightest safe workflow, required directives/skills, and whether `directives/context-handoff.md` is needed. After routing, briefly state the selected path and directive/skill files being used; one sentence is enough for tiny low-risk edits. Do not load every directive by default.
+**Load `directives/adaptive-routing.md` first.**
 
-**Code changes follow one of these routed sequences:**
+The root file provides project-specific context plus compact routing pointers: commands, repo layout, local constraints, and any client-specific workflow reminders.
 
-### Light Path
+Workflow path selection, directive loading, skill loading, and evidence requirements live in `directives/adaptive-routing.md`.
 
-Use for low-risk, non-behavioral changes: typo fixes, docs-only changes,
-formatting-only changes, comments, or mechanical edits with no behavior change.
-Do not use for bug fixes, behavior changes, public API changes, or dependency changes.
+After routing, report:
+`Route: <path>; using <directive/skill files>; evidence: <checks>.`
 
-| Step | Phase        | Action                         | Verify                                                |
-| ---- | ------------ | ------------------------------ | ----------------------------------------------------- |
-| 0    | **BASELINE** | Verify starting state is clean | <!-- FILL IN: baseline verification command --> passes |
-| 1    | FIX          | Make the change                | Affected test passes (or no test needed for docs)     |
-| 2    | GATES        | Run quality gates              | <!-- FILL IN: gates commands --> pass                 |
-| 3    | COMMIT       | Atomic commit                  | One change per commit                                 |
-
-### Full Path
-
-Use for: everything else — new features, bug fixes, refactors, behavior changes, public API changes, dependency changes, or type changes.
-
-No skipping steps:
+When adaptive routing selects Full Path or another route that invokes the full
+phase sequence, no skipping steps:
 
 | Step | Phase        | Action                                   | Verify                                                                       |
 | ---- | ------------ | ---------------------------------------- | ---------------------------------------------------------------------------- |

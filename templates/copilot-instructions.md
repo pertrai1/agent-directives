@@ -55,39 +55,14 @@ one commit. Each behavior gets its own test-commit + implementation-commit pair.
 
 ## Mandatory Workflow
 
-Load `directives/adaptive-routing.md` first. It selects Light Path, Full Path, or a specialized path based on task intent and risk, decides whether `directives/context-handoff.md` is needed, and should briefly state the selected path plus directive/skill files being used.
+**Load `directives/adaptive-routing.md` first.**
 
-### Light Path
+The root file provides project-specific context plus compact routing pointers: commands, repo layout, local constraints, and any client-specific workflow reminders.
 
-Use for low-risk, non-behavioral changes: typo fixes, docs-only changes,
-formatting-only changes, comments, or mechanical edits with no behavior change.
-Do not use for bug fixes, behavior changes, public API changes, or dependency changes.
+Workflow path selection, directive loading, skill loading, and evidence requirements live in `directives/adaptive-routing.md`.
 
-| Step | Phase        | Action                         | Verify                                                |
-| ---- | ------------ | ------------------------------ | ----------------------------------------------------- |
-| 0    | **BASELINE** | Verify starting state is clean | <!-- FILL IN: baseline verification command --> passes |
-| 1    | FIX          | Make the change                | Affected test passes                                  |
-| 2    | GATES        | Run quality gates              | <!-- FILL IN: gates commands --> pass                 |
-| 3    | COMMIT       | Atomic commit                  | One change per commit                                 |
-
-### Full Path
-
-Use for: everything else. No skipping steps.
-
-| Step | Phase        | Action                                   | Verify                                                       |
-| ---- | ------------ | ---------------------------------------- | ------------------------------------------------------------ |
-| -1   | **ORIENT**   | **Navigate codebase safely**             | See codebase-navigation directive (SAFE pattern)             |
-| -0.5 | **BOUNDARIES** | **Classify touched files and dependency edges** | See architecture-boundaries directive when imports/exports/packages/shared code may change |
-| 0    | **BASELINE** | **Verify starting state is clean**       | <!-- FILL IN: baseline verification command --> all pass     |
-| 1    | TYPES        | Define types first                       | Type-check passes                                            |
-| 2    | RED          | Write ONE failing test                   | Test fails                                                   |
-| 3    | GREEN        | Write minimum code to pass               | All tests pass, type-check passes                            |
-| 4    | REFACTOR     | Clean up if needed                       | All tests still pass                                         |
-| 4.5  | **SELF-AUDIT** | **Triage weakest assumptions and anomalies** | See `skills/self-audit/SKILL.md` — route: 🔁 fix → step 2, 📋 document, or 🧑 ask human |
-| 4.75 | **VERIFY**   | **Produce verification summary**         | See verification directive — target 📋 documented Jenga entries |
-| 5    | GATES        | Run quality gates                        | <!-- FILL IN: gates commands -->                             |
-| 5.5  | **HANDOFF**  | **Compact current task state when routed** | See `directives/context-handoff.md` for phase/session handoff |
-| 6    | COMMIT       | Atomic commit                            | One behavior per commit                                      |
+After routing, report:
+`Route: <path>; using <directive/skill files>; evidence: <checks>.`
 
 ## Forbidden
 

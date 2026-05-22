@@ -208,7 +208,7 @@
       "type": "skill",
       "path": "skills/code-reviewer/SKILL.md",
       "description": "Load when the user asks to review a PR, branch, diff, local changes, or says approve, merge, or check this change for bugs, regressions, security, maintainability, or merge risk.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "required": true,
       "category": "review",
       "tools": [
@@ -223,7 +223,7 @@
       "type": "skill",
       "path": "skills/codebase-health-reviewer/SKILL.md",
       "description": "Load when reviewing TypeScript/JavaScript refactors, cleanup, AI-generated code, shared utilities, dead code, duplication, complexity, circular dependencies, Fallow output, or maintainability drift.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "required": false,
       "category": "review",
       "tools": [
@@ -268,7 +268,7 @@
       "type": "skill",
       "path": "skills/production-readiness-reviewer/SKILL.md",
       "description": "Load when reviewing changes that may affect production safety: persistence, migrations, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "required": false,
       "category": "review",
       "tools": [
@@ -298,7 +298,7 @@
       "type": "skill",
       "path": "skills/spec-reviewer/SKILL.md",
       "description": "Load when the user asks whether implementation matches a spec, requirements doc, acceptance criteria, or design plan, or says check what is missing, incomplete, or divergent before merge.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "required": false,
       "category": "review",
       "tools": [
@@ -328,7 +328,7 @@
       "type": "skill",
       "path": "skills/test-reviewer/SKILL.md",
       "description": "Load when the user asks to write or review tests, TDD cases, eval scenarios, coverage, assertions, or mocks, or says tests are shallow, flaky, brittle, or too close to implementation.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "required": true,
       "category": "testing",
       "tools": [

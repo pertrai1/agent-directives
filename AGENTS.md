@@ -40,32 +40,17 @@ There is no global application build command for this content-first repository t
 
 **NEVER commit directly to `main`.** Work on a feature branch. No exceptions.
 
-**Load `directives/adaptive-routing.md` first.** It selects the lightest safe workflow, required directives/skills, and whether `directives/context-handoff.md` is needed. After routing, briefly state the selected path and directive/skill files being used; one sentence is enough for tiny low-risk edits. Do not load every directive by default.
+**Load `directives/adaptive-routing.md` first.**
 
-**Code changes follow one of these routed sequences:**
+The root file provides project-specific context plus compact routing pointers: commands, repo layout, local constraints, and any client-specific workflow reminders.
 
-### Light Path
+Workflow path selection, directive loading, skill loading, and evidence requirements live in `directives/adaptive-routing.md`.
 
-Use for low-risk, non-behavioral changes: typo fixes, docs-only changes,
-formatting-only changes, comments, metadata-only updates, or mechanical edits with
-no behavior change. Do not use for bug fixes, behavior changes, public API changes,
-dependency changes, routing semantics changes, or eval harness behavior changes.
+After routing, report:
+`Route: <path>; using <directive/skill files>; evidence: <checks>.`
 
-| Step | Phase        | Action                         | Verify                                                              |
-| ---- | ------------ | ------------------------------ | ------------------------------------------------------------------- |
-| 0    | **BASELINE** | Verify starting state is clean | `git status --short` shows only intended work after branch creation |
-| 1    | FIX          | Make the change                | Review the changed Markdown/frontmatter in context                  |
-| 2    | GATES        | Run quality gates              | `git diff --check` and any file-specific validation pass            |
-| 3    | COMMIT       | Atomic commit                  | One coherent directive/skill/template/eval change per commit        |
-
-### Full Path
-
-Use for everything else: new directives or skills, behavior-changing edits to
-workflow rules, eval harness changes, cross-file refactors, routing metadata
-changes, template restructuring, or changes that alter how agents are expected to
-behave.
-
-No skipping steps:
+When adaptive routing selects Full Path or another route that invokes the full
+phase sequence, no skipping steps:
 
 | Step | Phase          | Action                                                    | Verify                                                                                                           |
 | ---- | -------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
