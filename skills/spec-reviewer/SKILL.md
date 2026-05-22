@@ -1,7 +1,7 @@
 ---
 name: "spec-reviewer"
 description: "Load when the user asks whether implementation matches a spec, requirements doc, acceptance criteria, or design plan, or says check what is missing, incomplete, or divergent before merge."
-version: 1.0.0
+version: 1.1.0
 required: false
 category: review
 tools:
@@ -19,6 +19,23 @@ routing:
     - full-path
     - review-path
 ---
+
+## Review Depth
+
+Default to the lightest useful review.
+
+### Fast Path
+Use when the change is small, localized, or already has passing gates.
+
+Output:
+- Top 1-3 material findings only
+- “No material findings” if clean
+- Verification gaps only if they affect merge confidence
+
+Do not emit the full checklist when there are no findings.
+
+### Deep Path
+Use the full review process when the change is high-risk, cross-cutting, security/data-sensitive, behavior-changing without tests, or explicitly requested.
 
 # Spec Reviewer
 

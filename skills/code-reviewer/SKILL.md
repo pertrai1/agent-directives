@@ -1,7 +1,7 @@
 ---
 name: "code-reviewer"
 description: "Load when the user asks to review a PR, branch, diff, local changes, or says approve, merge, or check this change for bugs, regressions, security, maintainability, or merge risk."
-version: 1.0.0
+version: 1.1.0
 required: true
 category: review
 tools:
@@ -20,6 +20,23 @@ routing:
   paths:
     - review-path
 ---
+
+## Review Depth
+
+Default to the lightest useful review.
+
+### Fast Path
+Use when the change is small, localized, or already has passing gates.
+
+Output:
+- Top 1-3 material findings only
+- “No material findings” if clean
+- Verification gaps only if they affect merge confidence
+
+Do not emit the full checklist when there are no findings.
+
+### Deep Path
+Use the full review process when the change is high-risk, cross-cutting, security/data-sensitive, behavior-changing without tests, or explicitly requested.
 
 # Code Review Guidelines
 
