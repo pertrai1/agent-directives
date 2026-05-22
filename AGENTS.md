@@ -22,14 +22,14 @@ This repository is a portable library of AI coding-agent instructions: reusable 
 
 ## Commands
 
-| Command | Purpose |
-| ------- | ------- |
-| `git status --short` | Baseline check before edits and final cleanliness check. |
-| `git diff --check` | Detect whitespace errors in changed files. |
-| `npm install` | Install TypeScript tooling for repo scripts. |
-| `npm run check` | Type-check TypeScript scripts and validate directive/skill wiring. |
-| `npm run eval:report` | Regenerate `evals/results/report.html` from structured eval results and run manifests. |
-| `bash -n evals/run-scenario.sh` | Syntax-check the eval wrapper when touched. |
+| Command                                 | Purpose                                                                                         |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `git status --short`                    | Baseline check before edits and final cleanliness check.                                        |
+| `git diff --check`                      | Detect whitespace errors in changed files.                                                      |
+| `npm install`                           | Install TypeScript tooling for repo scripts.                                                    |
+| `npm run check`                         | Type-check TypeScript scripts and validate directive/skill wiring.                              |
+| `npm run eval:report`                   | Regenerate `evals/results/report.html` from structured eval results and run manifests.          |
+| `bash -n evals/run-scenario.sh`         | Syntax-check the eval wrapper when touched.                                                     |
 | `evals/run-scenario.sh <scenario-name>` | Manually exercise a directive/skill scenario in a temporary workspace and write a run manifest. |
 
 Repo automation should be written in TypeScript. Avoid adding new Python scripts; if a small one-off check is needed, prefer `npm run validate` or a temporary Node/TypeScript snippet.
@@ -51,12 +51,12 @@ formatting-only changes, comments, metadata-only updates, or mechanical edits wi
 no behavior change. Do not use for bug fixes, behavior changes, public API changes,
 dependency changes, routing semantics changes, or eval harness behavior changes.
 
-| Step | Phase | Action | Verify |
-| ---- | ----- | ------ | ------ |
-| 0 | **BASELINE** | Verify starting state is clean | `git status --short` shows only intended work after branch creation |
-| 1 | FIX | Make the change | Review the changed Markdown/frontmatter in context |
-| 2 | GATES | Run quality gates | `git diff --check` and any file-specific validation pass |
-| 3 | COMMIT | Atomic commit | One coherent directive/skill/template/eval change per commit |
+| Step | Phase        | Action                         | Verify                                                              |
+| ---- | ------------ | ------------------------------ | ------------------------------------------------------------------- |
+| 0    | **BASELINE** | Verify starting state is clean | `git status --short` shows only intended work after branch creation |
+| 1    | FIX          | Make the change                | Review the changed Markdown/frontmatter in context                  |
+| 2    | GATES        | Run quality gates              | `git diff --check` and any file-specific validation pass            |
+| 3    | COMMIT       | Atomic commit                  | One coherent directive/skill/template/eval change per commit        |
 
 ### Full Path
 
@@ -67,20 +67,20 @@ behave.
 
 No skipping steps:
 
-| Step | Phase | Action | Verify |
-| ---- | ----- | ------ | ------ |
-| -1 | **ORIENT** | **Navigate codebase safely** | See `directives/codebase-navigation.md` (SAFE pattern) |
-| -0.5 | **BOUNDARIES** | **Classify touched files and dependency edges** | See `directives/architecture-boundaries.md` when file paths, template references, or dependency edges may change |
-| 0 | **BASELINE** | **Verify starting state is clean** | `git status --short` and relevant existing scenario/docs inspected |
-| 1 | TYPES/METADATA | Define metadata/schema expectations first | Frontmatter/routing metadata shape is known before editing |
-| 2 | RED | Identify or create failing evidence when behavior changes | Existing scenario/check fails or a new scenario documents the gap |
-| 3 | GREEN | Make the minimum change to satisfy the evidence | Scenario/checklist or validator now passes/reviews cleanly |
-| 4 | REFACTOR | Clean up if needed | Markdown remains concise and references stay consistent |
-| 4.5 | **SELF-AUDIT** | **Triage weakest assumptions and anomalies** | See `skills/self-audit/SKILL.md` — route findings: 🔁 fix, 📋 document, or 🧑 ask human |
-| 4.75 | **VERIFY** | **Produce verification summary** | See `directives/verification.md` for command output and evidence |
-| 5 | GATES | Run quality gates | `git diff --check`, plus `bash -n evals/run-scenario.sh` if touched, plus metadata/path validation when relevant |
-| 5.5 | **HANDOFF** | **Compact current task state when routed** | See `directives/context-handoff.md` for phase/session handoff |
-| 6 | COMMIT | Atomic commit | One behavior or documentation scope per commit |
+| Step | Phase          | Action                                                    | Verify                                                                                                           |
+| ---- | -------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| -1   | **ORIENT**     | **Navigate codebase safely**                              | See `directives/codebase-navigation.md` (SAFE pattern)                                                           |
+| -0.5 | **BOUNDARIES** | **Classify touched files and dependency edges**           | See `directives/architecture-boundaries.md` when file paths, template references, or dependency edges may change |
+| 0    | **BASELINE**   | **Verify starting state is clean**                        | `git status --short` and relevant existing scenario/docs inspected                                               |
+| 1    | TYPES/METADATA | Define metadata/schema expectations first                 | Frontmatter/routing metadata shape is known before editing                                                       |
+| 2    | RED            | Identify or create failing evidence when behavior changes | Existing scenario/check fails or a new scenario documents the gap                                                |
+| 3    | GREEN          | Make the minimum change to satisfy the evidence           | Scenario/checklist or validator now passes/reviews cleanly                                                       |
+| 4    | REFACTOR       | Clean up if needed                                        | Markdown remains concise and references stay consistent                                                          |
+| 4.5  | **SELF-AUDIT** | **Triage weakest assumptions and anomalies**              | See `skills/self-audit/SKILL.md` — route findings: 🔁 fix, 📋 document, or 🧑 ask human                          |
+| 4.75 | **VERIFY**     | **Produce verification summary**                          | See `directives/verification.md` for command output and evidence                                                 |
+| 5    | GATES          | Run quality gates                                         | `git diff --check`, plus `bash -n evals/run-scenario.sh` if touched, plus metadata/path validation when relevant |
+| 5.5  | **HANDOFF**    | **Compact current task state when routed**                | See `directives/context-handoff.md` for phase/session handoff                                                    |
+| 6    | COMMIT         | Atomic commit                                             | One behavior or documentation scope per commit                                                                   |
 
 Steps 2–6 repeat for each behavior. Do not batch unrelated directive or skill changes.
 
@@ -89,38 +89,38 @@ Steps 2–6 repeat for each behavior. Do not batch unrelated directive or skill 
 Run adaptive routing first, then load the directives selected for the task phase.
 They govern **how** you work. Do not load unrelated directives just to satisfy ceremony.
 
-| Directive | What it governs | File |
-| --------- | --------------- | ---- |
-| Adaptive Routing | Selects workflow path and required directives/skills | `directives/adaptive-routing.md` |
-| Workspace Isolation | Protect mutable work with an isolated workspace; prefer native tools, then git fallback | `directives/workspace-isolation.md` |
-| Codebase Navigation | SAFE exploration before implementation, review, or unfamiliar work | `directives/codebase-navigation.md` |
-| Architecture Boundaries | Preserve dependency DAG, public APIs, imports/exports, and file reference integrity | `directives/architecture-boundaries.md` |
-| Exploration Mode | Pre-implementation investigation stance | `directives/exploration-mode.md` |
-| Task Framing | Intake checklist for non-trivial, ambiguous, high-risk, or cross-cutting work | `directives/task-framing.md` |
-| Specification-Driven Development | Write specs before larger changes where build-and-see would risk rework | `directives/specification-driven-development.md` |
-| Type-First Development | Define types/contracts/metadata before implementation | `directives/type-driven-development.md` |
-| Test-Driven Development | RED/GREEN/REFACTOR for behavior-changing implementation or fixes | `directives/test-driven-development.md` |
-| Verification Protocol | Evidence of correctness before gates and PRs | `directives/verification.md` |
-| Error Memory | Durable memory for repeated mistakes only when criteria are met | `directives/error-memory.md` |
-| Context Handoff | Compact current task state at phase/session boundaries | `directives/context-handoff.md` |
-| Session Decisions | Durable decision capture for repo policy/workflow changes | `directives/session-decisions.md` |
+| Directive                        | What it governs                                                                         | File                                             |
+| -------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Adaptive Routing                 | Selects workflow path and required directives/skills                                    | `directives/adaptive-routing.md`                 |
+| Workspace Isolation              | Protect mutable work with an isolated workspace; prefer native tools, then git fallback | `directives/workspace-isolation.md`              |
+| Codebase Navigation              | SAFE exploration before implementation, review, or unfamiliar work                      | `directives/codebase-navigation.md`              |
+| Architecture Boundaries          | Preserve dependency DAG, public APIs, imports/exports, and file reference integrity     | `directives/architecture-boundaries.md`          |
+| Exploration Mode                 | Pre-implementation investigation stance                                                 | `directives/exploration-mode.md`                 |
+| Task Framing                     | Intake checklist for non-trivial, ambiguous, high-risk, or cross-cutting work           | `directives/task-framing.md`                     |
+| Specification-Driven Development | Write specs before larger changes where build-and-see would risk rework                 | `directives/specification-driven-development.md` |
+| Type-First Development           | Define types/contracts/metadata before implementation                                   | `directives/type-driven-development.md`          |
+| Test-Driven Development          | RED/GREEN/REFACTOR for behavior-changing implementation or fixes                        | `directives/test-driven-development.md`          |
+| Verification Protocol            | Evidence of correctness before gates and PRs                                            | `directives/verification.md`                     |
+| Error Memory                     | Durable memory for repeated mistakes only when criteria are met                         | `directives/error-memory.md`                     |
+| Context Handoff                  | Compact current task state at phase/session boundaries                                  | `directives/context-handoff.md`                  |
+| Session Decisions                | Durable decision capture for repo policy/workflow changes                               | `directives/session-decisions.md`                |
 
 ## Skills (Mandatory)
 
 Load the relevant skill selected by adaptive routing before performing any task it covers.
 
-| Skill | When | File |
-| ----- | ---- | ---- |
-| Code Reviewer | Before reviewing pull requests, branches, diffs, or local changes for merge risk | `skills/code-reviewer/SKILL.md` |
-| Test Reviewer | Before writing or reviewing eval scenarios, tests, or test-like checklists | `skills/test-reviewer/SKILL.md` |
-| Spec Reviewer | Before merging when a written spec or requirements document governs the change | `skills/spec-reviewer/SKILL.md` |
-| Product Requirements Writer | Before turning a feature idea, product request, or vague requirement into a PRD/spec | `skills/product-requirements-writer/SKILL.md` |
-| Implementation Task Planner | Before turning a PRD, issue, acceptance criteria, or requirements doc into implementation tasks | `skills/implementation-task-planner/SKILL.md` |
-| Self-Audit | After REFACTOR, before VERIFY for Full Path work | `skills/self-audit/SKILL.md` |
-| Systematic Debugging | Before fixing bugs, failing tests, CI/build failures, regressions, or integration failures | `skills/systematic-debugging/SKILL.md` |
-| Architecture Boundary Reviewer | Before merging changes to imports, exports, packages, services, shared code, file layout, or template/reference paths | `skills/architecture-boundary-reviewer/SKILL.md` |
-| Codebase Health Reviewer | Before merging TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes | `skills/codebase-health-reviewer/SKILL.md` |
-| Production Readiness Reviewer | Before merging/reviewing production-sensitive changes: persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility | `skills/production-readiness-reviewer/SKILL.md` |
+| Skill                          | When                                                                                                                                                                                                                  | File                                             |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Code Reviewer                  | Before reviewing pull requests, branches, diffs, or local changes for merge risk                                                                                                                                      | `skills/code-reviewer/SKILL.md`                  |
+| Test Reviewer                  | Before writing or reviewing eval scenarios, tests, or test-like checklists                                                                                                                                            | `skills/test-reviewer/SKILL.md`                  |
+| Spec Reviewer                  | Before merging when a written spec or requirements document governs the change                                                                                                                                        | `skills/spec-reviewer/SKILL.md`                  |
+| Product Requirements Writer    | Before turning a feature idea, product request, or vague requirement into a PRD/spec                                                                                                                                  | `skills/product-requirements-writer/SKILL.md`    |
+| Implementation Task Planner    | Before turning a PRD, issue, acceptance criteria, or requirements doc into implementation tasks                                                                                                                       | `skills/implementation-task-planner/SKILL.md`    |
+| Self-Audit                     | After REFACTOR, before VERIFY for Full Path work                                                                                                                                                                      | `skills/self-audit/SKILL.md`                     |
+| Systematic Debugging           | Before fixing bugs, failing tests, CI/build failures, regressions, or integration failures                                                                                                                            | `skills/systematic-debugging/SKILL.md`           |
+| Architecture Boundary Reviewer | Before merging changes to imports, exports, packages, services, shared code, file layout, or template/reference paths                                                                                                 | `skills/architecture-boundary-reviewer/SKILL.md` |
+| Codebase Health Reviewer       | Before merging TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes                                                                                                                 | `skills/codebase-health-reviewer/SKILL.md`       |
+| Production Readiness Reviewer  | Before merging/reviewing production-sensitive changes: persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility | `skills/production-readiness-reviewer/SKILL.md`  |
 
 ## Task Framing (Mandatory for Non-Trivial Work)
 
@@ -144,3 +144,107 @@ record.
 - Treat `evals/scenarios/*.md` as behavioral tests for instructions. When changing `directives/*.md` or `skills/*/SKILL.md`, update an existing scenario or add a targeted one if the change affects routing, required outputs, review heuristics, decision points, or expected agent behavior. Skip eval churn for typo fixes, formatting, frontmatter-only cleanup with no routing effect, or wording that does not change behavior; note the reason in the PR summary.
 - For eval scenario changes, verify setup with `npm run eval:scenario -- --print-only <scenario-name>` and remove generated `evals/results/runs/...` artifacts before committing unless intentionally updating committed results.
 - If a validation schema is implied but not implemented, use a short script to verify the relevant invariant and include the script output in the PR summary.
+
+<!-- gitnexus:start -->
+
+# GitNexus — Code Intelligence
+
+This project is indexed by GitNexus as **agent-directives** (917 symbols, 999 relationships, 3 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+
+> If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
+
+## Always Do
+
+- **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `gitnexus_impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
+- **MUST run `gitnexus_detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows.
+- **MUST warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
+- When exploring unfamiliar code, use `gitnexus_query({query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
+- When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `gitnexus_context({name: "symbolName"})`.
+
+## When Debugging
+
+1. `gitnexus_query({query: "<error or symptom>"})` — find execution flows related to the issue
+2. `gitnexus_context({name: "<suspect function>"})` — see all callers, callees, and process participation
+3. `READ gitnexus://repo/agent-directives/process/{processName}` — trace the full execution flow step by step
+4. For regressions: `gitnexus_detect_changes({scope: "compare", base_ref: "main"})` — see what your branch changed
+
+## When Refactoring
+
+- **Renaming**: MUST use `gitnexus_rename({symbol_name: "old", new_name: "new", dry_run: true})` first. Review the preview — graph edits are safe, text_search edits need manual review. Then run with `dry_run: false`.
+- **Extracting/Splitting**: MUST run `gitnexus_context({name: "target"})` to see all incoming/outgoing refs, then `gitnexus_impact({target: "target", direction: "upstream"})` to find all external callers before moving code.
+- After any refactor: run `gitnexus_detect_changes({scope: "all"})` to verify only expected files changed.
+
+## Never Do
+
+- NEVER edit a function, class, or method without first running `gitnexus_impact` on it.
+- NEVER ignore HIGH or CRITICAL risk warnings from impact analysis.
+- NEVER rename symbols with find-and-replace — use `gitnexus_rename` which understands the call graph.
+- NEVER commit changes without running `gitnexus_detect_changes()` to check affected scope.
+
+## Tools Quick Reference
+
+| Tool             | When to use                   | Command                                                                 |
+| ---------------- | ----------------------------- | ----------------------------------------------------------------------- |
+| `query`          | Find code by concept          | `gitnexus_query({query: "auth validation"})`                            |
+| `context`        | 360-degree view of one symbol | `gitnexus_context({name: "validateUser"})`                              |
+| `impact`         | Blast radius before editing   | `gitnexus_impact({target: "X", direction: "upstream"})`                 |
+| `detect_changes` | Pre-commit scope check        | `gitnexus_detect_changes({scope: "staged"})`                            |
+| `rename`         | Safe multi-file rename        | `gitnexus_rename({symbol_name: "old", new_name: "new", dry_run: true})` |
+| `cypher`         | Custom graph queries          | `gitnexus_cypher({query: "MATCH ..."})`                                 |
+
+## Impact Risk Levels
+
+| Depth | Meaning                               | Action                |
+| ----- | ------------------------------------- | --------------------- |
+| d=1   | WILL BREAK — direct callers/importers | MUST update these     |
+| d=2   | LIKELY AFFECTED — indirect deps       | Should test           |
+| d=3   | MAY NEED TESTING — transitive         | Test if critical path |
+
+## Resources
+
+| Resource                                          | Use for                                  |
+| ------------------------------------------------- | ---------------------------------------- |
+| `gitnexus://repo/agent-directives/context`        | Codebase overview, check index freshness |
+| `gitnexus://repo/agent-directives/clusters`       | All functional areas                     |
+| `gitnexus://repo/agent-directives/processes`      | All execution flows                      |
+| `gitnexus://repo/agent-directives/process/{name}` | Step-by-step execution trace             |
+
+## Self-Check Before Finishing
+
+Before completing any code modification task, verify:
+
+1. `gitnexus_impact` was run for all modified symbols
+2. No HIGH/CRITICAL risk warnings were ignored
+3. `gitnexus_detect_changes()` confirms changes match expected scope
+4. All d=1 (WILL BREAK) dependents were updated
+
+## Keeping the Index Fresh
+
+After committing code changes, the GitNexus index becomes stale. Re-run analyze to update it:
+
+```bash
+npx gitnexus analyze
+```
+
+If the index previously included embeddings, preserve them by adding `--embeddings`:
+
+```bash
+npx gitnexus analyze --embeddings
+```
+
+To check whether embeddings exist, inspect `.gitnexus/meta.json` — the `stats.embeddings` field shows the count (0 means no embeddings). **Running analyze without `--embeddings` will delete any previously generated embeddings.**
+
+> Claude Code users: A PostToolUse hook handles this automatically after `git commit` and `git merge`.
+
+## CLI
+
+| Task                                         | Read this skill file                                        |
+| -------------------------------------------- | ----------------------------------------------------------- |
+| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md`       |
+| Blast radius / "What breaks if I change X?"  | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
+| Trace bugs / "Why is X failing?"             | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md`       |
+| Rename / extract / split / refactor          | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md`     |
+| Tools, resources, schema reference           | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md`           |
+| Index, status, clean, wiki CLI commands      | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md`             |
+
+<!-- gitnexus:end -->
