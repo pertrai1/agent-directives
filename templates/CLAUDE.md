@@ -38,7 +38,7 @@ Delete this comment block when done.
 
 **Load `directives/adaptive-routing.md` first.**
 
-The root file ONLY provides project-specific context: commands, repo layout, and local constraints.
+The root file provides project-specific context plus compact routing pointers: commands, repo layout, local constraints, and any client-specific workflow reminders.
 
 Workflow path selection, directive loading, skill loading, and evidence requirements live in `directives/adaptive-routing.md`.
 
