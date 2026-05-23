@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -35,8 +37,14 @@ jobs:
       - name: Validate directives, skills, and eval scenarios
         run: npm run validate
 
+      - name: Validate directive and skill version bumps
+        run: npm run version:check -- --base origin/${{ github.base_ref || 'main' }}
+
       - name: Manifest drift check
         run: npm run manifest:check
 
       - name: CLI integration tests
         run: npm run test:cli
+
+      - name: Version-bump validator tests
+        run: npm run test:version-bumps
