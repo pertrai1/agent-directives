@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 import { execSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -57,9 +57,13 @@ function withTempRepo(fn: (cwd: string) => void): void {
   }
 }
 
-function writeInstruction(cwd: string, body: string, version = '1.0.0'): void {
-  mkdirSync(join(cwd, 'skills', 'demo'), { recursive: true });
-  writeFileSync(join(cwd, 'skills', 'demo', 'SKILL.md'), `---\nname: demo\ndescription: Demo skill.\nversion: ${version}\nrequired: false\ncategory: review\ntools:\n  - claude\n---\n\n${body}\n`);
+function skillPath(cwd: string, name = 'demo'): string {
+  return join(cwd, 'skills', name, 'SKILL.md');
+}
+
+function writeInstruction(cwd: string, body: string, version = '1.0.0', name = 'demo'): void {
+  mkdirSync(join(cwd, 'skills', name), { recursive: true });
+  writeFileSync(skillPath(cwd, name), `---\nname: ${name}\ndescription: Demo skill.\nversion: ${version}\nrequired: false\ncategory: review\ntools:\n  - claude\n---\n\n${body}\n`);
 }
 
 console.log('version bump validation');
@@ -95,10 +99,71 @@ test('passes for a new skill with an initial version', () => {
   withTempRepo((cwd) => {
     run('git commit --allow-empty -qm initial', cwd);
     writeInstruction(cwd, 'New behavior.', '1.0.0');
+    run('git add -A', cwd);
 
     const result = run(`tsx ${validator} --base HEAD`, cwd);
     if (!result.stdout.includes('Version bump validation passed')) {
       throw new Error(`expected pass summary, got stdout: ${result.stdout}`);
+    }
+  });
+});
+
+test('fails when an existing instruction file is deleted', () => {
+  withTempRepo((cwd) => {
+    writeInstruction(cwd, 'Original behavior.', '1.0.0');
+    run('git add . && git commit -qm initial', cwd);
+    rmSync(skillPath(cwd), { force: true });
+    run('git add -A', cwd);
+
+    const result = run(`tsx ${validator} --base HEAD`, cwd, true);
+    if (result.code === 0) throw new Error('expected non-zero exit code');
+    if (!result.stderr.includes('instruction file deleted')) {
+      throw new Error(`expected deletion error, got stderr: ${result.stderr}`);
+    }
+  });
+});
+
+test('fails when an existing instruction file is renamed without a major bump', () => {
+  withTempRepo((cwd) => {
+    writeInstruction(cwd, 'Original behavior.', '1.0.0', 'demo');
+    run('git add . && git commit -qm initial', cwd);
+    mkdirSync(join(cwd, 'skills', 'renamed'), { recursive: true });
+    renameSync(skillPath(cwd, 'demo'), skillPath(cwd, 'renamed'));
+    run('git add -A', cwd);
+
+    const result = run(`tsx ${validator} --base HEAD`, cwd, true);
+    if (result.code === 0) throw new Error('expected non-zero exit code');
+    if (!result.stderr.includes('without a version bump')) {
+      throw new Error(`expected rename version-bump error, got stderr: ${result.stderr}`);
+    }
+  });
+});
+
+test('passes when an existing instruction file is renamed with a major bump', () => {
+  withTempRepo((cwd) => {
+    writeInstruction(cwd, 'Original behavior.', '1.0.0', 'demo');
+    run('git add . && git commit -qm initial', cwd);
+    writeInstruction(cwd, 'Renamed behavior.', '2.0.0', 'renamed');
+    rmSync(join(cwd, 'skills', 'demo'), { recursive: true, force: true });
+    run('git add -A', cwd);
+
+    const result = run(`tsx ${validator} --base HEAD`, cwd);
+    if (!result.stdout.includes('Version bump validation passed')) {
+      throw new Error(`expected pass summary, got stdout: ${result.stdout}`);
+    }
+  });
+});
+
+test('rejects prerelease versions because the policy only allows plain semver', () => {
+  withTempRepo((cwd) => {
+    run('git commit --allow-empty -qm initial', cwd);
+    writeInstruction(cwd, 'New behavior.', '1.0.0-beta.1');
+    run('git add -A', cwd);
+
+    const result = run(`tsx ${validator} --base HEAD`, cwd, true);
+    if (result.code === 0) throw new Error('expected non-zero exit code');
+    if (!result.stderr.includes('plain semver MAJOR.MINOR.PATCH')) {
+      throw new Error(`expected plain-semver error, got stderr: ${result.stderr}`);
     }
   });
 });

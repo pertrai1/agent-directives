@@ -45,3 +45,6 @@ jobs:
 
       - name: CLI integration tests
         run: npm run test:cli
+
+      - name: Version-bump validator tests
+        run: npm run test:version-bumps

@@ -9,6 +9,12 @@ interface Options {
   base: string;
 }
 
+interface DiffEntry {
+  path: string;
+  previousPath: string | null;
+  status: 'added' | 'deleted' | 'modified' | 'renamed';
+}
+
 interface ValidationResult {
   checked: number;
   errors: string[];
@@ -39,13 +45,14 @@ function parseVersion(text: string): string | null {
   return frontmatter.match(/^version:\s*['"]?([^'"\s]+)['"]?\s*$/m)?.[1] ?? null;
 }
 
+function parsePlainSemver(value: string): number[] | null {
+  const match = value.match(/^(\d+)\.(\d+)\.(\d+)$/);
+  return match ? match.slice(1).map(Number) : null;
+}
+
 function compareSemver(a: string, b: string): number | null {
-  const parse = (value: string): number[] | null => {
-    const match = value.match(/^(\d+)\.(\d+)\.(\d+)$/);
-    return match ? match.slice(1).map(Number) : null;
-  };
-  const left = parse(a);
-  const right = parse(b);
+  const left = parsePlainSemver(a);
+  const right = parsePlainSemver(b);
   if (!left || !right) return null;
   for (let i = 0; i < 3; i += 1) {
     if (left[i] !== right[i]) return left[i] > right[i] ? 1 : -1;
@@ -53,13 +60,25 @@ function compareSemver(a: string, b: string): number | null {
   return 0;
 }
 
-function changedInstructionFiles(repoRoot: string, base: string): string[] {
+function changedInstructionFiles(repoRoot: string, base: string): DiffEntry[] {
   const output = runGit(
     repoRoot,
-    `diff --name-only --diff-filter=AMR ${shellQuote(base)} -- directives/*.md skills/*/SKILL.md`,
+    `diff --name-status --find-renames --diff-filter=ADMR ${shellQuote(base)} -- 'directives/*.md' 'skills/*/SKILL.md'`,
     true,
   );
-  return output.split('\n').map((line) => line.trim()).filter(Boolean);
+
+  return output
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line): DiffEntry => {
+      const [statusCode, firstPath, secondPath] = line.split('\t');
+      const status = statusCode[0];
+      if (status === 'R') return { path: secondPath, previousPath: firstPath, status: 'renamed' };
+      if (status === 'A') return { path: firstPath, previousPath: null, status: 'added' };
+      if (status === 'D') return { path: firstPath, previousPath: firstPath, status: 'deleted' };
+      return { path: firstPath, previousPath: firstPath, status: 'modified' };
+    });
 }
 
 function readCurrent(repoRoot: string, path: string): string {
@@ -83,32 +102,54 @@ export function validateVersionBumps(options: Options): ValidationResult {
   const files = changedInstructionFiles(options.repoRoot, options.base);
   let checked = 0;
 
-  for (const path of files) {
-    const current = readCurrent(options.repoRoot, path);
+  for (const entry of files) {
+    checked += 1;
+
+    if (entry.status === 'deleted') {
+      errors.push(`${entry.path}: instruction file deleted; removals require a major-version deprecation signal before deletion or an explicit policy exception`);
+      continue;
+    }
+
+    const current = readCurrent(options.repoRoot, entry.path);
     const currentVersion = parseVersion(current);
     if (!currentVersion) {
-      errors.push(`${path}: missing semver frontmatter version`);
+      errors.push(`${entry.path}: missing plain semver frontmatter version`);
       continue;
     }
 
-    const previous = readAtRef(options.repoRoot, options.base, path);
+    if (entry.status === 'added' || !entry.previousPath) {
+      if (!parsePlainSemver(currentVersion)) {
+        errors.push(`${entry.path}: version must be plain semver MAJOR.MINOR.PATCH (was ${currentVersion})`);
+      }
+      continue;
+    }
+
+    const previous = readAtRef(options.repoRoot, options.base, entry.previousPath);
     if (previous === null) {
-      checked += 1;
+      if (!parsePlainSemver(currentVersion)) {
+        errors.push(`${entry.path}: version must be plain semver MAJOR.MINOR.PATCH (was ${currentVersion})`);
+      }
       continue;
     }
 
-    checked += 1;
     const previousVersion = parseVersion(previous);
     if (!previousVersion) {
-      warnings.push(`${path}: previous version missing at ${options.base}; current version ${currentVersion} accepted`);
+      warnings.push(`${entry.path}: previous version missing at ${options.base}; current version ${currentVersion} accepted`);
       continue;
     }
 
     const ordering = compareSemver(currentVersion, previousVersion);
     if (ordering === null) {
-      errors.push(`${path}: version must be plain semver MAJOR.MINOR.PATCH (was ${previousVersion} -> ${currentVersion})`);
+      errors.push(`${entry.path}: version must be plain semver MAJOR.MINOR.PATCH (was ${previousVersion} -> ${currentVersion})`);
     } else if (ordering <= 0) {
-      errors.push(`${path}: changed without a version bump (${previousVersion} -> ${currentVersion})`);
+      const renameNote = entry.status === 'renamed' ? ` after rename from ${entry.previousPath}` : '';
+      errors.push(`${entry.path}: changed${renameNote} without a version bump (${previousVersion} -> ${currentVersion})`);
+    } else if (entry.status === 'renamed') {
+      const currentParts = parsePlainSemver(currentVersion);
+      const previousParts = parsePlainSemver(previousVersion);
+      if (currentParts && previousParts && currentParts[0] <= previousParts[0]) {
+        errors.push(`${entry.path}: renamed from ${entry.previousPath}; path changes require a major version bump (${previousVersion} -> ${currentVersion})`);
+      }
     }
   }
 
@@ -142,7 +183,7 @@ function main(): void {
   if (result.errors.length) {
     console.error('Version bump validation failed:');
     for (const error of result.errors) console.error(`  - ${error}`);
-    console.error('\nBump the frontmatter version whenever an existing directive or skill changes. Use a patch bump for small wording/behavior tightening, minor for new coverage, and major for incompatible routing/schema changes.');
+    console.error('\nBump the frontmatter version whenever an existing directive or skill changes. Use plain MAJOR.MINOR.PATCH format: patch for small wording/behavior tightening, minor for new coverage, and major for incompatible routing/schema/path changes or removals.');
     process.exit(1);
   }
 
