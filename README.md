@@ -12,7 +12,7 @@ dependencies between files.
 | **Workflow** | 10 directives | Govern how the agent works: adaptive routing, workspace isolation, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
-| **Skills** | 10 skills | Code reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, and production readiness reviewer |
+| **Skills** | 11 skills | Code reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, subagent-driven development, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, and production readiness reviewer |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 | **Tooling** | TypeScript scripts | Validate directive wiring, assemble eval scenarios, record loaded-file manifests, and generate eval health reports |
 
@@ -257,6 +257,13 @@ coding.
 Turns a PRD, issue, acceptance criteria, or requirements document into a staged
 implementation task list with relevant files, likely tests, validation gates, and
 review checkpoints. Grounds file paths in repo evidence or marks them tentative.
+
+### Subagent-Driven Development (`skills/subagent-driven-development/SKILL.md`)
+
+Executes an existing implementation plan through delegated subagents or isolated
+worker sessions while the parent agent owns task slicing, scope, review,
+integration, and final verification. Prevents unsafe parallel writes and requires
+self-contained worker prompts.
 
 ### Self-Audit (`skills/self-audit/SKILL.md`)
 

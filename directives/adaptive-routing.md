@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 1.1.0
+version: 1.2.0
 required: true
 category: workflow
 tools:
@@ -108,6 +108,7 @@ If no row matches, state that no specialist skill is required.
 | --- | --- | --- |
 | Vague feature idea, product request, or unclear requirement needs a PRD/spec | Exploration / Full / Policy | `skills/product-requirements-writer/SKILL.md` |
 | PRD, issue, spec, or acceptance criteria needs implementation tasks | Exploration / Full / Policy | `skills/implementation-task-planner/SKILL.md` |
+| Executing an existing implementation plan with multiple mostly independent tasks using delegated subagents or isolated worker sessions | Full / Debugging / Policy | `skills/subagent-driven-development/SKILL.md` |
 | Bug, regression, failing test, failing CI/build/lint/type-check, or unexpected behavior | Debugging | `skills/systematic-debugging/SKILL.md` |
 | Reviewing a PR, branch, diff, or local changes | Review | `skills/code-reviewer/SKILL.md` |
 | Writing, changing, or reviewing tests/eval scenarios | Full / Review | `skills/test-reviewer/SKILL.md` |
@@ -165,6 +166,7 @@ Required skills:
 
 - `skills/product-requirements-writer/SKILL.md` when turning a feature idea or vague request into a PRD/spec before planning
 - `skills/implementation-task-planner/SKILL.md` when turning a PRD/spec/issue into an implementation task list
+- `skills/subagent-driven-development/SKILL.md` when executing an existing implementation plan through delegated subagents or isolated worker sessions
 - `skills/self-audit/SKILL.md` after REFACTOR for Full Path work
 - `skills/test-reviewer/SKILL.md` when tests are added or substantially changed
 - `skills/spec-reviewer/SKILL.md` when reviewing implementation against a written spec or preparing spec-governed work for merge
