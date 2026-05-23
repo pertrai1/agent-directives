@@ -269,7 +269,7 @@ Required:
 
 - `directives/task-framing.md`
 - proposal before major edits when tradeoffs exist
-- bump the frontmatter `version` for every existing `directives/*.md` or `skills/*/SKILL.md` file changed in the PR; use patch for wording/behavior tightening, minor for new heuristics/routing/evidence coverage, and major for incompatible routing/schema/path changes; raw deletions are rejected, so deprecate with a major version bump before deletion or document an explicit policy exception
+- bump the frontmatter `version` for every existing `directives/*.md` or `skills/*/SKILL.md` file changed in the PR; use patch for wording/behavior tightening, minor for new heuristics/routing/evidence coverage, and major for incompatible routing/schema/path changes; raw deletions are rejected, so deprecate with a major version bump before deletion
 - `directives/session-decisions.md` if the accepted change establishes or changes durable policy
 - `directives/verification.md` before PR
 - `directives/context-handoff.md` for multi-phase directive/workflow changes or new-session handoff

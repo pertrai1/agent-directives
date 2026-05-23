@@ -168,6 +168,32 @@ test('rejects prerelease versions because the policy only allows plain semver', 
   });
 });
 
+test('fails when the base ref is missing', () => {
+  withTempRepo((cwd) => {
+    run('git commit --allow-empty -qm initial', cwd);
+
+    const result = run(`tsx ${validator} --base origin/missing`, cwd, true);
+    if (result.code === 0) throw new Error('expected non-zero exit code');
+    if (!result.stderr.includes('invalid or missing base ref')) {
+      throw new Error(`expected invalid-base error, got stderr: ${result.stderr}`);
+    }
+  });
+});
+
+test('parses BOM and CRLF frontmatter versions', () => {
+  withTempRepo((cwd) => {
+    run('git commit --allow-empty -qm initial', cwd);
+    mkdirSync(join(cwd, 'skills', 'demo'), { recursive: true });
+    writeFileSync(skillPath(cwd), '\uFEFF---\r\nname: demo\r\ndescription: Demo skill.\r\nversion: 1.0.0\r\nrequired: false\r\ncategory: review\r\ntools:\r\n  - claude\r\n---\r\n\r\nNew behavior.\r\n');
+    run('git add -A', cwd);
+
+    const result = run(`tsx ${validator} --base HEAD`, cwd);
+    if (!result.stdout.includes('Version bump validation passed')) {
+      throw new Error(`expected pass summary, got stdout: ${result.stdout}`);
+    }
+  });
+});
+
 console.log('\nResults');
 console.log(`  ${passed} passed, ${failed} failed`);
 if (failed > 0) {

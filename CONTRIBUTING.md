@@ -93,7 +93,7 @@ Use semver pragmatically:
 - **Minor** (`1.2.3 -> 1.3.0`) for new heuristics, required outputs, routing triggers, evidence requirements, or meaningful new coverage.
 - **Major** (`1.2.3 -> 2.0.0`) for incompatible routing contracts, schema/path changes, or behavior that downstream consumers may need to adapt to.
 
-Raw deletions are rejected because a deleted file cannot carry its own bumped version. Deprecate with a major version bump before deletion, or document an explicit policy exception if immediate removal is intentional.
+Raw deletions are rejected because a deleted file cannot carry its own bumped version. Deprecate with a major version bump before deletion.
 
 New directives or skills start with their initial version, usually `1.0.0`.
 

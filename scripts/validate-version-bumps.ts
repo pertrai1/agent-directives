@@ -39,9 +39,10 @@ function shellQuote(value: string): string {
 }
 
 function parseVersion(text: string): string | null {
-  const end = text.indexOf('\n---\n', 4);
-  if (!text.startsWith('---\n') || end === -1) return null;
-  const frontmatter = text.slice(4, end);
+  const normalized = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const end = normalized.indexOf('\n---\n', 4);
+  if (!normalized.startsWith('---\n') || end === -1) return null;
+  const frontmatter = normalized.slice(4, end);
   return frontmatter.match(/^version:\s*['"]?([^'"\s]+)['"]?\s*$/m)?.[1] ?? null;
 }
 
@@ -60,11 +61,16 @@ function compareSemver(a: string, b: string): number | null {
   return 0;
 }
 
+function baseRefError(repoRoot: string, base: string): string | null {
+  const resolved = runGit(repoRoot, `rev-parse --verify ${shellQuote(`${base}^{commit}`)}`, true).trim();
+  if (resolved) return null;
+  return `${base}: invalid or missing base ref; fetch the PR base branch or pass --base <ref>`;
+}
+
 function changedInstructionFiles(repoRoot: string, base: string): DiffEntry[] {
   const output = runGit(
     repoRoot,
     `diff --name-status --find-renames --diff-filter=ADMR ${shellQuote(base)} -- 'directives/*.md' 'skills/*/SKILL.md'`,
-    true,
   );
 
   return output
@@ -99,6 +105,9 @@ export function validateVersionBumps(options: Options): ValidationResult {
     return { checked: 0, errors: [`${options.repoRoot}: not a git repository`], warnings };
   }
 
+  const baseError = baseRefError(options.repoRoot, options.base);
+  if (baseError) return { checked: 0, errors: [baseError], warnings };
+
   const files = changedInstructionFiles(options.repoRoot, options.base);
   let checked = 0;
 
@@ -106,7 +115,7 @@ export function validateVersionBumps(options: Options): ValidationResult {
     checked += 1;
 
     if (entry.status === 'deleted') {
-      errors.push(`${entry.path}: instruction file deleted; removals require a major-version deprecation signal before deletion or an explicit policy exception`);
+      errors.push(`${entry.path}: instruction file deleted; deprecate with a major version bump before deletion`);
       continue;
     }
 
@@ -183,7 +192,7 @@ function main(): void {
   if (result.errors.length) {
     console.error('Version bump validation failed:');
     for (const error of result.errors) console.error(`  - ${error}`);
-    console.error('\nBump the frontmatter version whenever an existing directive or skill changes. Use plain MAJOR.MINOR.PATCH format: patch for small wording/behavior tightening, minor for new coverage, and major for incompatible routing/schema/path changes or removals.');
+    console.error('\nBump the frontmatter version whenever an existing directive or skill changes. Use plain MAJOR.MINOR.PATCH format: patch for small wording/behavior tightening, minor for new coverage, and major for incompatible routing/schema/path changes. Deprecate removals with a major version bump before deletion.');
     process.exit(1);
   }
 
