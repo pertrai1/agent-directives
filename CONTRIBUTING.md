@@ -72,12 +72,26 @@ npm install
 npm run typecheck                 # TypeScript clean
 npm run manifest                  # Regenerate manifest.json
 npm run validate                  # Frontmatter contract + path references
+npm run version:check             # Existing directive/skill edits bumped versions
 npm run test:cli                  # CLI integration tests
+npm run test:version-bumps        # Version-bump validator tests
 ```
 
-All four must pass. The full sequence is wired into `npm run check`.
+All checks must pass. The full sequence is wired into `npm run check`.
 
 If you changed frontmatter on existing entries, `manifest.json` will change. Commit the regenerated manifest alongside your edits — CI will fail on drift otherwise.
+
+## Version bump policy
+
+Every existing `directives/*.md` or `skills/*/SKILL.md` file changed in a PR must increase its frontmatter `version`. The CI version-bump check enforces this against the PR base branch.
+
+Use semver pragmatically:
+
+- **Patch** (`1.2.3 -> 1.2.4`) for typo fixes, wording cleanup, small clarifications, and behavior-tightening within the same purpose.
+- **Minor** (`1.2.3 -> 1.3.0`) for new heuristics, required outputs, routing triggers, evidence requirements, or meaningful new coverage.
+- **Major** (`1.2.3 -> 2.0.0`) for incompatible routing contracts, schema/path changes, removals, or behavior that downstream consumers may need to adapt to.
+
+New directives or skills start with their initial version, usually `1.0.0`.
 
 ## Adding an eval scenario
 

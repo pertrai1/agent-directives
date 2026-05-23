@@ -17,15 +17,17 @@
     "manifest.json"
   ],
   "scripts": {
-    "check": "npm run typecheck && npm run validate && npm run manifest:check && npm run test:cli",
+    "check": "npm run typecheck && npm run validate && npm run version:check && npm run manifest:check && npm run test:cli && npm run test:version-bumps",
     "typecheck": "tsc --noEmit",
     "validate": "tsx scripts/validate-directives.ts",
+    "version:check": "tsx scripts/validate-version-bumps.ts",
     "eval:scenario": "tsx scripts/eval-scenario.ts",
     "eval:report": "tsx evals/report-results.ts",
     "manifest": "tsx scripts/generate-manifest.ts",
     "manifest:check": "npm run manifest && git diff --exit-code manifest.json",
     "cli": "tsx src/cli.ts",
-    "test:cli": "tsx scripts/test-cli.ts"
+    "test:cli": "tsx scripts/test-cli.ts",
+    "test:version-bumps": "tsx scripts/test-version-bumps.ts"
   },
   "dependencies": {
     "commander": "^14.0.3",

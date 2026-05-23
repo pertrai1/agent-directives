@@ -127,6 +127,7 @@ record.
 - Keep frontmatter, prose, template tables, README summaries, and eval scenarios aligned when routing semantics change.
 - Treat `templates/` as user-facing examples. If the root `AGENTS.md` discovers a repo-specific convention that should be reusable, consider whether the template should also change.
 - Treat `evals/scenarios/*.md` as behavioral tests for instructions. When changing `directives/*.md` or `skills/*/SKILL.md`, update an existing scenario or add a targeted one if the change affects routing, required outputs, review heuristics, decision points, or expected agent behavior. Skip eval churn for typo fixes, formatting, frontmatter-only cleanup with no routing effect, or wording that does not change behavior; note the reason in the PR summary.
+- Bump the frontmatter `version` for every existing `directives/*.md` or `skills/*/SKILL.md` file changed in a PR. Use patch for wording or behavior-tightening, minor for new heuristics/routing/evidence coverage, and major for incompatible routing/schema/path changes. `npm run version:check` enforces this against the base branch.
 - For eval scenario changes, verify setup with `npm run eval:scenario -- --print-only <scenario-name>` and remove generated `evals/results/runs/...` artifacts before committing unless intentionally updating committed results.
 - If a validation schema is implied but not implemented, use a short script to verify the relevant invariant and include the script output in the PR summary.
 
