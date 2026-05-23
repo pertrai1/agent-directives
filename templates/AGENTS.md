@@ -97,6 +97,7 @@ Load the relevant skill selected by adaptive routing before performing any task 
 | Spec Reviewer | Before merging when a written spec exists      | `skills/spec-reviewer/SKILL.md`  |
 | Product Requirements Writer | Before turning a feature idea or vague requirement into a PRD/spec | `skills/product-requirements-writer/SKILL.md` |
 | Implementation Task Planner | Before turning a PRD, issue, or acceptance criteria into implementation tasks | `skills/implementation-task-planner/SKILL.md` |
+| Subagent-Driven Development | Before executing an existing implementation plan through delegated subagents or isolated worker sessions | `skills/subagent-driven-development/SKILL.md` |
 | Self-Audit    | After REFACTOR, before VERIFY (every Full Path cycle) | `skills/self-audit/SKILL.md` |
 | Systematic Debugging | Before fixing bugs, failing tests, CI failures, or regressions | `skills/systematic-debugging/SKILL.md` |
 | Architecture Boundary Reviewer | Before merging changes to imports, exports, packages, services, shared code, or folder boundaries | `skills/architecture-boundary-reviewer/SKILL.md` |
