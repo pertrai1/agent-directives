@@ -67,10 +67,15 @@ function baseRefError(repoRoot: string, base: string): string | null {
   return `${base}: invalid or missing base ref; fetch the PR base branch or pass --base <ref>`;
 }
 
+function mergeBaseRef(repoRoot: string, base: string): string {
+  return runGit(repoRoot, `merge-base ${shellQuote(base)} HEAD`).trim();
+}
+
 function changedInstructionFiles(repoRoot: string, base: string): DiffEntry[] {
+  const mergeBase = mergeBaseRef(repoRoot, base);
   const output = runGit(
     repoRoot,
-    `diff --name-status --find-renames --diff-filter=ADMR ${shellQuote(base)} -- 'directives/*.md' 'skills/*/SKILL.md'`,
+    `diff --name-status --find-renames --diff-filter=ADMR ${shellQuote(mergeBase)} -- 'directives/*.md' 'skills/*/SKILL.md'`,
   );
 
   return output
