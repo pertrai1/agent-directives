@@ -12,7 +12,7 @@ dependencies between files.
 | **Workflow** | 10 directives | Govern how the agent works: adaptive routing, workspace isolation, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
-| **Skills** | 11 skills | Code reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, subagent-driven development, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, and production readiness reviewer |
+| **Skills** | 13 skills | Code reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, subagent-driven development, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, production readiness reviewer, harness hooks reviewer, and MCP integration reviewer |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 | **Tooling** | TypeScript scripts | Validate directive wiring, assemble eval scenarios, record loaded-file manifests, and generate eval health reports |
 
@@ -301,6 +301,20 @@ persistence, external services, async jobs, auth/security/privacy, infra/config,
 critical user paths, performance/scale, or cross-service compatibility. Focuses
 on failure modes, observability, rollback/recovery, data safety, compatibility,
 and scale.
+
+### Harness Hooks Reviewer (`skills/harness-hooks-reviewer/SKILL.md`)
+
+Reviews agent harness hooks and deterministic automation such as start/stop hooks,
+pre-action policy gates, post-change checks, and session logging. Focuses on
+trigger scope, side effects, failure modes, timeouts, secret handling, and whether
+the hook enforces deterministic behavior rather than vague prompt policy.
+
+### MCP Integration Reviewer (`skills/mcp-integration-reviewer/SKILL.md`)
+
+Reviews MCP servers and agent-accessible tool surfaces such as internal API
+bridges, structured search, docs/ticketing/analytics connectors, schemas, and
+write-capable tools. Focuses on tool routing, strict validation, least privilege,
+bounded output, auditability, write safety, and operational failure behavior.
 
 ## Templates
 

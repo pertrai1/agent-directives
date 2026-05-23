@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 1.2.0
+version: 1.3.0
 required: true
 category: workflow
 tools:
@@ -116,6 +116,8 @@ If no row matches, state that no specialist skill is required.
 | Imports, exports, package boundaries, folders, services, shared utilities, or dependency direction change | Boundary / Review | `skills/architecture-boundary-reviewer/SKILL.md` |
 | TypeScript/JavaScript refactor, cleanup, shared utilities, dead-code, duplication, complexity, or static-analysis health concern | Full / Review | `skills/codebase-health-reviewer/SKILL.md` |
 | Persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility | Full / Debugging / Review | `skills/production-readiness-reviewer/SKILL.md` |
+| Agent harness hooks, start/stop hooks, pre-action hooks, post-change automation, or deterministic agent workflow scripts are added or reviewed | Full / Review / Policy | `skills/harness-hooks-reviewer/SKILL.md` |
+| MCP servers/tools, agent-accessible internal APIs, structured search, docs/ticketing/analytics connectors, tool schemas, or write-capable agent tools are added or reviewed | Full / Review / Policy | `skills/mcp-integration-reviewer/SKILL.md` |
 | Full Path work reaches post-REFACTOR pre-verification checkpoint | Full | `skills/self-audit/SKILL.md` |
 
 ---
@@ -171,6 +173,8 @@ Required skills:
 - `skills/test-reviewer/SKILL.md` when tests are added or substantially changed
 - `skills/spec-reviewer/SKILL.md` when reviewing implementation against a written spec or preparing spec-governed work for merge
 - `skills/production-readiness-reviewer/SKILL.md` before merge/review when a change touches persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility
+- `skills/harness-hooks-reviewer/SKILL.md` when the implementation adds or changes agent harness hooks or deterministic agent automation
+- `skills/mcp-integration-reviewer/SKILL.md` when the implementation adds or changes MCP servers/tools, agent tool schemas, or agent-accessible internal API bridges
 
 ### Debugging Path
 
@@ -239,6 +243,8 @@ Required skills:
 - `skills/architecture-boundary-reviewer/SKILL.md` for imports/exports/packages/shared code
 - `skills/codebase-health-reviewer/SKILL.md` for TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes
 - `skills/production-readiness-reviewer/SKILL.md` for production-sensitive changes involving persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility
+- `skills/harness-hooks-reviewer/SKILL.md` for agent harness hooks or deterministic agent automation
+- `skills/mcp-integration-reviewer/SKILL.md` for MCP servers/tools, agent tool schemas, or agent-accessible internal API bridges
 
 Do not edit code during Review Path unless the user asks for fixes. Use `directives/context-handoff.md` for compact PR/review handoffs when review findings will be fixed later or transferred to another session.
 
@@ -275,6 +281,8 @@ Required:
 - `directives/session-decisions.md` if the accepted change establishes or changes durable policy
 - `directives/verification.md` before PR
 - `directives/context-handoff.md` for multi-phase directive/workflow changes or new-session handoff
+- `skills/harness-hooks-reviewer/SKILL.md` when policy changes affect agent harness hooks or deterministic automation
+- `skills/mcp-integration-reviewer/SKILL.md` when policy changes affect MCP/tool surfaces exposed to agents
 
 ---
 
@@ -287,6 +295,8 @@ Escalate to Full Path or add a specialized path when any of these are true:
 | Auth, permissions, security, privacy, payments, data loss | Full Path + Production Readiness Review + stronger verification |
 | Database schema, migrations, persistence, queues | Full Path + Production Readiness Review + explicit rollback/edge-case proof |
 | External services, async jobs, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility | Full Path + Production Readiness Review |
+| Agent harness hooks or deterministic agent automation | Policy/Full/Review Path + Harness Hooks Review |
+| MCP servers/tools, agent-accessible APIs, or write-capable agent tools | Policy/Full/Review Path + MCP Integration Review; add Production Readiness Review for sensitive production systems |
 | Public API, exported types, package entry points | Full Path + Integration Proof + Boundary Path |
 | Imports, shared utilities, packages, folders, services | Boundary Path |
 | Shared/default checkout, unrelated local changes, or explicit request for isolation before repo edits | Workspace Isolation Path |

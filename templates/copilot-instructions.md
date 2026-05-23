@@ -106,6 +106,8 @@ Load the relevant skill selected by adaptive routing for the task type.
 - `skills/architecture-boundary-reviewer/SKILL.md` — Before merging changes to imports, exports, packages, services, shared code, or folder boundaries
 - `skills/codebase-health-reviewer/SKILL.md` — Before merging TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes
 - `skills/production-readiness-reviewer/SKILL.md` — Before merging/reviewing production-sensitive changes: persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility
+- `skills/harness-hooks-reviewer/SKILL.md` — Before adding/reviewing agent harness hooks, start/stop hooks, pre-action hooks, or deterministic agent automation
+- `skills/mcp-integration-reviewer/SKILL.md` — Before adding/reviewing MCP servers/tools, agent tool schemas, internal API bridges, or write-capable agent tools
 
 ## Decision Log Lookup
 
