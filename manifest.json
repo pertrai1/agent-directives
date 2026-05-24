@@ -6,7 +6,7 @@
       "type": "directive",
       "path": "directives/adaptive-routing.md",
       "description": "Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "required": true,
       "category": "workflow",
       "tools": [
@@ -36,7 +36,7 @@
       "type": "directive",
       "path": "directives/codebase-navigation.md",
       "description": "Guides progressive codebase orientation with the SAFE pattern before implementation, review, or unfamiliar work.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "required": true,
       "category": "workflow",
       "tools": [
@@ -234,6 +234,21 @@
       ]
     },
     {
+      "id": "harness-hooks-reviewer",
+      "type": "skill",
+      "path": "skills/harness-hooks-reviewer/SKILL.md",
+      "description": "Load when adding or reviewing agent harness hooks, start/stop hooks, pre-write/pre-command hooks, post-change automation, or deterministic agent workflow scripts.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "review",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
       "id": "implementation-task-planner",
       "type": "skill",
       "path": "skills/implementation-task-planner/SKILL.md",
@@ -241,6 +256,21 @@
       "version": "1.0.0",
       "required": false,
       "category": "planning",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "mcp-integration-reviewer",
+      "type": "skill",
+      "path": "skills/mcp-integration-reviewer/SKILL.md",
+      "description": "Load when adding or reviewing MCP servers, agent tools, tool schemas, internal API bridges, structured search, docs/ticketing/analytics connectors, or agent-accessible write tools.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "review",
       "tools": [
         "claude",
         "copilot",

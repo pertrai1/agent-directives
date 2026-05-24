@@ -85,6 +85,8 @@ Example:
   - boundary-sensitive changes -> architecture-boundary-reviewer
   - TS/JS health/refactor concerns -> codebase-health-reviewer
   - production-sensitive changes -> production-readiness-reviewer
+  - agent harness hooks/automation -> harness-hooks-reviewer
+  - MCP servers/tools or agent-accessible APIs -> mcp-integration-reviewer
 - Expected behavior:
   - Structured findings and risk assessment
   - No code edits unless explicitly requested
@@ -103,7 +105,18 @@ Example:
 - Good prompt:
   - “Review this payment retry change for production readiness before merge.”
 
-### 8) Investigation / architecture understanding / option comparison
+### 8) Agent harness hooks or MCP/tool integrations
+- Route: Policy, Full, or Review Path depending on whether you are changing policy, implementing, or reviewing.
+- Required skills by surface:
+  - harness-hooks-reviewer for start/stop hooks, pre-action hooks, post-change automation, or deterministic agent workflow scripts
+  - mcp-integration-reviewer for MCP servers/tools, tool schemas, internal API bridges, structured search, or write-capable agent tools
+- Expected behavior:
+  - Review deterministic trigger scope, side effects, failure mode, and timeout/output bounds for hooks
+  - Review tool descriptions, strict schemas, least privilege, bounded output, audit logging, and write safety for MCP/tool surfaces
+- Good prompt:
+  - “Review this new MCP write tool and stop hook before merge; focus on agent safety and operational blast radius.”
+
+### 9) Investigation / architecture understanding / option comparison
 - Route: Exploration Path
 - Required directive:
   - exploration-mode
@@ -114,7 +127,7 @@ Example:
 - Good prompt:
   - “Explore options for X and recommend one with tradeoffs; no implementation yet.”
 
-### 9) Workflow/policy/directive/skill changes
+### 10) Workflow/policy/directive/skill changes
 - Route: Policy Path
 - Required directives:
   - task-framing

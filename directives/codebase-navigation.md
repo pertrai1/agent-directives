@@ -1,7 +1,7 @@
 ---
 name: codebase-navigation
 description: Guides progressive codebase orientation with the SAFE pattern before implementation, review, or unfamiliar work.
-version: 1.0.0
+version: 1.1.0
 required: true
 category: workflow
 tools:
@@ -114,6 +114,14 @@ grep -R -E "function .*<domain-term>|const .*<domain-term>|export .*<domain-term
 **If your agent framework provides dedicated read/search tools** (e.g. Read
 with line ranges, Grep, or Glob), prefer those over raw shell commands — they
 are typically optimized for the agent's context management.
+
+**Prefer symbol-aware navigation when available.** In large or multi-language
+codebases, use LSP/language-server/IDE symbol tools for go-to-definition,
+find-references, call hierarchy, or diagnostics before broad text search. Plain
+text search is still useful for unknown terms, but verify symbol identity before
+editing when multiple packages, languages, generated files, or same-named
+functions/classes may match. If no LSP/symbol tool is configured, state the
+fallback and use imports, call sites, and narrow file slices to disambiguate.
 
 **Avoid:**
 
