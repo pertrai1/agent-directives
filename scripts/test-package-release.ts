@@ -78,7 +78,10 @@ test("release workflow builds, checks, publishes with provenance, and creates Gi
   for (const expected of [
     "branches: [main]",
     "id-token: write",
-    "uses: changesets/action@v1",
+    "uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5",
+    "persist-credentials: false",
+    "uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+    "uses: changesets/action@63a615b9cd06ba9a3e6d13796c7fbcb080a60a0b",
     "npm run build",
     "npm run check",
     "npm pack --dry-run",
