@@ -61,22 +61,37 @@ function parseFrontmatter(text: string): Record<string, unknown> {
   return result;
 }
 
+function requireString(value: unknown, key: string, path: string): string {
+  if (typeof value !== 'string' || !value) throw new Error(`Missing/invalid '${key}' in ${path}`);
+  return value;
+}
+
+function requireBoolean(value: unknown, key: string, path: string): boolean {
+  if (typeof value !== 'boolean') throw new Error(`Missing/invalid '${key}' in ${path}`);
+  return value;
+}
+
+function requireStringArray(value: unknown, key: string, path: string): string[] {
+  const ok = Array.isArray(value) && value.length > 0 && value.every((t) => typeof t === 'string');
+  if (!ok) throw new Error(`Missing/invalid '${key}' in ${path}`);
+  return value as string[];
+}
+
 function readEntry(path: string, type: 'directive' | 'skill'): ManifestEntry {
   const text = readFileSync(join(repoRoot, path), 'utf8');
   const fm = parseFrontmatter(text);
   const id = String(fm.name ?? '').replace(/^['"]|['"]$/g, '');
-  const { description, version, required, category, tools } = fm;
-
   if (!id) throw new Error(`Missing 'name' in ${path}`);
-  if (typeof description !== 'string' || !description) throw new Error(`Missing/invalid 'description' in ${path}`);
-  if (typeof version !== 'string' || !version) throw new Error(`Missing/invalid 'version' in ${path}`);
-  if (typeof required !== 'boolean') throw new Error(`Missing/invalid 'required' in ${path}`);
-  if (typeof category !== 'string' || !category) throw new Error(`Missing/invalid 'category' in ${path}`);
-  if (!Array.isArray(tools) || tools.length === 0 || tools.some((t) => typeof t !== 'string')) {
-    throw new Error(`Missing/invalid 'tools' in ${path}`);
-  }
-
-  return { id, type, path, description, version, required, category, tools: tools as string[] };
+  return {
+    id,
+    type,
+    path,
+    description: requireString(fm.description, 'description', path),
+    version: requireString(fm.version, 'version', path),
+    required: requireBoolean(fm.required, 'required', path),
+    category: requireString(fm.category, 'category', path),
+    tools: requireStringArray(fm.tools, 'tools', path),
+  };
 }
 
 const directives = readdirSync(join(repoRoot, 'directives'))

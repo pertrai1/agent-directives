@@ -33,6 +33,46 @@ function section(text: string, heading: string): string {
   return match?.[1] ?? '';
 }
 
+const VALID_CATEGORIES = new Set(['workflow', 'architecture', 'memory', 'testing', 'review', 'planning', 'debugging']);
+const VALID_TOOLS = new Set(['claude', 'copilot', 'codex', 'cursor']);
+
+function validateRequiredKeys(path: string, fm: string): void {
+  for (const key of ['name', 'description', 'category']) {
+    if (!new RegExp(`^${key}:\\s*\\S`, 'm').test(fm)) fail(`${path}: missing frontmatter key '${key}'`);
+  }
+  if (!/^required:\s+(true|false)\s*$/m.test(fm)) fail(`${path}: missing or invalid frontmatter key 'required' (must be true or false)`);
+  if (!/^tools:\s*$/m.test(fm)) fail(`${path}: missing frontmatter key 'tools'`);
+}
+
+function validateCategoryValue(path: string, fm: string): void {
+  const category = fm.match(/^category:\s*(\S+)/m)?.[1];
+  if (category && !VALID_CATEGORIES.has(category)) {
+    fail(`${path}: unknown category '${category}' (expected: ${[...VALID_CATEGORIES].join(', ')})`);
+  }
+}
+
+function validateToolsValues(path: string, fm: string): void {
+  const toolsBlock = fm.match(/^tools:\s*\n((?:\s+-\s+\S+\n?)*)/m)?.[1] ?? '';
+  if (!/^\s*-\s+\S+/m.test(toolsBlock)) fail(`${path}: frontmatter key 'tools' must include at least one item`);
+  for (const toolMatch of toolsBlock.matchAll(/^\s+-\s+(\S+)/gm)) {
+    const tool = toolMatch[1];
+    if (!VALID_TOOLS.has(tool)) fail(`${path}: unknown tool '${tool}' in tools list (expected: ${[...VALID_TOOLS].join(', ')})`);
+  }
+}
+
+function expectedNameFor(path: string): string | undefined {
+  if (path.startsWith('skills/')) return path.split('/')[1];
+  return path.split('/').pop()?.replace(/\.md$/, '');
+}
+
+function validateNameMatches(path: string, fm: string): void {
+  const name = fm.match(/^name:\s*(.+)$/m)?.[1]?.trim().replace(/^['"]|['"]$/g, '');
+  const expectedName = expectedNameFor(path);
+  if (name && expectedName && name !== expectedName) {
+    fail(`${path}: frontmatter name '${name}' does not match '${expectedName}'`);
+  }
+}
+
 function validateFrontmatter(path: string): void {
   const text = read(path);
   if (!text.startsWith('---\n')) {
@@ -45,26 +85,10 @@ function validateFrontmatter(path: string): void {
     return;
   }
   const fm = text.slice(4, end);
-  for (const key of ['name', 'description', 'category']) {
-    if (!new RegExp(`^${key}:\\s*\\S`, 'm').test(fm)) fail(`${path}: missing frontmatter key '${key}'`);
-  }
-  if (!/^required:\s+(true|false)\s*$/m.test(fm)) fail(`${path}: missing or invalid frontmatter key 'required' (must be true or false)`);
-  if (!/^tools:\s*$/m.test(fm)) fail(`${path}: missing frontmatter key 'tools'`);
-  const validCategories = new Set(['workflow', 'architecture', 'memory', 'testing', 'review', 'planning', 'debugging']);
-  const category = fm.match(/^category:\s*(\S+)/m)?.[1];
-  if (category && !validCategories.has(category)) fail(`${path}: unknown category '${category}' (expected: ${[...validCategories].join(', ')})`);
-  const validTools = new Set(['claude', 'copilot', 'codex', 'cursor']);
-  const toolsBlock = fm.match(/^tools:\s*\n((?:\s+-\s+\S+\n?)*)/m)?.[1] ?? '';
-  if (!/^\s*-\s+\S+/m.test(toolsBlock)) fail(`${path}: frontmatter key 'tools' must include at least one item`);
-  for (const toolMatch of toolsBlock.matchAll(/^\s+-\s+(\S+)/gm)) {
-    const tool = toolMatch[1];
-    if (!validTools.has(tool)) fail(`${path}: unknown tool '${tool}' in tools list (expected: ${[...validTools].join(', ')})`);
-  }
-  const name = fm.match(/^name:\s*(.+)$/m)?.[1]?.trim().replace(/^['"]|['"]$/g, '');
-  const expectedName = path.startsWith('skills/') ? path.split('/')[1] : path.split('/').pop()?.replace(/\.md$/, '');
-  if (name && expectedName && name !== expectedName) {
-    fail(`${path}: frontmatter name '${name}' does not match '${expectedName}'`);
-  }
+  validateRequiredKeys(path, fm);
+  validateCategoryValue(path, fm);
+  validateToolsValues(path, fm);
+  validateNameMatches(path, fm);
 }
 
 function validateReferencedPaths(path: string): void {

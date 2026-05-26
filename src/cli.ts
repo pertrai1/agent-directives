@@ -61,6 +61,36 @@ program
   .description('Install agent directives and skills into your project')
   .version(pkg.version);
 
+function validateListOptions(opts: { tool?: string; type?: string }): void {
+  if (opts.type && opts.type !== 'directive' && opts.type !== 'skill') {
+    console.error(`Invalid --type '${opts.type}'. Expected 'directive' or 'skill'.`);
+    process.exit(1);
+  }
+  if (opts.tool && !isTool(opts.tool)) {
+    console.error(`Unknown tool '${opts.tool}'. Expected one of: ${KNOWN_TOOLS.join(', ')}`);
+    process.exit(1);
+  }
+}
+
+function groupByCategory(entries: ManifestEntry[]): Map<string, ManifestEntry[]> {
+  const byCategory = new Map<string, ManifestEntry[]>();
+  for (const entry of entries) {
+    const bucket = byCategory.get(entry.category) ?? [];
+    bucket.push(entry);
+    byCategory.set(entry.category, bucket);
+  }
+  return byCategory;
+}
+
+function printCategory(category: string, entries: ManifestEntry[]): void {
+  console.log(`\n${category}`);
+  console.log('─'.repeat(Math.max(category.length, 4)));
+  for (const entry of entries.sort((a, b) => a.id.localeCompare(b.id))) {
+    const marker = entry.required ? '★' : ' ';
+    console.log(`  ${marker} ${entry.id.padEnd(34)} ${entry.type.padEnd(10)} ${entry.description}`);
+  }
+}
+
 program
   .command('list')
   .description('List available directives and skills')
@@ -69,14 +99,7 @@ program
   .option('-t, --tool <tool>', `Filter by tool (${KNOWN_TOOLS.join(', ')})`)
   .option('--type <type>', 'Filter by type (directive or skill)')
   .action((opts: { category?: string; required?: boolean; tool?: string; type?: string }) => {
-    if (opts.type && opts.type !== 'directive' && opts.type !== 'skill') {
-      console.error(`Invalid --type '${opts.type}'. Expected 'directive' or 'skill'.`);
-      process.exit(1);
-    }
-    if (opts.tool && !isTool(opts.tool)) {
-      console.error(`Unknown tool '${opts.tool}'. Expected one of: ${KNOWN_TOOLS.join(', ')}`);
-      process.exit(1);
-    }
+    validateListOptions(opts);
     const manifest = loadManifest();
     const filtered = filterEntries(manifest.entries, {
       category: opts.category,
@@ -88,19 +111,9 @@ program
       console.log('No entries match the filters.');
       return;
     }
-    const byCategory = new Map<string, ManifestEntry[]>();
-    for (const entry of filtered) {
-      const bucket = byCategory.get(entry.category) ?? [];
-      bucket.push(entry);
-      byCategory.set(entry.category, bucket);
-    }
+    const byCategory = groupByCategory(filtered);
     for (const [category, entries] of [...byCategory.entries()].sort(([a], [b]) => a.localeCompare(b))) {
-      console.log(`\n${category}`);
-      console.log('─'.repeat(Math.max(category.length, 4)));
-      for (const entry of entries.sort((a, b) => a.id.localeCompare(b.id))) {
-        const marker = entry.required ? '★' : ' ';
-        console.log(`  ${marker} ${entry.id.padEnd(34)} ${entry.type.padEnd(10)} ${entry.description}`);
-      }
+      printCategory(category, entries);
     }
     console.log(`\n${filtered.length} entr${filtered.length === 1 ? 'y' : 'ies'} (★ = required)`);
   });

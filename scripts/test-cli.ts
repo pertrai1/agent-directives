@@ -1,12 +1,19 @@
 #!/usr/bin/env tsx
-import { execSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { execSync } from "node:child_process";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const repoRoot = fileURLToPath(new URL('..', import.meta.url));
-const cliPath = join(repoRoot, 'src', 'cli.ts');
+const repoRoot = fileURLToPath(new URL("..", import.meta.url));
+const cliPath = join(repoRoot, "src", "cli.ts");
 
 interface RunResult {
   stdout: string;
@@ -14,25 +21,35 @@ interface RunResult {
   code: number;
 }
 
-function runCli(args: string, cwd: string, opts: { allowFail?: boolean } = {}): RunResult {
+function runCli(
+  args: string,
+  cwd: string,
+  opts: { allowFail?: boolean } = {},
+): RunResult {
   try {
     const stdout = execSync(`tsx ${cliPath} ${args}`, {
       cwd,
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'pipe'],
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
     });
-    return { stdout, stderr: '', code: 0 };
-  } catch (err) {
-    const e = err as { stdout?: Buffer | string; stderr?: Buffer | string; status?: number };
+    return { stdout, stderr: "", code: 0 };
+  } catch (error) {
+    const e = error as {
+      stdout?: Buffer | string;
+      stderr?: Buffer | string;
+      status?: number;
+    };
     if (!opts.allowFail) {
-      const stderr = e.stderr ? e.stderr.toString() : String(err);
-      const wrappedError = new Error(`CLI failed (${e.status ?? 'unknown'}): ${stderr}`) as Error & { cause?: unknown };
-      wrappedError.cause = err;
+      const stderr = e.stderr ? e.stderr.toString() : String(error);
+      const wrappedError = new Error(
+        `CLI failed (${e.status ?? "unknown"}): ${stderr}`,
+      ) as Error & { cause?: unknown };
+      wrappedError.cause = error;
       throw wrappedError;
     }
     return {
-      stdout: e.stdout ? e.stdout.toString() : '',
-      stderr: e.stderr ? e.stderr.toString() : '',
+      stdout: e.stdout ? e.stdout.toString() : "",
+      stderr: e.stderr ? e.stderr.toString() : "",
       code: e.status ?? 1,
     };
   }
@@ -47,9 +64,9 @@ function test(name: string, fn: () => void): void {
     fn();
     passed += 1;
     console.log(`  ✓ ${name}`);
-  } catch (err) {
+  } catch (error) {
     failed += 1;
-    const message = err instanceof Error ? err.message : String(err);
+    const message = error instanceof Error ? error.message : String(error);
     failures.push(`${name}: ${message}`);
     console.log(`  ✗ ${name}`);
     console.log(`      ${message}`);
@@ -57,7 +74,7 @@ function test(name: string, fn: () => void): void {
 }
 
 function withTempProject(fn: (cwd: string) => void): void {
-  const cwd = mkdtempSync(join(tmpdir(), 'skills-cli-test-'));
+  const cwd = mkdtempSync(join(tmpdir(), "skills-cli-test-"));
   try {
     fn(cwd);
   } finally {
@@ -65,12 +82,22 @@ function withTempProject(fn: (cwd: string) => void): void {
   }
 }
 
-function assertContains(haystack: string, needle: string, context: string): void {
-  if (!haystack.includes(needle)) throw new Error(`${context}: expected output to contain '${needle}'`);
+function assertContains(
+  haystack: string,
+  needle: string,
+  context: string,
+): void {
+  if (!haystack.includes(needle))
+    throw new Error(`${context}: expected output to contain '${needle}'`);
 }
 
-function assertNotContains(haystack: string, needle: string, context: string): void {
-  if (haystack.includes(needle)) throw new Error(`${context}: expected output NOT to contain '${needle}'`);
+function assertNotContains(
+  haystack: string,
+  needle: string,
+  context: string,
+): void {
+  if (haystack.includes(needle))
+    throw new Error(`${context}: expected output NOT to contain '${needle}'`);
 }
 
 function assertFileExists(path: string): void {
@@ -81,191 +108,248 @@ function assertFileMissing(path: string): void {
   if (existsSync(path)) throw new Error(`expected file NOT to exist: ${path}`);
 }
 
-console.log('list');
-test('lists entries by default', () => {
+console.log("list");
+test("lists entries by default", () => {
   withTempProject((cwd) => {
-    const { stdout } = runCli('list', cwd);
-    assertContains(stdout, 'adaptive-routing', 'list default');
-    assertContains(stdout, 'code-reviewer', 'list default');
+    const { stdout } = runCli("list", cwd);
+    assertContains(stdout, "adaptive-routing", "list default");
+    assertContains(stdout, "code-reviewer", "list default");
   });
 });
 
-test('filters by --required', () => {
+test("filters by --required", () => {
   withTempProject((cwd) => {
-    const { stdout } = runCli('list --required', cwd);
-    assertContains(stdout, 'adaptive-routing', 'list --required');
-    assertNotContains(stdout, 'architecture-boundaries', 'list --required');
+    const { stdout } = runCli("list --required", cwd);
+    assertContains(stdout, "adaptive-routing", "list --required");
+    assertNotContains(stdout, "architecture-boundaries", "list --required");
   });
 });
 
-test('filters by --category', () => {
+test("filters by --category", () => {
   withTempProject((cwd) => {
-    const { stdout } = runCli('list --category memory', cwd);
-    assertContains(stdout, 'error-memory', 'list --category memory');
-    assertNotContains(stdout, 'code-reviewer', 'list --category memory');
+    const { stdout } = runCli("list --category memory", cwd);
+    assertContains(stdout, "error-memory", "list --category memory");
+    assertNotContains(stdout, "code-reviewer", "list --category memory");
   });
 });
 
-test('filters by --tool', () => {
+test("filters by --tool", () => {
   withTempProject((cwd) => {
-    const { stdout } = runCli('list --tool cursor', cwd);
-    assertContains(stdout, 'adaptive-routing', 'list --tool cursor');
-    assertNotContains(stdout, 'workspace-isolation', 'list --tool cursor');
+    const { stdout } = runCli("list --tool cursor", cwd);
+    assertContains(stdout, "adaptive-routing", "list --tool cursor");
+    assertNotContains(stdout, "workspace-isolation", "list --tool cursor");
   });
 });
 
-test('rejects invalid --tool', () => {
+test("rejects invalid --tool", () => {
   withTempProject((cwd) => {
-    const { code } = runCli('list --tool bogus', cwd, { allowFail: true });
-    if (code === 0) throw new Error('expected non-zero exit');
+    const { code } = runCli("list --tool bogus", cwd, { allowFail: true });
+    if (code === 0) throw new Error("expected non-zero exit");
   });
 });
 
-console.log('\ncontext-audit');
-test('reports prompt weight for required entries', () => {
+console.log("\ncontext-audit");
+test("reports prompt weight for required entries", () => {
   withTempProject((cwd) => {
-    const { stdout } = runCli('context-audit --tool claude --required', cwd);
-    assertContains(stdout, 'Context audit for claude', 'context-audit heading');
-    assertContains(stdout, 'Estimated prompt tokens:', 'context-audit total');
-    assertContains(stdout, 'Always-loaded entries:', 'context-audit required count');
-    assertContains(stdout, 'Largest entries:', 'context-audit largest section');
-    assertContains(stdout, 'adaptive-routing', 'context-audit includes required entry');
-    assertNotContains(stdout, 'architecture-boundaries', 'context-audit excludes optional entries');
+    const { stdout } = runCli("context-audit --tool claude --required", cwd);
+    assertContains(stdout, "Context audit for claude", "context-audit heading");
+    assertContains(stdout, "Estimated prompt tokens:", "context-audit total");
+    assertContains(
+      stdout,
+      "Always-loaded entries:",
+      "context-audit required count",
+    );
+    assertContains(stdout, "Largest entries:", "context-audit largest section");
+    assertContains(
+      stdout,
+      "adaptive-routing",
+      "context-audit includes required entry",
+    );
+    assertNotContains(
+      stdout,
+      "architecture-boundaries",
+      "context-audit excludes optional entries",
+    );
   });
 });
 
-test('fails when context budget is exceeded', () => {
+test("fails when context budget is exceeded", () => {
   withTempProject((cwd) => {
-    const { stderr, code } = runCli('context-audit --tool claude --required --max-tokens 1', cwd, { allowFail: true });
-    if (code === 0) throw new Error('expected non-zero exit');
-    assertContains(stderr, 'Context budget exceeded', 'context-audit budget failure');
+    const { stderr, code } = runCli(
+      "context-audit --tool claude --required --max-tokens 1",
+      cwd,
+      { allowFail: true },
+    );
+    if (code === 0) throw new Error("expected non-zero exit");
+    assertContains(
+      stderr,
+      "Context budget exceeded",
+      "context-audit budget failure",
+    );
   });
 });
 
-test('rejects malformed integer options', () => {
+test("rejects malformed integer options", () => {
   withTempProject((cwd) => {
-    const badMaxTokens = runCli('context-audit --tool claude --max-tokens 1000ms', cwd, { allowFail: true });
-    if (badMaxTokens.code === 0) throw new Error('expected non-zero exit for malformed --max-tokens');
-    assertContains(badMaxTokens.stderr, "Invalid --max-tokens '1000ms'", 'malformed --max-tokens');
+    const badMaxTokens = runCli(
+      "context-audit --tool claude --max-tokens 1000ms",
+      cwd,
+      { allowFail: true },
+    );
+    if (badMaxTokens.code === 0)
+      throw new Error("expected non-zero exit for malformed --max-tokens");
+    assertContains(
+      badMaxTokens.stderr,
+      "Invalid --max-tokens '1000ms'",
+      "malformed --max-tokens",
+    );
 
-    const badLargest = runCli('context-audit --tool claude --largest 3files', cwd, { allowFail: true });
-    if (badLargest.code === 0) throw new Error('expected non-zero exit for malformed --largest');
-    assertContains(badLargest.stderr, "Invalid --largest '3files'", 'malformed --largest');
+    const badLargest = runCli(
+      "context-audit --tool claude --largest 3files",
+      cwd,
+      { allowFail: true },
+    );
+    if (badLargest.code === 0)
+      throw new Error("expected non-zero exit for malformed --largest");
+    assertContains(
+      badLargest.stderr,
+      "Invalid --largest '3files'",
+      "malformed --largest",
+    );
   });
 });
 
-console.log('\nadd');
-test('installs to entry.path for --tool claude', () => {
+console.log("\nadd");
+test("installs to entry.path for --tool claude", () => {
   withTempProject((cwd) => {
-    runCli('add adaptive-routing --tool claude', cwd);
-    assertFileExists(join(cwd, 'directives/adaptive-routing.md'));
+    runCli("add adaptive-routing --tool claude", cwd);
+    assertFileExists(join(cwd, "directives/adaptive-routing.md"));
   });
 });
 
-test('installs skill SKILL.md into nested directory', () => {
+test("installs skill SKILL.md into nested directory", () => {
   withTempProject((cwd) => {
-    runCli('add code-reviewer --tool claude', cwd);
-    assertFileExists(join(cwd, 'skills/code-reviewer/SKILL.md'));
+    runCli("add code-reviewer --tool claude", cwd);
+    assertFileExists(join(cwd, "skills/code-reviewer/SKILL.md"));
   });
 });
 
-test('writes to .cursor/rules for --tool cursor', () => {
+test("writes to .cursor/rules for --tool cursor", () => {
   withTempProject((cwd) => {
-    runCli('add adaptive-routing --tool cursor', cwd);
-    assertFileExists(join(cwd, '.cursor/rules/adaptive-routing.mdc'));
+    runCli("add adaptive-routing --tool cursor", cwd);
+    assertFileExists(join(cwd, ".cursor/rules/adaptive-routing.mdc"));
   });
 });
 
-test('skips identical file on re-run', () => {
+test("skips identical file on re-run", () => {
   withTempProject((cwd) => {
-    runCli('add adaptive-routing --tool claude', cwd);
-    const { stdout } = runCli('add adaptive-routing --tool claude', cwd);
-    assertContains(stdout, 'up-to-date', 'second add');
+    runCli("add adaptive-routing --tool claude", cwd);
+    const { stdout } = runCli("add adaptive-routing --tool claude", cwd);
+    assertContains(stdout, "up-to-date", "second add");
   });
 });
 
-test('refuses to overwrite different content without --force', () => {
+test("refuses to overwrite different content without --force", () => {
   withTempProject((cwd) => {
-    mkdirSync(join(cwd, 'directives'), { recursive: true });
-    writeFileSync(join(cwd, 'directives/adaptive-routing.md'), 'custom content');
-    const { code } = runCli('add adaptive-routing --tool claude', cwd, { allowFail: true });
-    if (code === 0) throw new Error('expected non-zero exit code');
-    if (readFileSync(join(cwd, 'directives/adaptive-routing.md'), 'utf8') !== 'custom content') {
-      throw new Error('file was overwritten without --force');
+    mkdirSync(join(cwd, "directives"), { recursive: true });
+    writeFileSync(
+      join(cwd, "directives/adaptive-routing.md"),
+      "custom content",
+    );
+    const { code } = runCli("add adaptive-routing --tool claude", cwd, {
+      allowFail: true,
+    });
+    if (code === 0) throw new Error("expected non-zero exit code");
+    if (
+      readFileSync(join(cwd, "directives/adaptive-routing.md"), "utf8") !==
+      "custom content"
+    ) {
+      throw new Error("file was overwritten without --force");
     }
   });
 });
 
-test('overwrites with --force', () => {
+test("overwrites with --force", () => {
   withTempProject((cwd) => {
-    mkdirSync(join(cwd, 'directives'), { recursive: true });
-    writeFileSync(join(cwd, 'directives/adaptive-routing.md'), 'custom content');
-    runCli('add adaptive-routing --tool claude --force', cwd);
-    const content = readFileSync(join(cwd, 'directives/adaptive-routing.md'), 'utf8');
-    if (content === 'custom content') throw new Error('file was not overwritten');
-    assertContains(content, 'adaptive-routing', 'forced overwrite');
+    mkdirSync(join(cwd, "directives"), { recursive: true });
+    writeFileSync(
+      join(cwd, "directives/adaptive-routing.md"),
+      "custom content",
+    );
+    runCli("add adaptive-routing --tool claude --force", cwd);
+    const content = readFileSync(
+      join(cwd, "directives/adaptive-routing.md"),
+      "utf8",
+    );
+    if (content === "custom content")
+      throw new Error("file was not overwritten");
+    assertContains(content, "adaptive-routing", "forced overwrite");
   });
 });
 
-test('rejects unknown entry', () => {
+test("rejects unknown entry", () => {
   withTempProject((cwd) => {
-    const { code } = runCli('add nonexistent-entry --tool claude', cwd, { allowFail: true });
-    if (code === 0) throw new Error('expected non-zero exit code');
+    const { code } = runCli("add nonexistent-entry --tool claude", cwd, {
+      allowFail: true,
+    });
+    if (code === 0) throw new Error("expected non-zero exit code");
   });
 });
 
-console.log('\ncheck');
-test('reports missing required in empty project', () => {
+console.log("\ncheck");
+test("reports missing required in empty project", () => {
   withTempProject((cwd) => {
-    const { stderr, code } = runCli('check --tool claude', cwd, { allowFail: true });
-    if (code === 0) throw new Error('expected non-zero exit code');
-    assertContains(stderr, 'Missing', 'check missing');
+    const { stderr, code } = runCli("check --tool claude", cwd, {
+      allowFail: true,
+    });
+    if (code === 0) throw new Error("expected non-zero exit code");
+    assertContains(stderr, "Missing", "check missing");
   });
 });
 
-test('reports success when all required installed', () => {
+test("reports success when all required installed", () => {
   withTempProject((cwd) => {
-    runCli('sync --tool claude --yes', cwd);
-    const { stdout } = runCli('check --tool claude', cwd);
-    assertContains(stdout, 'All', 'check success');
+    runCli("sync --tool claude --yes", cwd);
+    const { stdout } = runCli("check --tool claude", cwd);
+    assertContains(stdout, "All", "check success");
   });
 });
 
-console.log('\nsync');
-test('installs all required with --yes', () => {
+console.log("\nsync");
+test("installs all required with --yes", () => {
   withTempProject((cwd) => {
-    runCli('sync --tool claude --yes', cwd);
-    assertFileExists(join(cwd, 'directives/adaptive-routing.md'));
-    assertFileExists(join(cwd, 'directives/codebase-navigation.md'));
-    assertFileExists(join(cwd, 'directives/task-framing.md'));
-    assertFileExists(join(cwd, 'directives/verification.md'));
-    assertFileExists(join(cwd, 'skills/code-reviewer/SKILL.md'));
-    assertFileExists(join(cwd, 'skills/systematic-debugging/SKILL.md'));
-    assertFileExists(join(cwd, 'skills/test-reviewer/SKILL.md'));
-    assertFileMissing(join(cwd, 'directives/architecture-boundaries.md'));
+    runCli("sync --tool claude --yes", cwd);
+    assertFileExists(join(cwd, "directives/adaptive-routing.md"));
+    assertFileExists(join(cwd, "directives/codebase-navigation.md"));
+    assertFileExists(join(cwd, "directives/task-framing.md"));
+    assertFileExists(join(cwd, "directives/verification.md"));
+    assertFileExists(join(cwd, "skills/code-reviewer/SKILL.md"));
+    assertFileExists(join(cwd, "skills/systematic-debugging/SKILL.md"));
+    assertFileExists(join(cwd, "skills/test-reviewer/SKILL.md"));
+    assertFileMissing(join(cwd, "directives/architecture-boundaries.md"));
   });
 });
 
-test('sync --tool cursor only installs cursor-compatible required entries', () => {
+test("sync --tool cursor only installs cursor-compatible required entries", () => {
   withTempProject((cwd) => {
-    runCli('sync --tool cursor --yes', cwd);
-    assertFileExists(join(cwd, '.cursor/rules/adaptive-routing.mdc'));
-    assertFileExists(join(cwd, '.cursor/rules/code-reviewer.mdc'));
+    runCli("sync --tool cursor --yes", cwd);
+    assertFileExists(join(cwd, ".cursor/rules/adaptive-routing.mdc"));
+    assertFileExists(join(cwd, ".cursor/rules/code-reviewer.mdc"));
   });
 });
 
-test('sync auto-detects tool from CLAUDE.md', () => {
+test("sync auto-detects tool from CLAUDE.md", () => {
   withTempProject((cwd) => {
-    writeFileSync(join(cwd, 'CLAUDE.md'), '# project\n');
-    const { stdout } = runCli('sync --yes', cwd);
-    assertContains(stdout, 'Tool: claude', 'auto-detect');
+    writeFileSync(join(cwd, "CLAUDE.md"), "# project\n");
+    const { stdout } = runCli("sync --yes", cwd);
+    assertContains(stdout, "Tool: claude", "auto-detect");
   });
 });
 
-console.log('\nResults');
+console.log("\nResults");
 console.log(`  ${passed} passed, ${failed} failed`);
 if (failed > 0) {
-  console.log('\nFailures:');
+  console.log("\nFailures:");
   for (const f of failures) console.log(`  - ${f}`);
   process.exit(1);
 }

@@ -104,17 +104,8 @@ function scenarioTargets(scenario: string): string[] {
   return [...section.matchAll(/`([^`]+(?:\.md|SKILL\.md))`/g)].map((m) => m[1]);
 }
 
-function parseMarkdown(path: string): EvalRun {
-  const [meta, body] = frontmatter(readFileSync(path, 'utf8'));
-  const scenario = meta.scenario || basename(path, '.md');
-  const targets = scenarioTargets(scenario);
-  const expected = extractSectionCounts(body, 'Expected Behaviors');
-  const anti = extractSectionCounts(body, 'Anti-Behaviors');
-  const quality = extractSectionCounts(body, 'Quality Criteria');
-  const summary = body.match(/(?:\*\*)?Signal:(?:\*\*)?\s*(.+)/i)?.[1]?.trim() ?? '';
+function metaFields(meta: Record<string, string>): Partial<EvalRun> {
   return {
-    source: path,
-    scenario,
     date: meta.date || '',
     model: meta.agent_model || meta.model || '',
     judge_model: meta.judge_model || '',
@@ -123,13 +114,49 @@ function parseMarkdown(path: string): EvalRun {
     instruction_surface: meta.instruction_surface || '',
     commit: meta.directive_sha || meta.commit || '',
     verdict: verdict(meta.verdict),
-    targets,
-    expected,
-    anti,
-    quality,
+  };
+}
+
+function extractJudgeSummary(body: string): string {
+  return body.match(/(?:\*\*)?Signal:(?:\*\*)?\s*(.+)/i)?.[1]?.trim() ?? '';
+}
+
+function parseMarkdown(path: string): EvalRun {
+  const [meta, body] = frontmatter(readFileSync(path, 'utf8'));
+  const scenario = meta.scenario || basename(path, '.md');
+  return {
+    source: path,
+    scenario,
+    ...metaFields(meta),
+    targets: scenarioTargets(scenario),
+    expected: extractSectionCounts(body, 'Expected Behaviors'),
+    anti: extractSectionCounts(body, 'Anti-Behaviors'),
+    quality: extractSectionCounts(body, 'Quality Criteria'),
     routing: [],
     failure_tags: [],
-    judge_summary: summary
+    judge_summary: extractJudgeSummary(body),
+  } as EvalRun;
+}
+
+function jsonStringFields(data: any): Partial<EvalRun> {
+  return {
+    scenario: String(data.scenario ?? ''),
+    date: String(first(data.date, data.timestamp) ?? ''),
+    model: String(first(data.model, data.agent_model) ?? ''),
+    judge_model: String(data.judge_model ?? ''),
+    client: String(data.client ?? ''),
+    provider: String(data.provider ?? ''),
+    instruction_surface: String(data.instruction_surface ?? ''),
+    commit: String(first(data.commit, data.directive_sha) ?? ''),
+    judge_summary: String(first(data.judge_summary, data.summary) ?? ''),
+  };
+}
+
+function parseRouteEvent(event: any): RoutingEvent {
+  return {
+    target: String(event.target ?? ''),
+    expected_load: bool(event.expected_load),
+    actual_load: bool(event.actual_load),
   };
 }
 
@@ -139,24 +166,17 @@ function parseJson(path: string): EvalRun {
   const routeEvents = Array.isArray(data.routing) ? data.routing : [];
   return {
     source: path,
+    ...jsonStringFields(data),
     scenario: String(data.scenario ?? basename(path, '.json')),
-    date: String(first(data.date, data.timestamp) ?? ''),
-    model: String(first(data.model, data.agent_model) ?? ''),
-    judge_model: String(data.judge_model ?? ''),
-    client: String(data.client ?? ''),
-    provider: String(data.provider ?? ''),
-    instruction_surface: String(data.instruction_surface ?? ''),
-    commit: String(first(data.commit, data.directive_sha) ?? ''),
     verdict: verdict(data.verdict),
     targets: array(data.targets),
     expected: counts(first(data.expected, checklist.expected, checklist['Expected Behaviors'])),
     anti: counts(first(data.anti, checklist.anti, checklist['Anti-Behaviors'])),
     quality: counts(first(data.quality, checklist.quality, checklist['Quality Criteria'])),
-    routing: routeEvents.map((event: any) => ({ target: String(event.target ?? ''), expected_load: bool(event.expected_load), actual_load: bool(event.actual_load) })),
+    routing: routeEvents.map(parseRouteEvent),
     routing_trace: data.routing_trace,
     failure_tags: array(data.failure_tags),
-    judge_summary: String(first(data.judge_summary, data.summary) ?? '')
-  };
+  } as EvalRun;
 }
 
 function parseManifest(path: string): EvalRun {
@@ -222,24 +242,72 @@ function safeParse(path: string, parser: (path: string) => EvalRun): EvalRun {
   }
 }
 
-function collectRuns(): EvalRun[] {
+function loadFromResultsDir(): EvalRun[] {
+  if (!existsSync(resultsDir)) return [];
   const runs: EvalRun[] = [];
-  if (existsSync(resultsDir)) {
-    for (const file of readdirSync(resultsDir)) {
-      const path = join(resultsDir, file);
-      if (file === 'README.md' || file === 'report.html') continue;
-      if (file.endsWith('.md')) runs.push(safeParse(path, parseMarkdown));
-      if (file.endsWith('.json')) runs.push(safeParse(path, parseJson));
+  for (const file of readdirSync(resultsDir)) {
+    if (file === 'README.md' || file === 'report.html') continue;
+    const path = join(resultsDir, file);
+    if (file.endsWith('.md')) runs.push(safeParse(path, parseMarkdown));
+    else if (file.endsWith('.json')) runs.push(safeParse(path, parseJson));
+  }
+  return runs;
+}
+
+function loadFromRunsDir(): EvalRun[] {
+  if (!existsSync(runsDir)) return [];
+  const runs: EvalRun[] = [];
+  for (const entry of readdirSync(runsDir, { withFileTypes: true })) {
+    const path = join(runsDir, entry.name);
+    if (entry.isDirectory() && existsSync(join(path, 'manifest.json'))) {
+      runs.push(safeParse(join(path, 'manifest.json'), parseManifest));
+    } else if (entry.isFile() && entry.name.endsWith('.json')) {
+      runs.push(safeParse(path, parseJson));
     }
   }
-  if (existsSync(runsDir)) {
-    for (const entry of readdirSync(runsDir, { withFileTypes: true })) {
-      const path = join(runsDir, entry.name);
-      if (entry.isDirectory() && existsSync(join(path, 'manifest.json'))) runs.push(safeParse(join(path, 'manifest.json'), parseManifest));
-      else if (entry.isFile() && entry.name.endsWith('.json')) runs.push(safeParse(path, parseJson));
-    }
+  return runs;
+}
+
+function collectRuns(): EvalRun[] {
+  return [...loadFromResultsDir(), ...loadFromRunsDir()].sort(
+    (a, b) => (b.date || '').localeCompare(a.date || ''),
+  );
+}
+
+function isStale(commit: string, head: string): boolean {
+  return Boolean(commit) && Boolean(head) && commit !== head;
+}
+
+function aggregateTargets(run: EvalRun, targetCounts: Map<string, { total: number; pass: number }>): void {
+  for (const target of run.targets.length ? run.targets : ['uncategorized']) {
+    const current = targetCounts.get(target) ?? { total: 0, pass: 0 };
+    current.total += 1;
+    if (run.verdict === 'pass') current.pass += 1;
+    targetCounts.set(target, current);
   }
-  return runs.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+}
+
+function aggregateRouting(routing: RoutingEvent[], totals: { expected: number; actual: number; claimed: number }): void {
+  for (const route of routing) {
+    if (route.actual_load) totals.claimed += 1;
+    if (route.expected_load) totals.expected += 1;
+    if (route.expected_load && route.actual_load) totals.actual += 1;
+  }
+}
+
+function renderTrace(trace?: RoutingTrace): string {
+  if (!trace) return '';
+  const e = trace.expected_files?.length ?? 0;
+  const p = trace.provided_files?.length ?? 0;
+  const c = trace.claimed_files?.length ?? 0;
+  return `expected ${e}; provided ${p}; claimed ${c}`;
+}
+
+function renderRunRow(run: EvalRun, head: string): string {
+  const staleMark = isStale(run.commit, head) ? 'stale' : '';
+  const trace = renderTrace(run.routing_trace);
+  const client = run.client || run.model || 'unknown';
+  return `<tr class="${staleMark}"><td>${esc(run.scenario)}</td><td>${esc(run.verdict)}</td><td>${esc(client)}</td><td>${esc(run.instruction_surface)}</td><td>${esc(run.commit)}</td><td>${esc(trace)}</td><td>${esc(run.judge_summary)}</td></tr>`;
 }
 
 function render(runs: EvalRun[]): string {
@@ -247,33 +315,19 @@ function render(runs: EvalRun[]): string {
   const verdictCounts = new Map<string, number>();
   const targetCounts = new Map<string, { total: number; pass: number }>();
   const tags = new Map<string, number>();
-  let routeExpected = 0;
-  let routeActual = 0;
-  let routeClaimed = 0;
+  const routeTotals = { expected: 0, actual: 0, claimed: 0 };
   let stale = 0;
   for (const run of runs) {
     verdictCounts.set(run.verdict, (verdictCounts.get(run.verdict) ?? 0) + 1);
-    if (run.commit && head && run.commit !== head) stale += 1;
+    if (isStale(run.commit, head)) stale += 1;
     for (const tag of run.failure_tags) tags.set(tag, (tags.get(tag) ?? 0) + 1);
-    for (const target of run.targets.length ? run.targets : ['uncategorized']) {
-      const current = targetCounts.get(target) ?? { total: 0, pass: 0 };
-      current.total += 1;
-      if (run.verdict === 'pass') current.pass += 1;
-      targetCounts.set(target, current);
-    }
-    for (const route of run.routing) {
-      if (route.actual_load) routeClaimed += 1;
-      if (route.expected_load) routeExpected += 1;
-      if (route.expected_load && route.actual_load) routeActual += 1;
-    }
+    aggregateTargets(run, targetCounts);
+    aggregateRouting(run.routing, routeTotals);
   }
+  const { expected: routeExpected, actual: routeActual, claimed: routeClaimed } = routeTotals;
   const targetRows = [...targetCounts.entries()].sort().map(([target, count]) => `<tr><td>${esc(target)}</td><td>${count.pass}/${count.total}</td><td>${pct(count.pass, count.total)}</td></tr>`).join('\n');
   const tagRows = [...tags.entries()].sort((a, b) => b[1] - a[1]).map(([tag, count]) => `<tr><td>${esc(tag)}</td><td>${count}</td></tr>`).join('\n') || '<tr><td colspan="2">No failure tags recorded.</td></tr>';
-  const runRows = runs.map((run) => {
-    const staleMark = run.commit && head && run.commit !== head ? 'stale' : '';
-    const trace = run.routing_trace ? `expected ${run.routing_trace.expected_files?.length ?? 0}; provided ${run.routing_trace.provided_files?.length ?? 0}; claimed ${run.routing_trace.claimed_files?.length ?? 0}` : '';
-    return `<tr class="${staleMark}"><td>${esc(run.scenario)}</td><td>${esc(run.verdict)}</td><td>${esc(run.client || run.model || 'unknown')}</td><td>${esc(run.instruction_surface)}</td><td>${esc(run.commit)}</td><td>${esc(trace)}</td><td>${esc(run.judge_summary)}</td></tr>`;
-  }).join('\n');
+  const runRows = runs.map((run) => renderRunRow(run, head)).join('\n');
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>Agent Directives Eval Health</title><style>
 body{font-family:system-ui,sans-serif;max-width:1200px;margin:2rem auto;padding:0 1rem;line-height:1.4}table{border-collapse:collapse;width:100%;margin:1rem 0}th,td{border:1px solid #ddd;padding:.45rem;text-align:left;vertical-align:top}th{background:#f5f5f5}.stale{background:#fff7e6}.metric{display:inline-block;margin-right:1rem;padding:.5rem .75rem;background:#f5f5f5;border-radius:.4rem}code{background:#f5f5f5;padding:.1rem .25rem}</style></head><body>
