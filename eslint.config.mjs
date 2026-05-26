@@ -22,20 +22,13 @@ export default defineConfig([
       "no-nested-ternary": "error",
       "preserve-caught-error": "error",
       "no-useless-assignment": "error",
-      "llm-core/consistent-catch-param-name": "off",
-      "llm-core/max-complexity": "off",
-      "llm-core/max-file-length": "off",
-      "llm-core/max-function-length": "off",
-      "llm-core/max-params": "off",
-      "llm-core/no-magic-numbers": "off",
-      "llm-core/prefer-nullish-coalescing": "off",
-      "llm-core/structured-logging": "off"
     },
   },
   {
-    files: ["scripts/**/*.ts", "evals/**/*.ts"],
+    files: ["scripts/**/*.ts", "evals/**/*.ts", "src/cli.ts"],
     rules: {
-      "@typescript-eslint/no-explicit-any": "off"
+      "@typescript-eslint/no-explicit-any": "off",
+      "llm-core/structured-logging": "off",
     },
   },
   {
@@ -46,7 +39,7 @@ export default defineConfig([
     rules: {
       "markdown/fenced-code-language": "off",
       "markdown/no-missing-label-refs": "off",
-      "markdown/no-multiple-h1": "off"
+      "markdown/no-multiple-h1": "off",
     },
   },
 ]);

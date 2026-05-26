@@ -21,12 +21,14 @@ interface Manifest {
   entries: ManifestEntry[];
 }
 
+const FRONTMATTER_OPEN_LENGTH = 4;
+
 function parseFrontmatter(text: string): Record<string, unknown> {
   const normalized = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
   if (!normalized.startsWith('---\n')) return {};
-  const end = normalized.indexOf('\n---\n', 4);
+  const end = normalized.indexOf('\n---\n', FRONTMATTER_OPEN_LENGTH);
   if (end === -1) return {};
-  const raw = normalized.slice(4, end);
+  const raw = normalized.slice(FRONTMATTER_OPEN_LENGTH, end);
   const result: Record<string, unknown> = {};
   let i = 0;
   const lines = raw.split('\n');
@@ -61,22 +63,42 @@ function parseFrontmatter(text: string): Record<string, unknown> {
   return result;
 }
 
+interface FieldContext {
+  key: string;
+  path: string;
+}
+
+function requireString(value: unknown, ctx: FieldContext): string {
+  if (typeof value !== 'string' || !value) throw new Error(`Missing/invalid '${ctx.key}' in ${ctx.path}`);
+  return value;
+}
+
+function requireBoolean(value: unknown, ctx: FieldContext): boolean {
+  if (typeof value !== 'boolean') throw new Error(`Missing/invalid '${ctx.key}' in ${ctx.path}`);
+  return value;
+}
+
+function requireStringArray(value: unknown, ctx: FieldContext): string[] {
+  const ok = Array.isArray(value) && value.length > 0 && value.every((t) => typeof t === 'string');
+  if (!ok) throw new Error(`Missing/invalid '${ctx.key}' in ${ctx.path}`);
+  return value as string[];
+}
+
 function readEntry(path: string, type: 'directive' | 'skill'): ManifestEntry {
   const text = readFileSync(join(repoRoot, path), 'utf8');
   const fm = parseFrontmatter(text);
   const id = String(fm.name ?? '').replace(/^['"]|['"]$/g, '');
-  const { description, version, required, category, tools } = fm;
-
   if (!id) throw new Error(`Missing 'name' in ${path}`);
-  if (typeof description !== 'string' || !description) throw new Error(`Missing/invalid 'description' in ${path}`);
-  if (typeof version !== 'string' || !version) throw new Error(`Missing/invalid 'version' in ${path}`);
-  if (typeof required !== 'boolean') throw new Error(`Missing/invalid 'required' in ${path}`);
-  if (typeof category !== 'string' || !category) throw new Error(`Missing/invalid 'category' in ${path}`);
-  if (!Array.isArray(tools) || tools.length === 0 || tools.some((t) => typeof t !== 'string')) {
-    throw new Error(`Missing/invalid 'tools' in ${path}`);
-  }
-
-  return { id, type, path, description, version, required, category, tools: tools as string[] };
+  return {
+    id,
+    type,
+    path,
+    description: requireString(fm.description, { key: 'description', path }),
+    version: requireString(fm.version, { key: 'version', path }),
+    required: requireBoolean(fm.required, { key: 'required', path }),
+    category: requireString(fm.category, { key: 'category', path }),
+    tools: requireStringArray(fm.tools, { key: 'tools', path }),
+  };
 }
 
 const directives = readdirSync(join(repoRoot, 'directives'))

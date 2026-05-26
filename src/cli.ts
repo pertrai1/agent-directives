@@ -10,6 +10,11 @@ import { KNOWN_TOOLS, detectTool, isTool, type Tool } from './targets.js';
 
 const pkg = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8')) as { version: string };
 
+const DECIMAL_RADIX = 10;
+const MIN_UNDERLINE_WIDTH = 4;
+const ID_COLUMN_WIDTH = 34;
+const TYPE_COLUMN_WIDTH = 10;
+
 function resolveTool(provided?: string): Tool {
   if (provided) {
     if (!isTool(provided)) {
@@ -41,12 +46,13 @@ function reportInstall(entry: ManifestEntry, result: InstallResult): void {
   }
 }
 
-function parseIntegerOption(value: string, flag: string, minimum: number): number {
+function parseIntegerOption(value: string, opts: { flag: string; minimum: number }): number {
+  const { flag, minimum } = opts;
   if (!/^[+-]?\d+$/.test(value)) {
     console.error(`Invalid ${flag} '${value}'. Expected an integer.`);
     process.exit(1);
   }
-  const parsed = Number.parseInt(value, 10);
+  const parsed = Number.parseInt(value, DECIMAL_RADIX);
   if (!Number.isSafeInteger(parsed) || parsed < minimum) {
     console.error(`Invalid ${flag} '${value}'. Expected an integer >= ${minimum}.`);
     process.exit(1);
@@ -61,6 +67,36 @@ program
   .description('Install agent directives and skills into your project')
   .version(pkg.version);
 
+function validateListOptions(opts: { tool?: string; type?: string }): void {
+  if (opts.type && opts.type !== 'directive' && opts.type !== 'skill') {
+    console.error(`Invalid --type '${opts.type}'. Expected 'directive' or 'skill'.`);
+    process.exit(1);
+  }
+  if (opts.tool && !isTool(opts.tool)) {
+    console.error(`Unknown tool '${opts.tool}'. Expected one of: ${KNOWN_TOOLS.join(', ')}`);
+    process.exit(1);
+  }
+}
+
+function groupByCategory(entries: ManifestEntry[]): Map<string, ManifestEntry[]> {
+  const byCategory = new Map<string, ManifestEntry[]>();
+  for (const entry of entries) {
+    const bucket = byCategory.get(entry.category) ?? [];
+    bucket.push(entry);
+    byCategory.set(entry.category, bucket);
+  }
+  return byCategory;
+}
+
+function printCategory(category: string, entries: ManifestEntry[]): void {
+  console.log(`\n${category}`);
+  console.log('─'.repeat(Math.max(category.length, MIN_UNDERLINE_WIDTH)));
+  for (const entry of entries.sort((a, b) => a.id.localeCompare(b.id))) {
+    const marker = entry.required ? '★' : ' ';
+    console.log(`  ${marker} ${entry.id.padEnd(ID_COLUMN_WIDTH)} ${entry.type.padEnd(TYPE_COLUMN_WIDTH)} ${entry.description}`);
+  }
+}
+
 program
   .command('list')
   .description('List available directives and skills')
@@ -69,14 +105,7 @@ program
   .option('-t, --tool <tool>', `Filter by tool (${KNOWN_TOOLS.join(', ')})`)
   .option('--type <type>', 'Filter by type (directive or skill)')
   .action((opts: { category?: string; required?: boolean; tool?: string; type?: string }) => {
-    if (opts.type && opts.type !== 'directive' && opts.type !== 'skill') {
-      console.error(`Invalid --type '${opts.type}'. Expected 'directive' or 'skill'.`);
-      process.exit(1);
-    }
-    if (opts.tool && !isTool(opts.tool)) {
-      console.error(`Unknown tool '${opts.tool}'. Expected one of: ${KNOWN_TOOLS.join(', ')}`);
-      process.exit(1);
-    }
+    validateListOptions(opts);
     const manifest = loadManifest();
     const filtered = filterEntries(manifest.entries, {
       category: opts.category,
@@ -88,19 +117,9 @@ program
       console.log('No entries match the filters.');
       return;
     }
-    const byCategory = new Map<string, ManifestEntry[]>();
-    for (const entry of filtered) {
-      const bucket = byCategory.get(entry.category) ?? [];
-      bucket.push(entry);
-      byCategory.set(entry.category, bucket);
-    }
+    const byCategory = groupByCategory(filtered);
     for (const [category, entries] of [...byCategory.entries()].sort(([a], [b]) => a.localeCompare(b))) {
-      console.log(`\n${category}`);
-      console.log('─'.repeat(Math.max(category.length, 4)));
-      for (const entry of entries.sort((a, b) => a.id.localeCompare(b.id))) {
-        const marker = entry.required ? '★' : ' ';
-        console.log(`  ${marker} ${entry.id.padEnd(34)} ${entry.type.padEnd(10)} ${entry.description}`);
-      }
+      printCategory(category, entries);
     }
     console.log(`\n${filtered.length} entr${filtered.length === 1 ? 'y' : 'ies'} (★ = required)`);
   });
@@ -117,8 +136,8 @@ program
       console.error(`Unknown tool '${opts.tool}'. Expected one of: ${KNOWN_TOOLS.join(', ')}`);
       process.exit(1);
     }
-    const maxTokens = opts.maxTokens === undefined ? undefined : parseIntegerOption(opts.maxTokens, '--max-tokens', 0);
-    const largest = opts.largest === undefined ? undefined : parseIntegerOption(opts.largest, '--largest', 1);
+    const maxTokens = opts.maxTokens === undefined ? undefined : parseIntegerOption(opts.maxTokens, { flag: '--max-tokens', minimum: 0 });
+    const largest = opts.largest === undefined ? undefined : parseIntegerOption(opts.largest, { flag: '--largest', minimum: 1 });
 
     const manifest = loadManifest();
     const result = buildContextAudit(manifest.entries, {
@@ -170,7 +189,7 @@ program
     const manifest = loadManifest();
     const tool = resolveTool(opts.tool);
     const required = filterEntries(manifest.entries, { required: true, tool });
-    const missing = required.filter((entry) => !isEntryInstalled(entry, tool, process.cwd()));
+    const missing = required.filter((entry) => !isEntryInstalled(entry, { tool, cwd: process.cwd() }));
     if (missing.length === 0) {
       console.log(`✓ All ${required.length} required entries are installed for ${tool}.`);
       return;

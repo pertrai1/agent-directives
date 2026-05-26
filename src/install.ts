@@ -39,6 +39,6 @@ export function installEntry(entry: ManifestEntry, opts: InstallOptions): Instal
   return { status: 'installed', path: targetPath };
 }
 
-export function isEntryInstalled(entry: ManifestEntry, tool: Tool, cwd: string): boolean {
-  return existsSync(TARGETS[tool].resolvePath(entry, cwd));
+export function isEntryInstalled(entry: ManifestEntry, opts: { tool: Tool; cwd: string }): boolean {
+  return existsSync(TARGETS[opts.tool].resolvePath(entry, opts.cwd));
 }
