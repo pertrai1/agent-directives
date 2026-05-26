@@ -63,19 +63,24 @@ function parseFrontmatter(text: string): Record<string, unknown> {
   return result;
 }
 
-function requireString(value: unknown, key: string, path: string): string {
-  if (typeof value !== 'string' || !value) throw new Error(`Missing/invalid '${key}' in ${path}`);
+interface FieldContext {
+  key: string;
+  path: string;
+}
+
+function requireString(value: unknown, ctx: FieldContext): string {
+  if (typeof value !== 'string' || !value) throw new Error(`Missing/invalid '${ctx.key}' in ${ctx.path}`);
   return value;
 }
 
-function requireBoolean(value: unknown, key: string, path: string): boolean {
-  if (typeof value !== 'boolean') throw new Error(`Missing/invalid '${key}' in ${path}`);
+function requireBoolean(value: unknown, ctx: FieldContext): boolean {
+  if (typeof value !== 'boolean') throw new Error(`Missing/invalid '${ctx.key}' in ${ctx.path}`);
   return value;
 }
 
-function requireStringArray(value: unknown, key: string, path: string): string[] {
+function requireStringArray(value: unknown, ctx: FieldContext): string[] {
   const ok = Array.isArray(value) && value.length > 0 && value.every((t) => typeof t === 'string');
-  if (!ok) throw new Error(`Missing/invalid '${key}' in ${path}`);
+  if (!ok) throw new Error(`Missing/invalid '${ctx.key}' in ${ctx.path}`);
   return value as string[];
 }
 
@@ -88,11 +93,11 @@ function readEntry(path: string, type: 'directive' | 'skill'): ManifestEntry {
     id,
     type,
     path,
-    description: requireString(fm.description, 'description', path),
-    version: requireString(fm.version, 'version', path),
-    required: requireBoolean(fm.required, 'required', path),
-    category: requireString(fm.category, 'category', path),
-    tools: requireStringArray(fm.tools, 'tools', path),
+    description: requireString(fm.description, { key: 'description', path }),
+    version: requireString(fm.version, { key: 'version', path }),
+    required: requireBoolean(fm.required, { key: 'required', path }),
+    category: requireString(fm.category, { key: 'category', path }),
+    tools: requireStringArray(fm.tools, { key: 'tools', path }),
   };
 }
 

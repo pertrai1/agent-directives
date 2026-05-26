@@ -15,12 +15,11 @@ export interface RunResult {
 
 export function runCli(
   args: string,
-  cwd: string,
-  opts: { allowFail?: boolean } = {},
+  opts: { cwd: string; allowFail?: boolean },
 ): RunResult {
   try {
     const stdout = execSync(`tsx ${cliPath} ${args}`, {
-      cwd,
+      cwd: opts.cwd,
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
     });
@@ -74,22 +73,16 @@ export function withTempProject(fn: (cwd: string) => void): void {
   }
 }
 
-export function assertContains(
-  haystack: string,
-  needle: string,
-  context: string,
-): void {
-  if (!haystack.includes(needle))
-    throw new Error(`${context}: expected output to contain '${needle}'`);
+export function assertContains(haystack: string, opts: { needle: string; context: string }): void {
+  if (!haystack.includes(opts.needle)) {
+    throw new Error(`${opts.context}: expected output to contain '${opts.needle}'`);
+  }
 }
 
-export function assertNotContains(
-  haystack: string,
-  needle: string,
-  context: string,
-): void {
-  if (haystack.includes(needle))
-    throw new Error(`${context}: expected output NOT to contain '${needle}'`);
+export function assertNotContains(haystack: string, opts: { needle: string; context: string }): void {
+  if (haystack.includes(opts.needle)) {
+    throw new Error(`${opts.context}: expected output NOT to contain '${opts.needle}'`);
+  }
 }
 
 export function assertFileExists(path: string): void {

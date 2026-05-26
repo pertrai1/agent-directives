@@ -46,7 +46,8 @@ function reportInstall(entry: ManifestEntry, result: InstallResult): void {
   }
 }
 
-function parseIntegerOption(value: string, flag: string, minimum: number): number {
+function parseIntegerOption(value: string, opts: { flag: string; minimum: number }): number {
+  const { flag, minimum } = opts;
   if (!/^[+-]?\d+$/.test(value)) {
     console.error(`Invalid ${flag} '${value}'. Expected an integer.`);
     process.exit(1);
@@ -135,8 +136,8 @@ program
       console.error(`Unknown tool '${opts.tool}'. Expected one of: ${KNOWN_TOOLS.join(', ')}`);
       process.exit(1);
     }
-    const maxTokens = opts.maxTokens === undefined ? undefined : parseIntegerOption(opts.maxTokens, '--max-tokens', 0);
-    const largest = opts.largest === undefined ? undefined : parseIntegerOption(opts.largest, '--largest', 1);
+    const maxTokens = opts.maxTokens === undefined ? undefined : parseIntegerOption(opts.maxTokens, { flag: '--max-tokens', minimum: 0 });
+    const largest = opts.largest === undefined ? undefined : parseIntegerOption(opts.largest, { flag: '--largest', minimum: 1 });
 
     const manifest = loadManifest();
     const result = buildContextAudit(manifest.entries, {
@@ -188,7 +189,7 @@ program
     const manifest = loadManifest();
     const tool = resolveTool(opts.tool);
     const required = filterEntries(manifest.entries, { required: true, tool });
-    const missing = required.filter((entry) => !isEntryInstalled(entry, tool, process.cwd()));
+    const missing = required.filter((entry) => !isEntryInstalled(entry, { tool, cwd: process.cwd() }));
     if (missing.length === 0) {
       console.log(`✓ All ${required.length} required entries are installed for ${tool}.`);
       return;

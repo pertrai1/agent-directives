@@ -22,15 +22,13 @@ export default defineConfig([
       "no-nested-ternary": "error",
       "preserve-caught-error": "error",
       "no-useless-assignment": "error",
-      "llm-core/max-function-length": "off",
-      "llm-core/max-params": "off",
-      "llm-core/structured-logging": "off",
     },
   },
   {
-    files: ["scripts/**/*.ts", "evals/**/*.ts"],
+    files: ["scripts/**/*.ts", "evals/**/*.ts", "src/cli.ts"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
+      "llm-core/structured-logging": "off",
     },
   },
   {

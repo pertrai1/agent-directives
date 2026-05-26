@@ -20,10 +20,10 @@ interface RunResult {
   code: number;
 }
 
-function run(command: string, cwd: string, allowFail = false): RunResult {
+function run(command: string, opts: { cwd: string; allowFail?: boolean }): RunResult {
   try {
     const stdout = execSync(command, {
-      cwd,
+      cwd: opts.cwd,
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
     });
@@ -34,7 +34,7 @@ function run(command: string, cwd: string, allowFail = false): RunResult {
       stderr?: Buffer | string;
       status?: number;
     };
-    if (!allowFail) throw error;
+    if (!opts.allowFail) throw error;
     return {
       stdout: e.stdout ? e.stdout.toString() : "",
       stderr: e.stderr ? e.stderr.toString() : "",
@@ -64,10 +64,7 @@ function test(name: string, fn: () => void): void {
 function withTempRepo(fn: (cwd: string) => void): void {
   const cwd = mkdtempSync(join(tmpdir(), "version-bump-test-"));
   try {
-    run(
-      "git init -q && git config user.email test@example.com && git config user.name Test",
-      cwd,
-    );
+    run("git init -q && git config user.email test@example.com && git config user.name Test", { cwd });
     fn(cwd);
   } finally {
     rmSync(cwd, { recursive: true, force: true });
@@ -80,10 +77,9 @@ function skillPath(cwd: string, name = "demo"): string {
 
 function writeInstruction(
   cwd: string,
-  body: string,
-  version = "1.0.0",
-  name = "demo",
+  opts: { body: string; version?: string; name?: string },
 ): void {
+  const { body, version = "1.0.0", name = "demo" } = opts;
   mkdirSync(join(cwd, "skills", name), { recursive: true });
   writeFileSync(
     skillPath(cwd, name),
@@ -95,11 +91,11 @@ console.log("version bump validation");
 
 test("fails when an existing skill changes without a version bump", () => {
   withTempRepo((cwd) => {
-    writeInstruction(cwd, "Original behavior.");
-    run("git add . && git commit -qm initial", cwd);
-    writeInstruction(cwd, "Changed behavior.");
+    writeInstruction(cwd, { body: "Original behavior." });
+    run("git add . && git commit -qm initial", { cwd });
+    writeInstruction(cwd, { body: "Changed behavior." });
 
-    const result = run(`tsx ${validator} --base HEAD`, cwd, true);
+    const result = run(`tsx ${validator} --base HEAD`, { cwd, allowFail: true });
     if (result.code === 0) throw new Error("expected non-zero exit code");
     if (!result.stderr.includes("changed without a version bump")) {
       throw new Error(
@@ -111,11 +107,11 @@ test("fails when an existing skill changes without a version bump", () => {
 
 test("passes when an existing skill changes with a greater version", () => {
   withTempRepo((cwd) => {
-    writeInstruction(cwd, "Original behavior.", "1.0.0");
-    run("git add . && git commit -qm initial", cwd);
-    writeInstruction(cwd, "Changed behavior.", "1.0.1");
+    writeInstruction(cwd, { body: "Original behavior.", version: "1.0.0" });
+    run("git add . && git commit -qm initial", { cwd });
+    writeInstruction(cwd, { body: "Changed behavior.", version: "1.0.1" });
 
-    const result = run(`tsx ${validator} --base HEAD`, cwd);
+    const result = run(`tsx ${validator} --base HEAD`, { cwd });
     if (!result.stdout.includes("Version bump validation passed")) {
       throw new Error(`expected pass summary, got stdout: ${result.stdout}`);
     }
@@ -124,11 +120,11 @@ test("passes when an existing skill changes with a greater version", () => {
 
 test("passes for a new skill with an initial version", () => {
   withTempRepo((cwd) => {
-    run("git commit --allow-empty -qm initial", cwd);
-    writeInstruction(cwd, "New behavior.", "1.0.0");
-    run("git add -A", cwd);
+    run("git commit --allow-empty -qm initial", { cwd });
+    writeInstruction(cwd, { body: "New behavior.", version: "1.0.0" });
+    run("git add -A", { cwd });
 
-    const result = run(`tsx ${validator} --base HEAD`, cwd);
+    const result = run(`tsx ${validator} --base HEAD`, { cwd });
     if (!result.stdout.includes("Version bump validation passed")) {
       throw new Error(`expected pass summary, got stdout: ${result.stdout}`);
     }
@@ -137,12 +133,12 @@ test("passes for a new skill with an initial version", () => {
 
 test("fails when an existing instruction file is deleted", () => {
   withTempRepo((cwd) => {
-    writeInstruction(cwd, "Original behavior.", "1.0.0");
-    run("git add . && git commit -qm initial", cwd);
+    writeInstruction(cwd, { body: "Original behavior.", version: "1.0.0" });
+    run("git add . && git commit -qm initial", { cwd });
     rmSync(skillPath(cwd), { force: true });
-    run("git add -A", cwd);
+    run("git add -A", { cwd });
 
-    const result = run(`tsx ${validator} --base HEAD`, cwd, true);
+    const result = run(`tsx ${validator} --base HEAD`, { cwd, allowFail: true });
     if (result.code === 0) throw new Error("expected non-zero exit code");
     if (!result.stderr.includes("instruction file deleted")) {
       throw new Error(`expected deletion error, got stderr: ${result.stderr}`);
@@ -152,13 +148,13 @@ test("fails when an existing instruction file is deleted", () => {
 
 test("fails when an existing instruction file is renamed without a major bump", () => {
   withTempRepo((cwd) => {
-    writeInstruction(cwd, "Original behavior.", "1.0.0", "demo");
-    run("git add . && git commit -qm initial", cwd);
+    writeInstruction(cwd, { body: "Original behavior.", version: "1.0.0", name: "demo" });
+    run("git add . && git commit -qm initial", { cwd });
     mkdirSync(join(cwd, "skills", "renamed"), { recursive: true });
     renameSync(skillPath(cwd, "demo"), skillPath(cwd, "renamed"));
-    run("git add -A", cwd);
+    run("git add -A", { cwd });
 
-    const result = run(`tsx ${validator} --base HEAD`, cwd, true);
+    const result = run(`tsx ${validator} --base HEAD`, { cwd, allowFail: true });
     if (result.code === 0) throw new Error("expected non-zero exit code");
     if (!result.stderr.includes("without a version bump")) {
       throw new Error(
@@ -170,13 +166,13 @@ test("fails when an existing instruction file is renamed without a major bump", 
 
 test("passes when an existing instruction file is renamed with a major bump", () => {
   withTempRepo((cwd) => {
-    writeInstruction(cwd, "Original behavior.", "1.0.0", "demo");
-    run("git add . && git commit -qm initial", cwd);
-    writeInstruction(cwd, "Renamed behavior.", "2.0.0", "renamed");
+    writeInstruction(cwd, { body: "Original behavior.", version: "1.0.0", name: "demo" });
+    run("git add . && git commit -qm initial", { cwd });
+    writeInstruction(cwd, { body: "Renamed behavior.", version: "2.0.0", name: "renamed" });
     rmSync(join(cwd, "skills", "demo"), { recursive: true, force: true });
-    run("git add -A", cwd);
+    run("git add -A", { cwd });
 
-    const result = run(`tsx ${validator} --base HEAD`, cwd);
+    const result = run(`tsx ${validator} --base HEAD`, { cwd });
     if (!result.stdout.includes("Version bump validation passed")) {
       throw new Error(`expected pass summary, got stdout: ${result.stdout}`);
     }
@@ -185,11 +181,11 @@ test("passes when an existing instruction file is renamed with a major bump", ()
 
 test("rejects prerelease versions because the policy only allows plain semver", () => {
   withTempRepo((cwd) => {
-    run("git commit --allow-empty -qm initial", cwd);
-    writeInstruction(cwd, "New behavior.", "1.0.0-beta.1");
-    run("git add -A", cwd);
+    run("git commit --allow-empty -qm initial", { cwd });
+    writeInstruction(cwd, { body: "New behavior.", version: "1.0.0-beta.1" });
+    run("git add -A", { cwd });
 
-    const result = run(`tsx ${validator} --base HEAD`, cwd, true);
+    const result = run(`tsx ${validator} --base HEAD`, { cwd, allowFail: true });
     if (result.code === 0) throw new Error("expected non-zero exit code");
     if (!result.stderr.includes("plain semver MAJOR.MINOR.PATCH")) {
       throw new Error(
@@ -201,9 +197,9 @@ test("rejects prerelease versions because the policy only allows plain semver", 
 
 test("fails when the base ref is missing", () => {
   withTempRepo((cwd) => {
-    run("git commit --allow-empty -qm initial", cwd);
+    run("git commit --allow-empty -qm initial", { cwd });
 
-    const result = run(`tsx ${validator} --base origin/missing`, cwd, true);
+    const result = run(`tsx ${validator} --base origin/missing`, { cwd, allowFail: true });
     if (result.code === 0) throw new Error("expected non-zero exit code");
     if (!result.stderr.includes("invalid or missing base ref")) {
       throw new Error(
@@ -215,15 +211,15 @@ test("fails when the base ref is missing", () => {
 
 test("parses BOM and CRLF frontmatter versions", () => {
   withTempRepo((cwd) => {
-    run("git commit --allow-empty -qm initial", cwd);
+    run("git commit --allow-empty -qm initial", { cwd });
     mkdirSync(join(cwd, "skills", "demo"), { recursive: true });
     writeFileSync(
       skillPath(cwd),
-      "\uFEFF---\r\nname: demo\r\ndescription: Demo skill.\r\nversion: 1.0.0\r\nrequired: false\r\ncategory: review\r\ntools:\r\n  - claude\r\n---\r\n\r\nNew behavior.\r\n",
+      "﻿---\r\nname: demo\r\ndescription: Demo skill.\r\nversion: 1.0.0\r\nrequired: false\r\ncategory: review\r\ntools:\r\n  - claude\r\n---\r\n\r\nNew behavior.\r\n",
     );
-    run("git add -A", cwd);
+    run("git add -A", { cwd });
 
-    const result = run(`tsx ${validator} --base HEAD`, cwd);
+    const result = run(`tsx ${validator} --base HEAD`, { cwd });
     if (!result.stdout.includes("Version bump validation passed")) {
       throw new Error(`expected pass summary, got stdout: ${result.stdout}`);
     }

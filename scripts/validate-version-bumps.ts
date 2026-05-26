@@ -24,15 +24,15 @@ interface ValidationResult {
 const FRONTMATTER_OPEN_LENGTH = 4;
 const SEMVER_PART_COUNT = 3;
 
-function runGit(repoRoot: string, args: string, allowFail = false): string {
+function runGit(repoRoot: string, opts: { args: string; allowFail?: boolean }): string {
   try {
-    return execSync(`git ${args}`, {
+    return execSync(`git ${opts.args}`, {
       cwd: repoRoot,
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
     });
   } catch (error) {
-    if (allowFail) return "";
+    if (opts.allowFail) return "";
     throw error;
   }
 }
@@ -70,25 +70,23 @@ function compareSemver(a: string, b: string): number | null {
 }
 
 function baseRefError(repoRoot: string, base: string): string | null {
-  const resolved = runGit(
-    repoRoot,
-    `rev-parse --verify ${shellQuote(`${base}^{commit}`)}`,
-    true,
-  ).trim();
+  const resolved = runGit(repoRoot, {
+    args: `rev-parse --verify ${shellQuote(`${base}^{commit}`)}`,
+    allowFail: true,
+  }).trim();
   if (resolved) return null;
   return `${base}: invalid or missing base ref; fetch the PR base branch or pass --base <ref>`;
 }
 
 function mergeBaseRef(repoRoot: string, base: string): string {
-  return runGit(repoRoot, `merge-base ${shellQuote(base)} HEAD`).trim();
+  return runGit(repoRoot, { args: `merge-base ${shellQuote(base)} HEAD` }).trim();
 }
 
 function changedInstructionFiles(repoRoot: string, base: string): DiffEntry[] {
   const mergeBase = mergeBaseRef(repoRoot, base);
-  const output = runGit(
-    repoRoot,
-    `diff --name-status --find-renames --diff-filter=ADMR ${shellQuote(mergeBase)} -- 'directives/*.md' 'skills/*/SKILL.md'`,
-  );
+  const output = runGit(repoRoot, {
+    args: `diff --name-status --find-renames --diff-filter=ADMR ${shellQuote(mergeBase)} -- 'directives/*.md' 'skills/*/SKILL.md'`,
+  });
 
   return output
     .split("\n")
@@ -111,44 +109,46 @@ function readCurrent(repoRoot: string, path: string): string {
   return readFileSync(join(repoRoot, path), "utf8");
 }
 
-function readAtRef(repoRoot: string, ref: string, path: string): string | null {
-  const output = runGit(repoRoot, `show ${shellQuote(`${ref}:${path}`)}`, true);
+function readAtRef(repoRoot: string, opts: { ref: string; path: string }): string | null {
+  const output = runGit(repoRoot, {
+    args: `show ${shellQuote(`${opts.ref}:${opts.path}`)}`,
+    allowFail: true,
+  });
   return output.length > 0 ? output : null;
 }
 
-function checkPlainSemver(
-  entry: DiffEntry,
-  currentVersion: string,
-  errors: string[],
-): void {
-  if (!parsePlainSemver(currentVersion)) {
-    errors.push(
-      `${entry.path}: version must be plain semver MAJOR.MINOR.PATCH (was ${currentVersion})`,
+interface VersionCheckContext {
+  currentVersion: string;
+  previousVersion?: string;
+  errors: string[];
+}
+
+interface EntryContext {
+  options: Options;
+  errors: string[];
+  warnings: string[];
+}
+
+function checkPlainSemver(entry: DiffEntry, ctx: { currentVersion: string; errors: string[] }): void {
+  if (!parsePlainSemver(ctx.currentVersion)) {
+    ctx.errors.push(
+      `${entry.path}: version must be plain semver MAJOR.MINOR.PATCH (was ${ctx.currentVersion})`,
     );
   }
 }
 
-function checkRenameMajor(
-  entry: DiffEntry,
-  currentVersion: string,
-  previousVersion: string,
-  errors: string[],
-): void {
-  const currentParts = parsePlainSemver(currentVersion);
-  const previousParts = parsePlainSemver(previousVersion);
+function checkRenameMajor(entry: DiffEntry, ctx: Required<VersionCheckContext>): void {
+  const currentParts = parsePlainSemver(ctx.currentVersion);
+  const previousParts = parsePlainSemver(ctx.previousVersion);
   if (currentParts && previousParts && currentParts[0] <= previousParts[0]) {
-    errors.push(
-      `${entry.path}: renamed from ${entry.previousPath}; path changes require a major version bump (${previousVersion} -> ${currentVersion})`,
+    ctx.errors.push(
+      `${entry.path}: renamed from ${entry.previousPath}; path changes require a major version bump (${ctx.previousVersion} -> ${ctx.currentVersion})`,
     );
   }
 }
 
-function compareVersions(
-  entry: DiffEntry,
-  currentVersion: string,
-  previousVersion: string,
-  errors: string[],
-): void {
+function compareVersions(entry: DiffEntry, ctx: Required<VersionCheckContext>): void {
+  const { currentVersion, previousVersion, errors } = ctx;
   const ordering = compareSemver(currentVersion, previousVersion);
   if (ordering === null) {
     errors.push(
@@ -167,16 +167,12 @@ function compareVersions(
     return;
   }
   if (entry.status === "renamed") {
-    checkRenameMajor(entry, currentVersion, previousVersion, errors);
+    checkRenameMajor(entry, ctx);
   }
 }
 
-function validateEntry(
-  entry: DiffEntry,
-  options: Options,
-  errors: string[],
-  warnings: string[],
-): void {
+function validateEntry(entry: DiffEntry, ctx: EntryContext): void {
+  const { options, errors, warnings } = ctx;
   if (entry.status === "deleted") {
     errors.push(
       `${entry.path}: instruction file deleted; deprecate with a major version bump before deletion`,
@@ -192,13 +188,13 @@ function validateEntry(
   }
 
   if (entry.status === "added" || !entry.previousPath) {
-    checkPlainSemver(entry, currentVersion, errors);
+    checkPlainSemver(entry, { currentVersion, errors });
     return;
   }
 
-  const previous = readAtRef(options.repoRoot, options.base, entry.previousPath);
+  const previous = readAtRef(options.repoRoot, { ref: options.base, path: entry.previousPath });
   if (previous === null) {
-    checkPlainSemver(entry, currentVersion, errors);
+    checkPlainSemver(entry, { currentVersion, errors });
     return;
   }
 
@@ -210,7 +206,7 @@ function validateEntry(
     return;
   }
 
-  compareVersions(entry, currentVersion, previousVersion, errors);
+  compareVersions(entry, { currentVersion, previousVersion, errors });
 }
 
 export function validateVersionBumps(options: Options): ValidationResult {
@@ -230,7 +226,7 @@ export function validateVersionBumps(options: Options): ValidationResult {
   if (baseError) return { checked: 0, errors: [baseError], warnings };
 
   const files = changedInstructionFiles(options.repoRoot, options.base);
-  for (const entry of files) validateEntry(entry, options, errors, warnings);
+  for (const entry of files) validateEntry(entry, { options, errors, warnings });
 
   return { checked: files.length, errors, warnings };
 }
