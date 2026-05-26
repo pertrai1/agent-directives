@@ -22,7 +22,7 @@ interface Manifest {
 }
 
 function parseFrontmatter(text: string): Record<string, unknown> {
-  const normalized = text.replace(/^﻿/, '').replace(/\r\n/g, '\n');
+  const normalized = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
   if (!normalized.startsWith('---\n')) return {};
   const end = normalized.indexOf('\n---\n', 4);
   if (end === -1) return {};
@@ -35,7 +35,13 @@ function parseFrontmatter(text: string): Record<string, unknown> {
     const scalar = line.match(/^(\w[\w-]*):\s+(.+)$/);
     if (scalar) {
       const val = scalar[2].replace(/^['"]|['"]$/g, '');
-      result[scalar[1]] = val === 'true' ? true : val === 'false' ? false : val;
+      if (val === 'true') {
+        result[scalar[1]] = true;
+      } else if (val === 'false') {
+        result[scalar[1]] = false;
+      } else {
+        result[scalar[1]] = val;
+      }
       i++;
       continue;
     }

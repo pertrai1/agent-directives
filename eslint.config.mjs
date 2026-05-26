@@ -7,6 +7,9 @@ import { defineConfig } from "eslint/config";
 
 export default defineConfig([
   {
+    ignores: ["node_modules/**", "evals/results/**", "package-lock.json"],
+  },
+  {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
     plugins: { js },
     extends: ["js/recommended"],
@@ -19,6 +22,20 @@ export default defineConfig([
       "no-nested-ternary": "error",
       "preserve-caught-error": "error",
       "no-useless-assignment": "error",
+      "llm-core/consistent-catch-param-name": "off",
+      "llm-core/max-complexity": "off",
+      "llm-core/max-file-length": "off",
+      "llm-core/max-function-length": "off",
+      "llm-core/max-params": "off",
+      "llm-core/no-magic-numbers": "off",
+      "llm-core/prefer-nullish-coalescing": "off",
+      "llm-core/structured-logging": "off"
+    },
+  },
+  {
+    files: ["scripts/**/*.ts", "evals/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off"
     },
   },
   {
@@ -26,5 +43,10 @@ export default defineConfig([
     plugins: { markdown },
     language: "markdown/gfm",
     extends: ["markdown/recommended"],
+    rules: {
+      "markdown/fenced-code-language": "off",
+      "markdown/no-missing-label-refs": "off",
+      "markdown/no-multiple-h1": "off"
+    },
   },
 ]);

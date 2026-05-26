@@ -39,7 +39,15 @@ function estimateTokens(text: string): number {
 }
 
 function auditEntry(entry: ManifestEntry): ContextAuditEntry {
-  const content = readFileSync(join(packageRoot, entry.path), 'utf8');
+  let content: string;
+  try {
+    content = readFileSync(join(packageRoot, entry.path), 'utf8');
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    const wrappedError = new Error(`Failed to read manifest entry '${entry.id}' at '${entry.path}': ${reason}`) as Error & { cause?: unknown };
+    wrappedError.cause = error;
+    throw wrappedError;
+  }
   return {
     id: entry.id,
     type: entry.type,
@@ -61,7 +69,10 @@ export function buildContextAudit(entries: ManifestEntry[], options: ContextAudi
   const estimatedTokens = audited.reduce((sum, entry) => sum + entry.estimatedTokens, 0);
   const largestCount = options.largest ?? DEFAULT_LARGEST_COUNT;
   const largestEntries = [...audited]
-    .sort((a, b) => b.estimatedTokens - a.estimatedTokens || a.id.localeCompare(b.id))
+    .sort((a, b) => {
+      const tokenDelta = b.estimatedTokens - a.estimatedTokens;
+      return tokenDelta === 0 ? a.id.localeCompare(b.id) : tokenDelta;
+    })
     .slice(0, largestCount);
 
   return {

@@ -41,6 +41,19 @@ function reportInstall(entry: ManifestEntry, result: InstallResult): void {
   }
 }
 
+function parseIntegerOption(value: string, flag: string, minimum: number): number {
+  if (!/^[+-]?\d+$/.test(value)) {
+    console.error(`Invalid ${flag} '${value}'. Expected an integer.`);
+    process.exit(1);
+  }
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isSafeInteger(parsed) || parsed < minimum) {
+    console.error(`Invalid ${flag} '${value}'. Expected an integer >= ${minimum}.`);
+    process.exit(1);
+  }
+  return parsed;
+}
+
 const program = new Command();
 
 program
@@ -104,22 +117,8 @@ program
       console.error(`Unknown tool '${opts.tool}'. Expected one of: ${KNOWN_TOOLS.join(', ')}`);
       process.exit(1);
     }
-    let maxTokens: number | undefined;
-    if (opts.maxTokens !== undefined) {
-      maxTokens = Number.parseInt(opts.maxTokens, 10);
-      if (!Number.isFinite(maxTokens) || maxTokens < 0) {
-        console.error(`Invalid --max-tokens '${opts.maxTokens}'. Expected a non-negative integer.`);
-        process.exit(1);
-      }
-    }
-    let largest: number | undefined;
-    if (opts.largest !== undefined) {
-      largest = Number.parseInt(opts.largest, 10);
-      if (!Number.isFinite(largest) || largest < 1) {
-        console.error(`Invalid --largest '${opts.largest}'. Expected a positive integer.`);
-        process.exit(1);
-      }
-    }
+    const maxTokens = opts.maxTokens === undefined ? undefined : parseIntegerOption(opts.maxTokens, '--max-tokens', 0);
+    const largest = opts.largest === undefined ? undefined : parseIntegerOption(opts.largest, '--largest', 1);
 
     const manifest = loadManifest();
     const result = buildContextAudit(manifest.entries, {
