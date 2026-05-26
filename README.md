@@ -86,9 +86,22 @@ npx --yes github:pertrai1/agent-directives add code-reviewer --tool claude
 npx --yes github:pertrai1/agent-directives add code-reviewer --tool claude --force
 
 npx --yes github:pertrai1/agent-directives check --tool codex
+npx --yes github:pertrai1/agent-directives context-audit --tool codex --required
+npx --yes github:pertrai1/agent-directives context-audit --tool codex --required --max-tokens 12000
 npx --yes github:pertrai1/agent-directives sync --tool claude --yes
 npx --yes github:pertrai1/agent-directives sync --tool claude --force
 ```
+
+### Context budget audit
+
+Use `context-audit` to estimate how much prompt budget a tool/profile consumes before copying instructions into a project:
+
+```bash
+npx --yes github:pertrai1/agent-directives context-audit --tool codex --required
+npx --yes github:pertrai1/agent-directives context-audit --tool claude --max-tokens 20000
+```
+
+The estimate uses a simple `characters / 4` heuristic and reports total tokens, required vs optional counts, and the largest directive/skill files. With `--max-tokens`, the command exits non-zero when the selected entries exceed the budget, making it usable in CI.
 
 ### Tool auto-detection
 

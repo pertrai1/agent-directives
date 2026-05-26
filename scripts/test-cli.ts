@@ -26,7 +26,9 @@ function runCli(args: string, cwd: string, opts: { allowFail?: boolean } = {}): 
     const e = err as { stdout?: Buffer | string; stderr?: Buffer | string; status?: number };
     if (!opts.allowFail) {
       const stderr = e.stderr ? e.stderr.toString() : String(err);
-      throw new Error(`CLI failed (${e.status ?? 'unknown'}): ${stderr}`);
+      const wrappedError = new Error(`CLI failed (${e.status ?? 'unknown'}): ${stderr}`) as Error & { cause?: unknown };
+      wrappedError.cause = err;
+      throw wrappedError;
     }
     return {
       stdout: e.stdout ? e.stdout.toString() : '',
@@ -116,6 +118,39 @@ test('rejects invalid --tool', () => {
   withTempProject((cwd) => {
     const { code } = runCli('list --tool bogus', cwd, { allowFail: true });
     if (code === 0) throw new Error('expected non-zero exit');
+  });
+});
+
+console.log('\ncontext-audit');
+test('reports prompt weight for required entries', () => {
+  withTempProject((cwd) => {
+    const { stdout } = runCli('context-audit --tool claude --required', cwd);
+    assertContains(stdout, 'Context audit for claude', 'context-audit heading');
+    assertContains(stdout, 'Estimated prompt tokens:', 'context-audit total');
+    assertContains(stdout, 'Always-loaded entries:', 'context-audit required count');
+    assertContains(stdout, 'Largest entries:', 'context-audit largest section');
+    assertContains(stdout, 'adaptive-routing', 'context-audit includes required entry');
+    assertNotContains(stdout, 'architecture-boundaries', 'context-audit excludes optional entries');
+  });
+});
+
+test('fails when context budget is exceeded', () => {
+  withTempProject((cwd) => {
+    const { stderr, code } = runCli('context-audit --tool claude --required --max-tokens 1', cwd, { allowFail: true });
+    if (code === 0) throw new Error('expected non-zero exit');
+    assertContains(stderr, 'Context budget exceeded', 'context-audit budget failure');
+  });
+});
+
+test('rejects malformed integer options', () => {
+  withTempProject((cwd) => {
+    const badMaxTokens = runCli('context-audit --tool claude --max-tokens 1000ms', cwd, { allowFail: true });
+    if (badMaxTokens.code === 0) throw new Error('expected non-zero exit for malformed --max-tokens');
+    assertContains(badMaxTokens.stderr, "Invalid --max-tokens '1000ms'", 'malformed --max-tokens');
+
+    const badLargest = runCli('context-audit --tool claude --largest 3files', cwd, { allowFail: true });
+    if (badLargest.code === 0) throw new Error('expected non-zero exit for malformed --largest');
+    assertContains(badLargest.stderr, "Invalid --largest '3files'", 'malformed --largest');
   });
 });
 
