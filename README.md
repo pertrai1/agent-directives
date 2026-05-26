@@ -30,11 +30,8 @@ that should receive the instructions:
 ```bash
 cd /path/to/your-project
 
-# Once published to npm:
+# Install the required Codex/OpenAI agent directives and skills.
 npx agent-directives sync --tool codex --yes
-
-# Until the first npm release is available, use the GitHub source package:
-npx --yes github:pertrai1/agent-directives sync --tool codex --yes
 
 # Add the root instruction file, then edit every <!-- FILL IN: ... --> placeholder.
 curl -fsSL \
@@ -55,7 +52,7 @@ After installation, open the root instruction file and:
 4. Run the check command for your target tool:
 
 ```bash
-npx --yes github:pertrai1/agent-directives check --tool codex
+npx agent-directives check --tool codex
 ```
 
 ## Installing for Different Tools
@@ -154,9 +151,7 @@ Releases use Changesets and GitHub Actions, matching the release flow used by
    after that PR is merged, publishes the package with npm provenance and creates
    a GitHub release.
 
-Before publishing for the first time, configure npm trusted publishing for this
-repository/package or provide equivalent npm automation credentials. The workflow
-uses `id-token: write` and `npm publish --provenance`.
+The package is published to npm. Future releases require npm trusted publishing for this repository/package (or equivalent npm automation credentials) so the workflow can publish with provenance. The workflow uses `id-token: write` and `npm publish --provenance`.
 
 ## Directives vs Skills
 
