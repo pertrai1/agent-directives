@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.2.1
+
+### Patch Changes
+
+- [#40](https://github.com/pertrai1/agent-directives/pull/40) [`eafd548`](https://github.com/pertrai1/agent-directives/commit/eafd548a35a2b4e698ec5941e977bb349d6d4aae) Thanks [@pertrai1-bot](https://github.com/pertrai1-bot)! - Update README commands now that the package is published on npm.
+
 ## 0.2.0
 
 ### Minor Changes
