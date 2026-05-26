@@ -22,7 +22,6 @@ export default defineConfig([
       "no-nested-ternary": "error",
       "preserve-caught-error": "error",
       "no-useless-assignment": "error",
-      "llm-core/max-file-length": "off",
       "llm-core/max-function-length": "off",
       "llm-core/max-params": "off",
       "llm-core/no-magic-numbers": "off",

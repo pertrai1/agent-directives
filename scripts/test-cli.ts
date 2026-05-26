@@ -1,112 +1,20 @@
 #!/usr/bin/env tsx
-import { execSync } from "node:child_process";
 import {
-  existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
-import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
-
-const repoRoot = fileURLToPath(new URL("..", import.meta.url));
-const cliPath = join(repoRoot, "src", "cli.ts");
-
-interface RunResult {
-  stdout: string;
-  stderr: string;
-  code: number;
-}
-
-function runCli(
-  args: string,
-  cwd: string,
-  opts: { allowFail?: boolean } = {},
-): RunResult {
-  try {
-    const stdout = execSync(`tsx ${cliPath} ${args}`, {
-      cwd,
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    return { stdout, stderr: "", code: 0 };
-  } catch (error) {
-    const e = error as {
-      stdout?: Buffer | string;
-      stderr?: Buffer | string;
-      status?: number;
-    };
-    if (!opts.allowFail) {
-      const stderr = e.stderr ? e.stderr.toString() : String(error);
-      const wrappedError = new Error(
-        `CLI failed (${e.status ?? "unknown"}): ${stderr}`,
-      ) as Error & { cause?: unknown };
-      wrappedError.cause = error;
-      throw wrappedError;
-    }
-    return {
-      stdout: e.stdout ? e.stdout.toString() : "",
-      stderr: e.stderr ? e.stderr.toString() : "",
-      code: e.status ?? 1,
-    };
-  }
-}
-
-let passed = 0;
-let failed = 0;
-const failures: string[] = [];
-
-function test(name: string, fn: () => void): void {
-  try {
-    fn();
-    passed += 1;
-    console.log(`  ✓ ${name}`);
-  } catch (error) {
-    failed += 1;
-    const message = error instanceof Error ? error.message : String(error);
-    failures.push(`${name}: ${message}`);
-    console.log(`  ✗ ${name}`);
-    console.log(`      ${message}`);
-  }
-}
-
-function withTempProject(fn: (cwd: string) => void): void {
-  const cwd = mkdtempSync(join(tmpdir(), "skills-cli-test-"));
-  try {
-    fn(cwd);
-  } finally {
-    rmSync(cwd, { recursive: true, force: true });
-  }
-}
-
-function assertContains(
-  haystack: string,
-  needle: string,
-  context: string,
-): void {
-  if (!haystack.includes(needle))
-    throw new Error(`${context}: expected output to contain '${needle}'`);
-}
-
-function assertNotContains(
-  haystack: string,
-  needle: string,
-  context: string,
-): void {
-  if (haystack.includes(needle))
-    throw new Error(`${context}: expected output NOT to contain '${needle}'`);
-}
-
-function assertFileExists(path: string): void {
-  if (!existsSync(path)) throw new Error(`expected file to exist: ${path}`);
-}
-
-function assertFileMissing(path: string): void {
-  if (existsSync(path)) throw new Error(`expected file NOT to exist: ${path}`);
-}
+import {
+  assertContains,
+  assertFileExists,
+  assertFileMissing,
+  assertNotContains,
+  reportResults,
+  runCli,
+  test,
+  withTempProject,
+} from "./test-cli-helpers.js";
 
 console.log("list");
 test("lists entries by default", () => {
@@ -346,10 +254,4 @@ test("sync auto-detects tool from CLAUDE.md", () => {
   });
 });
 
-console.log("\nResults");
-console.log(`  ${passed} passed, ${failed} failed`);
-if (failed > 0) {
-  console.log("\nFailures:");
-  for (const f of failures) console.log(`  - ${f}`);
-  process.exit(1);
-}
+reportResults();
