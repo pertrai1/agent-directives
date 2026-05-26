@@ -23,6 +23,7 @@
     "version:check": "tsx scripts/validate-version-bumps.ts",
     "eval:scenario": "tsx scripts/eval-scenario.ts",
     "eval:report": "tsx evals/report-results.ts",
+    "context:audit": "tsx src/cli.ts context-audit",
     "manifest": "tsx scripts/generate-manifest.ts",
     "manifest:check": "npm run manifest && git diff --exit-code manifest.json",
     "cli": "tsx src/cli.ts",

@@ -119,6 +119,27 @@ test('rejects invalid --tool', () => {
   });
 });
 
+console.log('\ncontext-audit');
+test('reports prompt weight for required entries', () => {
+  withTempProject((cwd) => {
+    const { stdout } = runCli('context-audit --tool claude --required', cwd);
+    assertContains(stdout, 'Context audit for claude', 'context-audit heading');
+    assertContains(stdout, 'Estimated prompt tokens:', 'context-audit total');
+    assertContains(stdout, 'Always-loaded entries:', 'context-audit required count');
+    assertContains(stdout, 'Largest entries:', 'context-audit largest section');
+    assertContains(stdout, 'adaptive-routing', 'context-audit includes required entry');
+    assertNotContains(stdout, 'architecture-boundaries', 'context-audit excludes optional entries');
+  });
+});
+
+test('fails when context budget is exceeded', () => {
+  withTempProject((cwd) => {
+    const { stderr, code } = runCli('context-audit --tool claude --required --max-tokens 1', cwd, { allowFail: true });
+    if (code === 0) throw new Error('expected non-zero exit');
+    assertContains(stderr, 'Context budget exceeded', 'context-audit budget failure');
+  });
+});
+
 console.log('\nadd');
 test('installs to entry.path for --tool claude', () => {
   withTempProject((cwd) => {

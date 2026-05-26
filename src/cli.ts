@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Command } from 'commander';
+import { buildContextAudit, renderContextAudit } from './context-audit.js';
 import { filterEntries, findEntry, loadManifest, packageRoot, type ManifestEntry } from './manifest.js';
 import { installEntry, isEntryInstalled, type InstallResult } from './install.js';
 import { selectMultiple } from './prompt.js';
@@ -89,6 +90,51 @@ program
       }
     }
     console.log(`\n${filtered.length} entr${filtered.length === 1 ? 'y' : 'ies'} (★ = required)`);
+  });
+
+program
+  .command('context-audit')
+  .description('Estimate prompt weight for directives and skills')
+  .option('-t, --tool <tool>', `Filter by target tool (${KNOWN_TOOLS.join(', ')})`)
+  .option('-r, --required', 'Only include always-loaded required entries')
+  .option('--max-tokens <tokens>', 'Fail when the estimated token count exceeds this budget')
+  .option('--largest <count>', 'Number of largest entries to show', '10')
+  .action((opts: { tool?: string; required?: boolean; maxTokens?: string; largest?: string }) => {
+    if (opts.tool && !isTool(opts.tool)) {
+      console.error(`Unknown tool '${opts.tool}'. Expected one of: ${KNOWN_TOOLS.join(', ')}`);
+      process.exit(1);
+    }
+    let maxTokens: number | undefined;
+    if (opts.maxTokens !== undefined) {
+      maxTokens = Number.parseInt(opts.maxTokens, 10);
+      if (!Number.isFinite(maxTokens) || maxTokens < 0) {
+        console.error(`Invalid --max-tokens '${opts.maxTokens}'. Expected a non-negative integer.`);
+        process.exit(1);
+      }
+    }
+    let largest: number | undefined;
+    if (opts.largest !== undefined) {
+      largest = Number.parseInt(opts.largest, 10);
+      if (!Number.isFinite(largest) || largest < 1) {
+        console.error(`Invalid --largest '${opts.largest}'. Expected a positive integer.`);
+        process.exit(1);
+      }
+    }
+
+    const manifest = loadManifest();
+    const result = buildContextAudit(manifest.entries, {
+      tool: opts.tool,
+      requiredOnly: opts.required,
+      maxTokens,
+      largest,
+    });
+    const rendered = renderContextAudit(result);
+    if (result.overBudget) {
+      console.error(rendered);
+      console.error(`Context budget exceeded: ${result.estimatedTokens.toLocaleString()} > ${result.maxTokens?.toLocaleString()} tokens.`);
+      process.exit(1);
+    }
+    console.log(rendered);
   });
 
 program
