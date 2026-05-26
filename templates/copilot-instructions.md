@@ -59,10 +59,10 @@ one commit. Each behavior gets its own test-commit + implementation-commit pair.
 
 The root file provides project-specific context plus compact routing pointers: commands, repo layout, local constraints, and any client-specific workflow reminders.
 
-Workflow path selection, directive loading, skill loading, and evidence requirements live in `directives/adaptive-routing.md`.
+Workflow path selection, directive loading, skill loading, rule selection, and evidence requirements live in `directives/adaptive-routing.md`.
 
 After routing, report:
-`Route: <path>; using <directive/skill files>; evidence: <checks>.`
+`Route: <path>; using <directive/skill files>; rules: <rule files or none>; evidence: <checks>.`
 
 ## Forbidden
 

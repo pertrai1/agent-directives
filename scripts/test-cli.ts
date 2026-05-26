@@ -41,6 +41,15 @@ test("filters by --category", () => {
   });
 });
 
+test("filters by --type rule", () => {
+  withTempProject((cwd) => {
+    const { stdout } = runCli("list --type rule", { cwd });
+    assertContains(stdout, { needle: "angular-components-and-templates", context: "list --type rule includes Angular rule" });
+    assertContains(stdout, { needle: "rule", context: "list --type rule shows type" });
+    assertNotContains(stdout, { needle: "adaptive-routing", context: "list --type rule excludes directives" });
+  });
+});
+
 test("filters by --tool", () => {
   withTempProject((cwd) => {
     const { stdout } = runCli("list --tool cursor", { cwd });
@@ -105,6 +114,13 @@ test("installs to entry.path for --tool claude", () => {
   withTempProject((cwd) => {
     runCli("add adaptive-routing --tool claude", { cwd });
     assertFileExists(join(cwd, "directives/adaptive-routing.md"));
+  });
+});
+
+test("installs rule into rules directory", () => {
+  withTempProject((cwd) => {
+    runCli("add angular-components-and-templates --tool claude", { cwd });
+    assertFileExists(join(cwd, "rules/angular/components-and-templates.md"));
   });
 });
 
@@ -210,6 +226,26 @@ test("sync --tool cursor only installs cursor-compatible required entries", () =
     runCli("sync --tool cursor --yes", { cwd });
     assertFileExists(join(cwd, ".cursor/rules/adaptive-routing.mdc"));
     assertFileExists(join(cwd, ".cursor/rules/code-reviewer.mdc"));
+  });
+});
+
+test("sync --rules auto installs Angular rules for Angular projects", () => {
+  withTempProject((cwd) => {
+    writeFileSync(join(cwd, "CLAUDE.md"), "# project\n");
+    writeFileSync(join(cwd, "angular.json"), "{}\n");
+    const { stdout } = runCli("sync --yes --rules auto", { cwd });
+    assertContains(stdout, { needle: "Installing 3 selected rule entries (angular)", context: "sync rules auto output" });
+    assertFileExists(join(cwd, "rules/angular/components-and-templates.md"));
+    assertFileExists(join(cwd, "rules/angular/project-structure.md"));
+    assertFileExists(join(cwd, "rules/angular/testing.md"));
+  });
+});
+
+test("sync --rules auto does not install Angular rules for non-Angular projects", () => {
+  withTempProject((cwd) => {
+    writeFileSync(join(cwd, "CLAUDE.md"), "# project\n");
+    runCli("sync --yes --rules auto", { cwd });
+    assertFileMissing(join(cwd, "rules/angular/angular-components-and-templates.md"));
   });
 });
 

@@ -24,7 +24,7 @@ function warn(message: string): void {
 }
 
 function extractPaths(text: string): string[] {
-  const matches = text.match(/(?:AGENTS\.md|templates\/[A-Za-z0-9_.-]+\.md|directives\/[A-Za-z0-9_-]+\.md|skills\/[A-Za-z0-9_-]+\/SKILL\.md|evals\/scenarios\/[A-Za-z0-9_-]+\.md)/g) ?? [];
+  const matches = text.match(/(?:AGENTS\.md|templates\/[A-Za-z0-9_.-]+\.md|directives\/[A-Za-z0-9_-]+\.md|skills\/[A-Za-z0-9_-]+\/SKILL\.md|rules\/[A-Za-z0-9_/-]+\.md|evals\/scenarios\/[A-Za-z0-9_-]+\.md)/g) ?? [];
   return [...new Set(matches)];
 }
 
@@ -33,7 +33,7 @@ function section(text: string, heading: string): string {
   return match?.[1] ?? '';
 }
 
-const VALID_CATEGORIES = new Set(['workflow', 'architecture', 'memory', 'testing', 'review', 'planning', 'debugging']);
+const BASE_VALID_CATEGORIES = ['workflow', 'architecture', 'memory', 'testing', 'review', 'planning', 'debugging'];
 const VALID_TOOLS = new Set(['claude', 'copilot', 'codex', 'cursor']);
 const FRONTMATTER_OPEN_LENGTH = 4;
 
@@ -46,7 +46,7 @@ function unquoteYamlScalar(value: string): string {
 }
 
 function validateRequiredKeys(path: string, fm: string): void {
-  for (const key of ['name', 'description', 'category']) {
+  for (const key of ['name', 'description', 'version', 'category']) {
     if (!new RegExp(`^${key}:\\s*\\S`, 'm').test(fm)) fail(`${path}: missing frontmatter key '${key}'`);
   }
   if (!/^required:\s+(true|false)\s*$/m.test(fm)) fail(`${path}: missing or invalid frontmatter key 'required' (must be true or false)`);
@@ -72,7 +72,22 @@ function validateToolsValues(path: string, fm: string): void {
 
 function expectedNameFor(path: string): string | undefined {
   if (path.startsWith('skills/')) return path.split('/')[1];
+  if (path.startsWith('rules/')) {
+    const parts = path.split('/');
+    return `${parts[1]}-${parts.at(-1)?.replace(/\.md$/, '')}`;
+  }
   return path.split('/').pop()?.replace(/\.md$/, '');
+}
+
+function readMarkdownEntries(rootDir: string): string[] {
+  const absoluteRoot = join(repoRoot, rootDir);
+  if (!existsSync(absoluteRoot)) return [];
+  return readdirSync(absoluteRoot, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name)).flatMap((entry) => {
+    const relativePath = `${rootDir}/${entry.name}`;
+    if (entry.isDirectory()) return readMarkdownEntries(relativePath);
+    if (!entry.isFile() || !entry.name.endsWith('.md')) return [];
+    return [relativePath];
+  });
 }
 
 function validateNameMatches(path: string, fm: string): void {
@@ -132,11 +147,16 @@ const skills = readdirSync(join(repoRoot, 'skills'), { withFileTypes: true })
     }
     return [path];
   });
+const rules = readMarkdownEntries('rules');
+const ruleCategories = readdirSync(join(repoRoot, 'rules'), { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name);
+const VALID_CATEGORIES = new Set([...BASE_VALID_CATEGORIES, ...ruleCategories]);
 const templates = readdirSync(join(repoRoot, 'templates')).filter((file) => file.endsWith('.md')).map((file) => `templates/${file}`);
 const scenarios = readdirSync(join(repoRoot, 'evals', 'scenarios')).filter((file) => file.endsWith('.md')).map((file) => `evals/scenarios/${file}`);
 
-for (const path of [...directives, ...skills]) validateFrontmatter(path);
-for (const path of ['AGENTS.md', 'README.md', 'evals/README.md', 'evals/results/README.md', ...directives, ...skills, ...templates]) {
+for (const path of [...directives, ...skills, ...rules]) validateFrontmatter(path);
+for (const path of ['AGENTS.md', 'README.md', 'evals/README.md', 'evals/results/README.md', ...directives, ...skills, ...rules, ...templates]) {
   validateReferencedPaths(path);
 }
 for (const path of scenarios) validateScenario(path);
@@ -160,4 +180,4 @@ if (errors.length) {
   for (const message of errors) console.error(`  - ${message}`);
   process.exit(1);
 }
-console.log(`Directive validation passed: ${directives.length} directives, ${skills.length} skills, ${templates.length} templates, ${scenarios.length} scenarios.`);
+console.log(`Directive validation passed: ${directives.length} directives, ${skills.length} skills, ${rules.length} rules, ${templates.length} templates, ${scenarios.length} scenarios.`);

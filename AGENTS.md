@@ -17,6 +17,7 @@ This repository is a portable library of AI coding-agent instructions: reusable 
 - Content-first Markdown repository; there is no package manager, build artifact, or runtime application.
 - `directives/*.md` define workflow rules an agent follows during phases such as routing, workspace isolation, exploration, TDD, verification, and handoff.
 - `skills/*/SKILL.md` define specialist personas/review processes with YAML frontmatter metadata.
+- `rules/*/*.md` define lazy-loaded stack or project standards, starting with Angular.
 - `templates/` contains starter instruction files for different agent tools.
 - `evals/` contains manual scenario-based evaluations plus a helper script for assembling directive/skill context.
 
@@ -44,10 +45,10 @@ There is no global application build command for this content-first repository t
 
 The root file provides project-specific context plus compact routing pointers: commands, repo layout, local constraints, and any client-specific workflow reminders.
 
-Workflow path selection, directive loading, skill loading, and evidence requirements live in `directives/adaptive-routing.md`.
+Workflow path selection, directive loading, skill loading, rule selection, and evidence requirements live in `directives/adaptive-routing.md`.
 
 After routing, report:
-`Route: <path>; using <directive/skill files>; evidence: <checks>.`
+`Route: <path>; using <directive/skill files>; rules: <rule files or none>; evidence: <checks>.`
 
 When adaptive routing selects Full Path or another route that invokes the full
 phase sequence, no skipping steps:

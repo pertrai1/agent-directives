@@ -15,6 +15,7 @@
     "dist/",
     "directives/",
     "skills/",
+    "rules/",
     "templates/",
     "manifest.json",
     "README.md"

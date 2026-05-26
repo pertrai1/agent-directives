@@ -3,17 +3,17 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Command } from 'commander';
 import { buildContextAudit, renderContextAudit } from './context-audit.js';
-import { filterEntries, findEntry, loadManifest, packageRoot, type ManifestEntry } from './manifest.js';
+import { filterEntries, findEntry, loadManifest, packageRoot, type ManifestEntry, type ManifestEntryType } from './manifest.js';
 import { installEntry, isEntryInstalled, type InstallResult } from './install.js';
+import { renderEntryList } from './renderEntryList.js';
 import { selectMultiple } from './prompt.js';
+import { parseRuleCategories } from './rules.js';
 import { KNOWN_TOOLS, detectTool, isTool, type Tool } from './targets.js';
 
 const pkg = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8')) as { version: string };
 
 const DECIMAL_RADIX = 10;
-const MIN_UNDERLINE_WIDTH = 4;
-const ID_COLUMN_WIDTH = 34;
-const TYPE_COLUMN_WIDTH = 10;
+type InstallSummary = { installed: number; identical: number; conflict: number };
 
 function resolveTool(provided?: string): Tool {
   if (provided) {
@@ -64,12 +64,16 @@ const program = new Command();
 
 program
   .name('agent-directives')
-  .description('Install agent directives and skills into your project')
+  .description('Install agent directives, skills, and rules into your project')
   .version(pkg.version);
 
+function isManifestEntryType(value: string): value is ManifestEntryType {
+  return value === 'directive' || value === 'skill' || value === 'rule';
+}
+
 function validateListOptions(opts: { tool?: string; type?: string }): void {
-  if (opts.type && opts.type !== 'directive' && opts.type !== 'skill') {
-    console.error(`Invalid --type '${opts.type}'. Expected 'directive' or 'skill'.`);
+  if (opts.type && !isManifestEntryType(opts.type)) {
+    console.error(`Invalid --type '${opts.type}'. Expected 'directive', 'skill', or 'rule'.`);
     process.exit(1);
   }
   if (opts.tool && !isTool(opts.tool)) {
@@ -78,55 +82,65 @@ function validateListOptions(opts: { tool?: string; type?: string }): void {
   }
 }
 
-function groupByCategory(entries: ManifestEntry[]): Map<string, ManifestEntry[]> {
-  const byCategory = new Map<string, ManifestEntry[]>();
+function applyEntries(entries: ManifestEntry[], opts: { cwd: string; tool: Tool; force?: boolean; summary: InstallSummary }): void {
   for (const entry of entries) {
-    const bucket = byCategory.get(entry.category) ?? [];
-    bucket.push(entry);
-    byCategory.set(entry.category, bucket);
+    const result = installEntry(entry, { cwd: opts.cwd, tool: opts.tool, force: opts.force });
+    reportInstall(entry, result);
+    if (result.status === 'installed') opts.summary.installed += 1;
+    else if (result.status === 'skipped-identical') opts.summary.identical += 1;
+    else opts.summary.conflict += 1;
   }
-  return byCategory;
 }
 
-function printCategory(category: string, entries: ManifestEntry[]): void {
-  console.log(`\n${category}`);
-  console.log('─'.repeat(Math.max(category.length, MIN_UNDERLINE_WIDTH)));
-  for (const entry of entries.sort((a, b) => a.id.localeCompare(b.id))) {
-    const marker = entry.required ? '★' : ' ';
-    console.log(`  ${marker} ${entry.id.padEnd(ID_COLUMN_WIDTH)} ${entry.type.padEnd(TYPE_COLUMN_WIDTH)} ${entry.description}`);
+function applySelectedRules(opts: { entries: ManifestEntry[]; categories: string[]; apply: (entries: ManifestEntry[]) => void; mode?: string }): void {
+  const { entries, categories, apply, mode } = opts;
+  if (!mode || mode === 'none') return;
+  if (entries.length === 0) {
+    console.log(`\nNo matching rule entries selected${mode === 'auto' ? ' by auto-detection' : ''}.`);
+    return;
   }
+  console.log(`\nInstalling ${entries.length} selected rule entr${entries.length === 1 ? 'y' : 'ies'} (${categories.join(', ')})...`);
+  apply(entries);
+}
+
+async function promptForOptionalEntries(entries: ManifestEntry[], apply: (entries: ManifestEntry[]) => void): Promise<void> {
+  if (entries.length === 0) return;
+  const categories = Array.from(new Set(entries.map((entry) => entry.category))).sort();
+  const chosen = await selectMultiple('\nOptional categories:', categories);
+  const toInstall = entries.filter((entry) => chosen.includes(entry.category));
+  if (toInstall.length === 0) return;
+  console.log(`\nInstalling ${toInstall.length} optional entr${toInstall.length === 1 ? 'y' : 'ies'}...`);
+  void apply(toInstall);
 }
 
 program
   .command('list')
-  .description('List available directives and skills')
+  .description('List available directives, skills, and rules')
   .option('-c, --category <category>', 'Filter by category')
   .option('-r, --required', 'Only show required entries')
   .option('-t, --tool <tool>', `Filter by tool (${KNOWN_TOOLS.join(', ')})`)
-  .option('--type <type>', 'Filter by type (directive or skill)')
+  .option('--type <type>', 'Filter by type (directive, skill, or rule)')
   .action((opts: { category?: string; required?: boolean; tool?: string; type?: string }) => {
     validateListOptions(opts);
     const manifest = loadManifest();
+    const typeFilter = opts.type && isManifestEntryType(opts.type) ? opts.type : undefined;
     const filtered = filterEntries(manifest.entries, {
       category: opts.category,
       required: opts.required,
       tool: opts.tool,
-      type: opts.type as 'directive' | 'skill' | undefined,
+      type: typeFilter,
     });
     if (filtered.length === 0) {
       console.log('No entries match the filters.');
       return;
     }
-    const byCategory = groupByCategory(filtered);
-    for (const [category, entries] of [...byCategory.entries()].sort(([a], [b]) => a.localeCompare(b))) {
-      printCategory(category, entries);
-    }
+    console.log(renderEntryList(filtered));
     console.log(`\n${filtered.length} entr${filtered.length === 1 ? 'y' : 'ies'} (★ = required)`);
   });
 
 program
   .command('context-audit')
-  .description('Estimate prompt weight for directives and skills')
+  .description('Estimate prompt weight for directives, skills, and rules')
   .option('-t, --tool <tool>', `Filter by target tool (${KNOWN_TOOLS.join(', ')})`)
   .option('-r, --required', 'Only include always-loaded required entries')
   .option('--max-tokens <tokens>', 'Fail when the estimated token count exceeds this budget')
@@ -157,7 +171,7 @@ program
 
 program
   .command('add <id>')
-  .description('Install a single directive or skill into the current project')
+  .description('Install a single directive, skill, or rule into the current project')
   .option('-t, --tool <tool>', `Target tool (${KNOWN_TOOLS.join(', ')})`)
   .option('-f, --force', 'Overwrite an existing file with different content')
   .action((id: string, opts: { tool?: string; force?: boolean }) => {
@@ -183,7 +197,7 @@ program
 
 program
   .command('check')
-  .description('Report missing required directives and skills for the target tool')
+  .description('Report missing required directives, skills, and rules for the target tool')
   .option('-t, --tool <tool>', `Target tool (${KNOWN_TOOLS.join(', ')})`)
   .action((opts: { tool?: string }) => {
     const manifest = loadManifest();
@@ -208,36 +222,28 @@ program
   .option('-t, --tool <tool>', `Target tool (${KNOWN_TOOLS.join(', ')})`)
   .option('-y, --yes', 'Skip prompts; install required entries only')
   .option('-f, --force', 'Overwrite files with different content')
-  .action(async (opts: { tool?: string; yes?: boolean; force?: boolean }) => {
+  .option('--rules <mode>', "Install rule categories: 'auto', 'none', or comma-separated categories such as 'angular'", 'none')
+  .action(async (opts: { tool?: string; yes?: boolean; force?: boolean; rules?: string }) => {
     const manifest = loadManifest();
     const tool = resolveTool(opts.tool);
     const required = filterEntries(manifest.entries, { required: true, tool });
     const optional = filterEntries(manifest.entries, { required: false, tool });
+    const requestedRuleCategories = parseRuleCategories(opts.rules, process.cwd());
+    const selectedRules = optional.filter((entry) => entry.type === 'rule' && requestedRuleCategories.includes(entry.category));
+    const promptableOptional = optional.filter((entry) => entry.type !== 'rule' || !requestedRuleCategories.includes(entry.category));
 
     console.log(`Tool: ${tool}`);
     console.log(`Installing ${required.length} required entr${required.length === 1 ? 'y' : 'ies'}...`);
 
     const summary = { installed: 0, identical: 0, conflict: 0 };
-    const apply = (entries: ManifestEntry[]): void => {
-      for (const entry of entries) {
-        const result = installEntry(entry, { cwd: process.cwd(), tool, force: opts.force });
-        reportInstall(entry, result);
-        if (result.status === 'installed') summary.installed += 1;
-        else if (result.status === 'skipped-identical') summary.identical += 1;
-        else summary.conflict += 1;
-      }
-    };
+    const apply = (entries: ManifestEntry[]): void => applyEntries(entries, { cwd: process.cwd(), tool, force: opts.force, summary });
 
     apply(required);
 
-    if (!opts.yes && optional.length > 0) {
-      const categories = [...new Set(optional.map((entry) => entry.category))].sort();
-      const chosen = await selectMultiple('\nOptional categories:', categories);
-      const toInstall = optional.filter((entry) => chosen.includes(entry.category));
-      if (toInstall.length > 0) {
-        console.log(`\nInstalling ${toInstall.length} optional entr${toInstall.length === 1 ? 'y' : 'ies'}...`);
-        apply(toInstall);
-      }
+    applySelectedRules({ entries: selectedRules, categories: requestedRuleCategories, apply, mode: opts.rules });
+
+    if (!opts.yes) {
+      await promptForOptionalEntries(promptableOptional, apply);
     }
 
     console.log(`\nSummary: ${summary.installed} installed, ${summary.identical} already up-to-date, ${summary.conflict} conflicts`);

@@ -2,9 +2,11 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+export type ManifestEntryType = 'directive' | 'skill' | 'rule';
+
 export interface ManifestEntry {
   id: string;
-  type: 'directive' | 'skill';
+  type: ManifestEntryType;
   path: string;
   description: string;
   version: string;
@@ -22,7 +24,7 @@ export interface FilterOptions {
   category?: string;
   required?: boolean;
   tool?: string;
-  type?: 'directive' | 'skill';
+  type?: ManifestEntryType;
 }
 
 const moduleDir = dirname(fileURLToPath(import.meta.url));
