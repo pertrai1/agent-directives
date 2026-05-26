@@ -30,7 +30,10 @@ that should receive the instructions:
 ```bash
 cd /path/to/your-project
 
-# Install the required directives and skills into ./directives and ./skills.
+# Once published to npm:
+npx agent-directives sync --tool codex --yes
+
+# Until the first npm release is available, use the GitHub source package:
 npx --yes github:pertrai1/agent-directives sync --tool codex --yes
 
 # Add the root instruction file, then edit every <!-- FILL IN: ... --> placeholder.
@@ -57,12 +60,12 @@ npx --yes github:pertrai1/agent-directives check --tool codex
 
 ## Installing for Different Tools
 
-| Tool | Install directives/skills | Root instruction file |
-| --- | --- | --- |
-| Codex / OpenAI agents | `npx --yes github:pertrai1/agent-directives sync --tool codex --yes` | `templates/AGENTS.md` → `AGENTS.md` |
-| Claude Code | `npx --yes github:pertrai1/agent-directives sync --tool claude --yes` | `templates/CLAUDE.md` → `CLAUDE.md` |
-| GitHub Copilot | `npx --yes github:pertrai1/agent-directives sync --tool copilot --yes` | `templates/copilot-instructions.md` → `.github/copilot-instructions.md` |
-| Cursor | `npx --yes github:pertrai1/agent-directives sync --tool cursor --yes` | Installed as `.cursor/rules/*.mdc` |
+| Tool | npm package command | GitHub source command | Root instruction file |
+| --- | --- | --- | --- |
+| Codex / OpenAI agents | `npx agent-directives sync --tool codex --yes` | `npx --yes github:pertrai1/agent-directives sync --tool codex --yes` | `templates/AGENTS.md` → `AGENTS.md` |
+| Claude Code | `npx agent-directives sync --tool claude --yes` | `npx --yes github:pertrai1/agent-directives sync --tool claude --yes` | `templates/CLAUDE.md` → `CLAUDE.md` |
+| GitHub Copilot | `npx agent-directives sync --tool copilot --yes` | `npx --yes github:pertrai1/agent-directives sync --tool copilot --yes` | `templates/copilot-instructions.md` → `.github/copilot-instructions.md` |
+| Cursor | `npx agent-directives sync --tool cursor --yes` | `npx --yes github:pertrai1/agent-directives sync --tool cursor --yes` | Installed as `.cursor/rules/*.mdc` |
 
 When `--tool` is omitted, the CLI tries to auto-detect the target from marker
 files in the current directory. Passing `--tool` is safer for first-time setup.
@@ -76,20 +79,20 @@ the files.
 ### Commands
 
 ```bash
-npx --yes github:pertrai1/agent-directives list                 # List all entries
-npx --yes github:pertrai1/agent-directives list --required      # Only required entries
-npx --yes github:pertrai1/agent-directives list --category review
-npx --yes github:pertrai1/agent-directives list --tool cursor
-npx --yes github:pertrai1/agent-directives list --type skill
+npx agent-directives list                                      # List all entries
+npx agent-directives list --required                           # Only required entries
+npx agent-directives list --category review
+npx agent-directives list --tool cursor
+npx agent-directives list --type skill
 
-npx --yes github:pertrai1/agent-directives add code-reviewer --tool claude
-npx --yes github:pertrai1/agent-directives add code-reviewer --tool claude --force
+npx agent-directives add code-reviewer --tool claude
+npx agent-directives add code-reviewer --tool claude --force
 
-npx --yes github:pertrai1/agent-directives check --tool codex
-npx --yes github:pertrai1/agent-directives context-audit --tool codex --required
-npx --yes github:pertrai1/agent-directives context-audit --tool codex --required --max-tokens 12000
-npx --yes github:pertrai1/agent-directives sync --tool claude --yes
-npx --yes github:pertrai1/agent-directives sync --tool claude --force
+npx agent-directives check --tool codex
+npx agent-directives context-audit --tool codex --required
+npx agent-directives context-audit --tool codex --required --max-tokens 12000
+npx agent-directives sync --tool claude --yes
+npx agent-directives sync --tool claude --force
 ```
 
 ### Context budget audit
@@ -97,8 +100,8 @@ npx --yes github:pertrai1/agent-directives sync --tool claude --force
 Use `context-audit` to estimate how much prompt budget a tool/profile consumes before copying instructions into a project:
 
 ```bash
-npx --yes github:pertrai1/agent-directives context-audit --tool codex --required
-npx --yes github:pertrai1/agent-directives context-audit --tool claude --max-tokens 20000
+npx agent-directives context-audit --tool codex --required
+npx agent-directives context-audit --tool claude --max-tokens 20000
 ```
 
 The estimate uses a simple `characters / 4` heuristic and reports total tokens, required vs optional counts, and the largest directive/skill files. With `--max-tokens`, the command exits non-zero when the selected entries exceed the budget, making it usable in CI.
@@ -136,7 +139,24 @@ For `cursor`, each entry is flattened to a single file in `.cursor/rules/<id>.md
 npm install
 npm run cli -- list                       # invoke the CLI via npm
 npm run test:cli                          # run CLI integration tests
+npm run pack:check                        # build and inspect package contents
 ```
+
+### Publishing
+
+Releases use Changesets and GitHub Actions, matching the release flow used by
+`eslint-plugin-llm-core`:
+
+1. Add a changeset for user-visible package changes:
+   `npm run changeset`.
+2. Merge the PR to `main`.
+3. The release workflow either opens/updates the `chore: version packages` PR or,
+   after that PR is merged, publishes the package with npm provenance and creates
+   a GitHub release.
+
+Before publishing for the first time, configure npm trusted publishing for this
+repository/package or provide equivalent npm automation credentials. The workflow
+uses `id-token: write` and `npm publish --provenance`.
 
 ## Directives vs Skills
 

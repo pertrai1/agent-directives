@@ -3,3 +3,5 @@ evals/results/runs/*/
 
 .gitnexus/
 .omc/
+dist/
+*.tgz
