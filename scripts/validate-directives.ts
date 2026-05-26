@@ -37,6 +37,14 @@ const VALID_CATEGORIES = new Set(['workflow', 'architecture', 'memory', 'testing
 const VALID_TOOLS = new Set(['claude', 'copilot', 'codex', 'cursor']);
 const FRONTMATTER_OPEN_LENGTH = 4;
 
+function normalizeText(text: string): string {
+  return text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+}
+
+function unquoteYamlScalar(value: string): string {
+  return value.replace(/^['"]|['"]$/g, '');
+}
+
 function validateRequiredKeys(path: string, fm: string): void {
   for (const key of ['name', 'description', 'category']) {
     if (!new RegExp(`^${key}:\\s*\\S`, 'm').test(fm)) fail(`${path}: missing frontmatter key '${key}'`);
@@ -46,7 +54,8 @@ function validateRequiredKeys(path: string, fm: string): void {
 }
 
 function validateCategoryValue(path: string, fm: string): void {
-  const category = fm.match(/^category:\s*(\S+)/m)?.[1];
+  const categoryRaw = fm.match(/^category:\s*(\S+)/m)?.[1];
+  const category = categoryRaw ? unquoteYamlScalar(categoryRaw) : undefined;
   if (category && !VALID_CATEGORIES.has(category)) {
     fail(`${path}: unknown category '${category}' (expected: ${[...VALID_CATEGORIES].join(', ')})`);
   }
@@ -56,7 +65,7 @@ function validateToolsValues(path: string, fm: string): void {
   const toolsBlock = fm.match(/^tools:\s*\n((?:\s+-\s+\S+\n?)*)/m)?.[1] ?? '';
   if (!/^\s*-\s+\S+/m.test(toolsBlock)) fail(`${path}: frontmatter key 'tools' must include at least one item`);
   for (const toolMatch of toolsBlock.matchAll(/^\s+-\s+(\S+)/gm)) {
-    const tool = toolMatch[1];
+    const tool = unquoteYamlScalar(toolMatch[1]);
     if (!VALID_TOOLS.has(tool)) fail(`${path}: unknown tool '${tool}' in tools list (expected: ${[...VALID_TOOLS].join(', ')})`);
   }
 }
@@ -75,7 +84,7 @@ function validateNameMatches(path: string, fm: string): void {
 }
 
 function validateFrontmatter(path: string): void {
-  const text = read(path);
+  const text = normalizeText(read(path));
   if (!text.startsWith('---\n')) {
     fail(`${path}: missing YAML frontmatter`);
     return;

@@ -1,12 +1,12 @@
 #!/usr/bin/env tsx
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import {
   collectRuns,
   currentCommit,
   defaultOutput,
   esc,
   pct,
-  resultsDir,
 } from './report-parsers.js';
 import type { EvalRun, RoutingEvent, RoutingTrace } from './report-types.js';
 
@@ -83,7 +83,7 @@ let output = defaultOutput;
 const args = process.argv.slice(2);
 const outputIndex = args.indexOf('--output');
 if (outputIndex >= 0) output = args[outputIndex + 1] ?? defaultOutput;
-mkdirSync(resultsDir, { recursive: true });
+mkdirSync(dirname(output), { recursive: true });
 const runs = collectRuns();
 writeFileSync(output, render(runs));
 const verdictSummary = runs.reduce<Record<string, number>>((acc, run) => {

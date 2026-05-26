@@ -1,5 +1,5 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { basename, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import type { Counts, EvalRun, RoutingEvent } from './report-types.js';
@@ -29,12 +29,16 @@ const bool = (value: unknown): boolean => {
   return Boolean(value);
 };
 const first = (...values: unknown[]): unknown => values.find((value) => value !== undefined && value !== null && value !== '');
+const toCount = (value: unknown): number => {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) && numeric >= 0 ? numeric : 0;
+};
 const counts = (value: any): Counts => {
   if (!value || typeof value !== 'object') return zero();
-  const passed = Number(value.passed ?? value.pass ?? 0);
-  const failed = Number(value.failed ?? value.fail ?? 0);
-  const unclear = Number(value.unclear ?? 0);
-  const total = Number(value.total ?? passed + failed + unclear);
+  const passed = toCount(value.passed ?? value.pass ?? 0);
+  const failed = toCount(value.failed ?? value.fail ?? 0);
+  const unclear = toCount(value.unclear ?? 0);
+  const total = toCount(value.total);
   return { passed, failed, unclear, total: total || passed + failed + unclear };
 };
 const verdict = (value: unknown): string => {
@@ -166,7 +170,7 @@ function parseManifest(path: string): EvalRun {
   const claimed = array(data.claimed_loaded_files);
   return {
     source: path,
-    scenario: String(data.scenario ?? basename(path, '.json')),
+    scenario: String(first(data.scenario, basename(dirname(path))) ?? ''),
     date: String(data.date ?? ''),
     model: String(data.model ?? ''),
     judge_model: '',

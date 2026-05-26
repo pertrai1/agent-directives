@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -24,9 +24,9 @@ interface ValidationResult {
 const FRONTMATTER_OPEN_LENGTH = 4;
 const SEMVER_PART_COUNT = 3;
 
-function runGit(repoRoot: string, opts: { args: string; allowFail?: boolean }): string {
+function runGit(repoRoot: string, opts: { args: string[]; allowFail?: boolean }): string {
   try {
-    return execSync(`git ${opts.args}`, {
+    return execFileSync("git", opts.args, {
       cwd: repoRoot,
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
@@ -35,10 +35,6 @@ function runGit(repoRoot: string, opts: { args: string; allowFail?: boolean }): 
     if (opts.allowFail) return "";
     throw error;
   }
-}
-
-function shellQuote(value: string): string {
-  return `'${value.replace(/'/g, `'"'"'`)}'`;
 }
 
 function parseVersion(text: string): string | null {
@@ -71,7 +67,7 @@ function compareSemver(a: string, b: string): number | null {
 
 function baseRefError(repoRoot: string, base: string): string | null {
   const resolved = runGit(repoRoot, {
-    args: `rev-parse --verify ${shellQuote(`${base}^{commit}`)}`,
+    args: ["rev-parse", "--verify", `${base}^{commit}`],
     allowFail: true,
   }).trim();
   if (resolved) return null;
@@ -79,13 +75,13 @@ function baseRefError(repoRoot: string, base: string): string | null {
 }
 
 function mergeBaseRef(repoRoot: string, base: string): string {
-  return runGit(repoRoot, { args: `merge-base ${shellQuote(base)} HEAD` }).trim();
+  return runGit(repoRoot, { args: ["merge-base", base, "HEAD"] }).trim();
 }
 
 function changedInstructionFiles(repoRoot: string, base: string): DiffEntry[] {
   const mergeBase = mergeBaseRef(repoRoot, base);
   const output = runGit(repoRoot, {
-    args: `diff --name-status --find-renames --diff-filter=ADMR ${shellQuote(mergeBase)} -- 'directives/*.md' 'skills/*/SKILL.md'`,
+    args: ["diff", "--name-status", "--find-renames", "--diff-filter=ADMR", mergeBase, "--", "directives/*.md", "skills/*/SKILL.md"],
   });
 
   return output
@@ -111,7 +107,7 @@ function readCurrent(repoRoot: string, path: string): string {
 
 function readAtRef(repoRoot: string, opts: { ref: string; path: string }): string | null {
   const output = runGit(repoRoot, {
-    args: `show ${shellQuote(`${opts.ref}:${opts.path}`)}`,
+    args: ["show", `${opts.ref}:${opts.path}`],
     allowFail: true,
   });
   return output.length > 0 ? output : null;
