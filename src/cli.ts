@@ -10,6 +10,11 @@ import { KNOWN_TOOLS, detectTool, isTool, type Tool } from './targets.js';
 
 const pkg = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8')) as { version: string };
 
+const DECIMAL_RADIX = 10;
+const MIN_UNDERLINE_WIDTH = 4;
+const ID_COLUMN_WIDTH = 34;
+const TYPE_COLUMN_WIDTH = 10;
+
 function resolveTool(provided?: string): Tool {
   if (provided) {
     if (!isTool(provided)) {
@@ -46,7 +51,7 @@ function parseIntegerOption(value: string, flag: string, minimum: number): numbe
     console.error(`Invalid ${flag} '${value}'. Expected an integer.`);
     process.exit(1);
   }
-  const parsed = Number.parseInt(value, 10);
+  const parsed = Number.parseInt(value, DECIMAL_RADIX);
   if (!Number.isSafeInteger(parsed) || parsed < minimum) {
     console.error(`Invalid ${flag} '${value}'. Expected an integer >= ${minimum}.`);
     process.exit(1);
@@ -84,10 +89,10 @@ function groupByCategory(entries: ManifestEntry[]): Map<string, ManifestEntry[]>
 
 function printCategory(category: string, entries: ManifestEntry[]): void {
   console.log(`\n${category}`);
-  console.log('─'.repeat(Math.max(category.length, 4)));
+  console.log('─'.repeat(Math.max(category.length, MIN_UNDERLINE_WIDTH)));
   for (const entry of entries.sort((a, b) => a.id.localeCompare(b.id))) {
     const marker = entry.required ? '★' : ' ';
-    console.log(`  ${marker} ${entry.id.padEnd(34)} ${entry.type.padEnd(10)} ${entry.description}`);
+    console.log(`  ${marker} ${entry.id.padEnd(ID_COLUMN_WIDTH)} ${entry.type.padEnd(TYPE_COLUMN_WIDTH)} ${entry.description}`);
   }
 }
 

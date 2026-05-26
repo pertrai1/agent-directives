@@ -1,6 +1,8 @@
 import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 
+const DECIMAL_RADIX = 10;
+
 export async function ask(question: string): Promise<string> {
   const rl = createInterface({ input: stdin, output: stdout });
   try {
@@ -19,7 +21,7 @@ export async function selectMultiple(question: string, options: string[]): Promi
   if (answer === '' || answer === 'none') return [];
   const indices = answer
     .split(/\s+/)
-    .map((token) => Number.parseInt(token, 10) - 1)
+    .map((token) => Number.parseInt(token, DECIMAL_RADIX) - 1)
     .filter((index) => Number.isInteger(index) && index >= 0 && index < options.length);
   return [...new Set(indices)].map((index) => options[index]);
 }

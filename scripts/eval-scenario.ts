@@ -158,7 +158,8 @@ const result = spawnSync('claude', { cwd: workspace, stdio: 'inherit' });
 manifest.completed_at = new Date().toISOString();
 if (result.error) {
   const error = result.error as NodeJS.ErrnoException;
-  const exitStatus = error.code === 'ENOENT' ? 127 : 1;
+  const EXIT_COMMAND_NOT_FOUND = 127;
+  const exitStatus = error.code === 'ENOENT' ? EXIT_COMMAND_NOT_FOUND : 1;
   console.error(`Failed to launch claude: ${result.error.message}`);
   manifest.exit_status = exitStatus;
   manifest.error_message = result.error.message;

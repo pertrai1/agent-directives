@@ -21,12 +21,14 @@ interface Manifest {
   entries: ManifestEntry[];
 }
 
+const FRONTMATTER_OPEN_LENGTH = 4;
+
 function parseFrontmatter(text: string): Record<string, unknown> {
   const normalized = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
   if (!normalized.startsWith('---\n')) return {};
-  const end = normalized.indexOf('\n---\n', 4);
+  const end = normalized.indexOf('\n---\n', FRONTMATTER_OPEN_LENGTH);
   if (end === -1) return {};
-  const raw = normalized.slice(4, end);
+  const raw = normalized.slice(FRONTMATTER_OPEN_LENGTH, end);
   const result: Record<string, unknown> = {};
   let i = 0;
   const lines = raw.split('\n');

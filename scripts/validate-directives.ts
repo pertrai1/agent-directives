@@ -35,6 +35,7 @@ function section(text: string, heading: string): string {
 
 const VALID_CATEGORIES = new Set(['workflow', 'architecture', 'memory', 'testing', 'review', 'planning', 'debugging']);
 const VALID_TOOLS = new Set(['claude', 'copilot', 'codex', 'cursor']);
+const FRONTMATTER_OPEN_LENGTH = 4;
 
 function validateRequiredKeys(path: string, fm: string): void {
   for (const key of ['name', 'description', 'category']) {
@@ -79,12 +80,12 @@ function validateFrontmatter(path: string): void {
     fail(`${path}: missing YAML frontmatter`);
     return;
   }
-  const end = text.indexOf('\n---\n', 4);
+  const end = text.indexOf('\n---\n', FRONTMATTER_OPEN_LENGTH);
   if (end === -1) {
     fail(`${path}: unterminated YAML frontmatter`);
     return;
   }
-  const fm = text.slice(4, end);
+  const fm = text.slice(FRONTMATTER_OPEN_LENGTH, end);
   validateRequiredKeys(path, fm);
   validateCategoryValue(path, fm);
   validateToolsValues(path, fm);

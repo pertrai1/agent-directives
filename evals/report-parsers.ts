@@ -9,6 +9,10 @@ export const resultsDir = join(repoRoot, 'evals', 'results');
 export const runsDir = join(resultsDir, 'runs');
 export const defaultOutput = join(resultsDir, 'report.html');
 
+const PERCENT_MULTIPLIER = 100;
+const FRONTMATTER_OPEN_LENGTH = 4;
+const FRONTMATTER_CLOSE_LENGTH = 5;
+
 const zero = (): Counts => ({ passed: 0, failed: 0, unclear: 0, total: 0 });
 
 export function esc(value: unknown): string {
@@ -16,7 +20,7 @@ export function esc(value: unknown): string {
 }
 
 export function pct(num: number, den: number): string {
-  return den ? `${Math.round((num / den) * 100)}%` : 'n/a';
+  return den ? `${Math.round((num / den) * PERCENT_MULTIPLIER)}%` : 'n/a';
 }
 const array = (value: unknown): string[] => Array.isArray(value) ? value.map(String) : [];
 const bool = (value: unknown): boolean => {
@@ -48,14 +52,14 @@ export function currentCommit(): string {
 
 function frontmatter(text: string): [Record<string, string>, string] {
   if (!text.startsWith('---\n')) return [{}, text];
-  const end = text.indexOf('\n---\n', 4);
+  const end = text.indexOf('\n---\n', FRONTMATTER_OPEN_LENGTH);
   if (end === -1) return [{}, text];
   const meta: Record<string, string> = {};
-  for (const line of text.slice(4, end).split('\n')) {
+  for (const line of text.slice(FRONTMATTER_OPEN_LENGTH, end).split('\n')) {
     const match = line.match(/^([^:\s][^:]*):\s*(.*)$/);
     if (match) meta[match[1].trim()] = match[2].trim().replace(/^['"]|['"]$/g, '');
   }
-  return [meta, text.slice(end + 5)];
+  return [meta, text.slice(end + FRONTMATTER_CLOSE_LENGTH)];
 }
 
 function extractSectionCounts(body: string, name: string): Counts {

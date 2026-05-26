@@ -21,6 +21,9 @@ interface ValidationResult {
   warnings: string[];
 }
 
+const FRONTMATTER_OPEN_LENGTH = 4;
+const SEMVER_PART_COUNT = 3;
+
 function runGit(repoRoot: string, args: string, allowFail = false): string {
   try {
     return execSync(`git ${args}`, {
@@ -43,9 +46,9 @@ function parseVersion(text: string): string | null {
     .replace(/^\uFEFF/, "")
     .replace(/\r\n/g, "\n")
     .replace(/\r/g, "\n");
-  const end = normalized.indexOf("\n---\n", 4);
+  const end = normalized.indexOf("\n---\n", FRONTMATTER_OPEN_LENGTH);
   if (!normalized.startsWith("---\n") || end === -1) return null;
-  const frontmatter = normalized.slice(4, end);
+  const frontmatter = normalized.slice(FRONTMATTER_OPEN_LENGTH, end);
   return (
     frontmatter.match(/^version:\s*['"]?([^'"\s]+)['"]?\s*$/m)?.[1] ?? null
   );
@@ -60,7 +63,7 @@ function compareSemver(a: string, b: string): number | null {
   const left = parsePlainSemver(a);
   const right = parsePlainSemver(b);
   if (!left || !right) return null;
-  for (let i = 0; i < 3; i += 1) {
+  for (let i = 0; i < SEMVER_PART_COUNT; i += 1) {
     if (left[i] !== right[i]) return left[i] > right[i] ? 1 : -1;
   }
   return 0;
