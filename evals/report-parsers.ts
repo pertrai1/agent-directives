@@ -82,12 +82,12 @@ function scenarioTargets(scenario: string): string[] {
 
 function metaFields(meta: Record<string, string>): Partial<EvalRun> {
   return {
-    date: meta.date || '',
+    date: meta.date ?? '',
     model: meta.agent_model || meta.model || '',
-    judge_model: meta.judge_model || '',
-    client: meta.client || '',
-    provider: meta.provider || '',
-    instruction_surface: meta.instruction_surface || '',
+    judge_model: meta.judge_model ?? '',
+    client: meta.client ?? '',
+    provider: meta.provider ?? '',
+    instruction_surface: meta.instruction_surface ?? '',
     commit: meta.directive_sha || meta.commit || '',
     verdict: verdict(meta.verdict),
   };
@@ -99,7 +99,7 @@ function extractJudgeSummary(body: string): string {
 
 function parseMarkdown(path: string): EvalRun {
   const [meta, body] = frontmatter(readFileSync(path, 'utf8'));
-  const scenario = meta.scenario || basename(path, '.md');
+  const scenario = String(first(meta.scenario, basename(path, '.md')));
   return {
     source: path,
     scenario,
@@ -246,6 +246,6 @@ function loadFromRunsDir(): EvalRun[] {
 
 export function collectRuns(): EvalRun[] {
   return [...loadFromResultsDir(), ...loadFromRunsDir()].sort(
-    (a, b) => (b.date || '').localeCompare(a.date || ''),
+    (a, b) => b.date.localeCompare(a.date),
   );
 }

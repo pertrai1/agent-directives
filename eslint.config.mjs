@@ -25,7 +25,6 @@ export default defineConfig([
       "llm-core/max-function-length": "off",
       "llm-core/max-params": "off",
       "llm-core/no-magic-numbers": "off",
-      "llm-core/prefer-nullish-coalescing": "off",
       "llm-core/structured-logging": "off",
     },
   },

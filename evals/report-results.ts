@@ -62,7 +62,10 @@ function render(runs: EvalRun[]): string {
   }
   const { expected: routeExpected, actual: routeActual, claimed: routeClaimed } = routeTotals;
   const targetRows = [...targetCounts.entries()].sort().map(([target, count]) => `<tr><td>${esc(target)}</td><td>${count.pass}/${count.total}</td><td>${pct(count.pass, count.total)}</td></tr>`).join('\n');
-  const tagRows = [...tags.entries()].sort((a, b) => b[1] - a[1]).map(([tag, count]) => `<tr><td>${esc(tag)}</td><td>${count}</td></tr>`).join('\n') || '<tr><td colspan="2">No failure tags recorded.</td></tr>';
+  const tagEntries = [...tags.entries()].sort((a, b) => b[1] - a[1]);
+  const tagRows = tagEntries.length === 0
+    ? '<tr><td colspan="2">No failure tags recorded.</td></tr>'
+    : tagEntries.map(([tag, count]) => `<tr><td>${esc(tag)}</td><td>${count}</td></tr>`).join('\n');
   const runRows = runs.map((run) => renderRunRow(run, head)).join('\n');
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>Agent Directives Eval Health</title><style>

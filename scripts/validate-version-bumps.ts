@@ -110,7 +110,7 @@ function readCurrent(repoRoot: string, path: string): string {
 
 function readAtRef(repoRoot: string, ref: string, path: string): string | null {
   const output = runGit(repoRoot, `show ${shellQuote(`${ref}:${path}`)}`, true);
-  return output || null;
+  return output.length > 0 ? output : null;
 }
 
 function checkPlainSemver(
