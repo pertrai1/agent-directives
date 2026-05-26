@@ -17,7 +17,7 @@
     "manifest.json"
   ],
   "scripts": {
-    "check": "npm run typecheck && npm run validate && npm run version:check && npm run manifest:check && npm run test:cli && npm run test:version-bumps",
+    "check": "npm run typecheck && npm run lint && npm run validate && npm run version:check && npm run manifest:check && npm run test:cli && npm run test:version-bumps",
     "typecheck": "tsc --noEmit",
     "validate": "tsx scripts/validate-directives.ts",
     "version:check": "tsx scripts/validate-version-bumps.ts",
@@ -28,14 +28,22 @@
     "manifest:check": "npm run manifest && git diff --exit-code manifest.json",
     "cli": "tsx src/cli.ts",
     "test:cli": "tsx scripts/test-cli.ts",
-    "test:version-bumps": "tsx scripts/test-version-bumps.ts"
+    "test:version-bumps": "tsx scripts/test-version-bumps.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "commander": "^14.0.3",
     "tsx": "^4.19.2"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@eslint/markdown": "^8.0.2",
     "@types/node": "^24.0.0",
-    "typescript": "^5.4.5"
+    "eslint": "^10.4.0",
+    "eslint-plugin-llm-core": "^0.23.0",
+    "globals": "^17.6.0",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^8.60.0"
   }
 }
