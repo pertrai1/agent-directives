@@ -110,7 +110,7 @@ async function promptForOptionalEntries(entries: ManifestEntry[], apply: (entrie
   const toInstall = entries.filter((entry) => chosen.includes(entry.category));
   if (toInstall.length === 0) return;
   console.log(`\nInstalling ${toInstall.length} optional entr${toInstall.length === 1 ? 'y' : 'ies'}...`);
-  void apply(toInstall);
+  apply(toInstall);
 }
 
 program

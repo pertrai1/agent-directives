@@ -46,7 +46,10 @@ function unquoteYamlScalar(value: string): string {
 }
 
 function validateRequiredKeys(path: string, fm: string): void {
-  for (const key of ['name', 'description', 'version', 'category']) {
+  const requiredKeys = ['name', 'description', 'category'];
+  if (path.startsWith('rules/')) requiredKeys.push('version');
+
+  for (const key of requiredKeys) {
     if (!new RegExp(`^${key}:\\s*\\S`, 'm').test(fm)) fail(`${path}: missing frontmatter key '${key}'`);
   }
   if (!/^required:\s+(true|false)\s*$/m.test(fm)) fail(`${path}: missing or invalid frontmatter key 'required' (must be true or false)`);

@@ -245,7 +245,7 @@ test("sync --rules auto does not install Angular rules for non-Angular projects"
   withTempProject((cwd) => {
     writeFileSync(join(cwd, "CLAUDE.md"), "# project\n");
     runCli("sync --yes --rules auto", { cwd });
-    assertFileMissing(join(cwd, "rules/angular/angular-components-and-templates.md"));
+    assertFileMissing(join(cwd, "rules/angular/components-and-templates.md"));
   });
 });
 
