@@ -6,7 +6,7 @@
       "type": "directive",
       "path": "directives/adaptive-routing.md",
       "description": "Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "required": true,
       "category": "workflow",
       "tools": [
@@ -376,6 +376,51 @@
       "version": "1.1.0",
       "required": true,
       "category": "testing",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "angular-components-and-templates",
+      "type": "rule",
+      "path": "rules/angular/components-and-templates.md",
+      "description": "Angular component and template rules for typed, maintainable Angular UI changes.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "angular",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "angular-project-structure",
+      "type": "rule",
+      "path": "rules/angular/project-structure.md",
+      "description": "Angular workspace and project-structure standards for agents working in Angular applications.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "angular",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
+    },
+    {
+      "id": "angular-testing",
+      "type": "rule",
+      "path": "rules/angular/testing.md",
+      "description": "Angular testing rules for component, service, and integration-style Angular changes.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "angular",
       "tools": [
         "claude",
         "copilot",

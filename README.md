@@ -1,6 +1,6 @@
 # Agent Directives
 
-A collection of reusable directives, skills, and templates for AI coding agents.
+A collection of reusable directives, skills, rules, and templates for AI coding agents.
 Extract the parts you need, drop them into your project, and customize the
 placeholders. Everything works standalone — no framework lock-in, no hidden
 dependencies between files.
@@ -13,6 +13,7 @@ dependencies between files.
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
 | **Skills** | 13 skills | Code reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, subagent-driven development, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, production readiness reviewer, harness hooks reviewer, and MCP integration reviewer |
+| **Rules** | 3 Angular rules | Lazy-loaded Angular project, component/template, and testing standards selected by stack or explicit category |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 | **Tooling** | TypeScript scripts | Validate directive wiring, assemble eval scenarios, record loaded-file manifests, and generate eval health reports |
 
@@ -20,7 +21,7 @@ dependencies between files.
 
 The repository contains two things you install into your own project:
 
-1. **Directive and skill files** — copied from `directives/` and `skills/`.
+1. **Directive, skill, and rule files** — copied from `directives/`, `skills/`, and `rules/`.
 2. **A root instruction file** — copied from `templates/` and renamed for your agent
    (`AGENTS.md`, `CLAUDE.md`, or `.github/copilot-instructions.md`).
 
@@ -32,6 +33,9 @@ cd /path/to/your-project
 
 # Install the required Codex/OpenAI agent directives and skills.
 npx agent-directives sync --tool codex --yes
+
+# Optionally install detected stack rules, such as Angular rules for angular.json/@angular/core projects.
+npx agent-directives sync --tool codex --yes --rules auto
 
 # Add the root instruction file, then edit every <!-- FILL IN: ... --> placeholder.
 curl -fsSL \
@@ -47,7 +51,7 @@ After installation, open the root instruction file and:
 
 1. Fill in the project-specific placeholders.
 2. Keep `directives/adaptive-routing.md` as the first directive the agent loads.
-3. Delete directives or skills your team does not want, then remove matching rows
+3. Delete directives, skills, or rules your team does not want, then remove matching rows
    from the root instruction file.
 4. Run the check command for your target tool:
 
@@ -81,14 +85,17 @@ npx agent-directives list --required                           # Only required e
 npx agent-directives list --category review
 npx agent-directives list --tool cursor
 npx agent-directives list --type skill
+npx agent-directives list --type rule
 
 npx agent-directives add code-reviewer --tool claude
+npx agent-directives add angular-components-and-templates --tool claude
 npx agent-directives add code-reviewer --tool claude --force
 
 npx agent-directives check --tool codex
 npx agent-directives context-audit --tool codex --required
 npx agent-directives context-audit --tool codex --required --max-tokens 12000
 npx agent-directives sync --tool claude --yes
+npx agent-directives sync --tool claude --yes --rules auto
 npx agent-directives sync --tool claude --force
 ```
 
@@ -101,7 +108,7 @@ npx agent-directives context-audit --tool codex --required
 npx agent-directives context-audit --tool claude --max-tokens 20000
 ```
 
-The estimate uses a simple `characters / 4` heuristic and reports total tokens, required vs optional counts, and the largest directive/skill files. With `--max-tokens`, the command exits non-zero when the selected entries exceed the budget, making it usable in CI.
+The estimate uses a simple `characters / 4` heuristic and reports total tokens, required vs optional counts, and the largest directive/skill/rule files. With `--max-tokens`, the command exits non-zero when the selected entries exceed the budget, making it usable in CI.
 
 ### Tool auto-detection
 
@@ -119,8 +126,8 @@ Pass `--tool` explicitly when auto-detection is ambiguous or wrong.
 ### Install layout
 
 For `claude`, `copilot`, and `codex`, the CLI preserves the source layout — each
-entry is written to its declared path (`directives/<name>.md` or
-`skills/<name>/SKILL.md`) relative to the current working directory. The root
+entry is written to its declared path (`directives/<name>.md`,
+`skills/<name>/SKILL.md`, or `rules/<category>/<name>.md`) relative to the current working directory. The root
 instruction file is left to you so existing project instructions are not
 accidentally overwritten.
 
@@ -153,15 +160,15 @@ Releases use Changesets and GitHub Actions, matching the release flow used by
 
 The package is published to npm. Future releases require npm trusted publishing for this repository/package (or equivalent npm automation credentials) so the workflow can publish with provenance. The workflow uses `id-token: write` and `npm publish --provenance`.
 
-## Directives vs Skills
+## Directives vs Skills vs Rules
 
-| | Directive | Skill |
-|---|---|---|
-| **Nature** | Rule you follow | Persona you adopt |
-| **When** | At a workflow phase | For a task type |
-| **Output** | Constrained behavior | Structured findings |
-| **Tone** | "Never do X" / "Always do Y" | "You are a specialist in..." |
-| **Format** | Rules + forbidden patterns table | Frontmatter + review process + output format |
+| | Directive | Skill | Rule |
+|---|---|---|---|
+| **Nature** | Workflow protocol you follow | Persona/process you adopt | Stack or project standard you obey |
+| **When** | At a workflow phase | For a task type | When touched files or detected stack match |
+| **Output** | Constrained behavior | Structured findings | Implementation/review constraints |
+| **Tone** | "Never do X" / "Always do Y" | "You are a specialist in..." | "For this stack, prefer/avoid X" |
+| **Format** | Rules + forbidden patterns table | Frontmatter + review process + output format | Frontmatter + load triggers + compact standards/evidence |
 
 ## Directives
 
@@ -251,6 +258,21 @@ review with retirement mechanism.
 Durable decision capture at task completion. Four-condition write criteria, YAML
 frontmatter schema for retrieval, progressive-disclosure workflow, and five
 required sections (Title, Context, Decision, Rejected Alternatives, Consequences).
+
+
+## Rules
+
+Rules are lazy-loaded stack or project standards. They constrain implementation and review without changing the workflow path. Install them explicitly with `agent-directives add`, by category with interactive `sync`, or by detected stack with `sync --rules auto`.
+
+### Angular Rules (`rules/angular/*.md`)
+
+The first rule pack covers Angular projects detected by `angular.json` or `@angular/core` in `package.json`:
+
+- `rules/angular/project-structure.md` — Angular workspace, source-root, and project-structure standards
+- `rules/angular/components-and-templates.md` — component, template, accessibility, and typed UI-change standards
+- `rules/angular/testing.md` — Angular component/service testing standards
+
+Do not load every rule by default. The root instructions and adaptive router should list selected rule files separately from directives and skills.
 
 ## Skills
 

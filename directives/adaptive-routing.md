@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 1.3.0
+version: 1.4.0
 required: true
 category: workflow
 tools:
@@ -59,6 +59,7 @@ Before major edits, output a short route decision:
 - Risk: <low | medium | high> with reason
 - Required directives: <paths>
 - Required skills: <paths, if any>
+- Selected rules: <rule paths, if any>
 - Evidence required: <tests/checks/proofs>
 - Handoff required: <yes/no and why>
 - Confirmation needed: <yes/no and why>
@@ -119,6 +120,31 @@ If no row matches, state that no specialist skill is required.
 | Agent harness hooks, start/stop hooks, pre-action hooks, post-change automation, or deterministic agent workflow scripts are added or reviewed | Full / Review / Policy | `skills/harness-hooks-reviewer/SKILL.md` |
 | MCP servers/tools, agent-accessible internal APIs, structured search, docs/ticketing/analytics connectors, tool schemas, or write-capable agent tools are added or reviewed | Full / Review / Policy | `skills/mcp-integration-reviewer/SKILL.md` |
 | Full Path work reaches post-REFACTOR pre-verification checkpoint | Full | `skills/self-audit/SKILL.md` |
+
+---
+
+
+## Rule Selection
+
+After selecting the workflow path and skills, select stack or project rules only
+when they match detected project evidence or touched files. Rules constrain the
+work but do not replace directives or skills.
+
+- Treat `rules/` entries as lazy-loaded standards, not always-loaded context.
+- Load framework rules when project evidence matches, such as `angular.json` or
+  `@angular/core` for Angular, and the task touches relevant framework files.
+- Load file-scoped rules when touched paths match their `applies_to` frontmatter.
+- List selected rule files separately from directives and skills in route output.
+- Do not load unrelated framework rule packs. Project-local instructions override
+  rule-pack guidance when they conflict.
+
+Initial rule pack:
+
+| Situation / evidence | Selected rules |
+| --- | --- |
+| Angular project structure, routing, source layout, or workspace config (`angular.json`, `@angular/core`, or Angular app files) | `rules/angular/project-structure.md` |
+| Angular component, template, component style, inputs/outputs, lifecycle, accessibility, or UI behavior | `rules/angular/components-and-templates.md` |
+| Angular tests, specs, services under test, or Angular behavior changes needing test evidence | `rules/angular/testing.md` |
 
 ---
 
@@ -331,7 +357,7 @@ classification and avoid making the current change worse.
 
 | Pattern | Why Forbidden |
 | --- | --- |
-| Loading every directive by default | Wastes context and creates compliance theater |
+| Loading every directive or rule by default | Wastes context and creates compliance theater |
 | Using Light Path for behavior or bug fixes | Skips necessary proof |
 | Treating "quick" as permission to skip safety | Risk depends on impact, not wording |
 | Producing boilerplate verification with no evidence | Ritual is not proof |

@@ -1,13 +1,15 @@
 #!/usr/bin/env tsx
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 
+type ManifestEntryType = 'directive' | 'skill' | 'rule';
+
 interface ManifestEntry {
   id: string;
-  type: 'directive' | 'skill';
+  type: ManifestEntryType;
   path: string;
   description: string;
   version: string;
@@ -84,7 +86,7 @@ function requireStringArray(value: unknown, ctx: FieldContext): string[] {
   return value as string[];
 }
 
-function readEntry(path: string, type: 'directive' | 'skill'): ManifestEntry {
+function readEntry(path: string, type: ManifestEntryType): ManifestEntry {
   const text = readFileSync(join(repoRoot, path), 'utf8');
   const fm = parseFrontmatter(text);
   const id = String(fm.name ?? '').replace(/^['"]|['"]$/g, '');
@@ -105,15 +107,28 @@ const directives = readdirSync(join(repoRoot, 'directives'))
   .filter((f) => f.endsWith('.md'))
   .map((f) => readEntry(`directives/${f}`, 'directive'));
 
+function readMarkdownEntries(rootDir: string, type: ManifestEntryType): ManifestEntry[] {
+  const dir = join(repoRoot, rootDir);
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name)).flatMap((entry) => {
+    const relativePath = `${rootDir}/${entry.name}`;
+    if (entry.isDirectory()) return readMarkdownEntries(relativePath, type);
+    if (!entry.isFile() || !entry.name.endsWith('.md')) return [];
+    return [readEntry(relativePath, type)];
+  });
+}
+
 const skills = readdirSync(join(repoRoot, 'skills'), { withFileTypes: true })
   .filter((e) => e.isDirectory())
   .map((e) => readEntry(`skills/${e.name}/SKILL.md`, 'skill'));
 
+const rules = readMarkdownEntries('rules', 'rule');
+
 const manifest: Manifest = {
   version: '1.0.0',
-  entries: [...directives, ...skills],
+  entries: [...directives, ...skills, ...rules],
 };
 
 const outPath = join(repoRoot, 'manifest.json');
 writeFileSync(outPath, JSON.stringify(manifest, null, 2) + '\n');
-console.log(`manifest.json written — ${manifest.entries.length} entries (${directives.length} directives, ${skills.length} skills)`);
+console.log(`manifest.json written — ${manifest.entries.length} entries (${directives.length} directives, ${skills.length} skills, ${rules.length} rules)`);
