@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.4.1
+
+### Patch Changes
+
+- [#46](https://github.com/pertrai1/agent-directives/pull/46) [`39c12f3`](https://github.com/pertrai1/agent-directives/commit/39c12f3a691968f3958c855e982d5a2e05cc9991) Thanks [@pertrai1-bot](https://github.com/pertrai1-bot)! - Link raw official Angular developer references directly into the Angular rule pack to support lightweight, on-demand reference loading.
+
 ## 0.4.0
 
 ### Minor Changes
