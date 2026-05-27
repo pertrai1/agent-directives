@@ -1,7 +1,7 @@
 ---
 name: angular-project-structure
 description: Concrete Angular workspace, file-naming, feature-folder, and provider-bootstrapping standards for agents working in Angular applications.
-version: 1.1.0
+version: 1.2.0
 required: false
 category: angular
 tools:
@@ -14,6 +14,7 @@ source_urls:
   - https://angular.dev/tools/cli
   - https://angular.dev/reference/configs/workspace-config
   - https://angular.dev/guide/ngmodules/standalone
+  - https://github.com/angular/angular/tree/main/skills/dev-skills/angular-developer/references
 applies_to:
   - angular.json
   - package.json
@@ -125,6 +126,17 @@ export const routes: Routes = [
 
 - Do not add React, Vue, or other-framework conventions to an Angular project. If shared code must straddle frameworks, isolate it behind a framework-neutral library.
 - Match the project's existing module system (ESM vs CommonJS) and import style. Use path aliases from `tsconfig.json` where the project already defines them.
+
+## Deep-Dive Reference Materials
+
+Coding agents should fetch the raw text of these references programmatically when planning workspace boundaries, scaffolding, dependency injection structures, or upgrades:
+
+- **CLI Scaffolding:** CLI command syntax and scaffolding options. Read [cli.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/cli.md)
+- **Creating Services:** Generating services, the `providedIn: 'root'` option, and injection guidelines. Read [creating-services.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/creating-services.md)
+- **Defining Providers:** Token definition patterns (`InjectionToken`, `useValue`, `useFactory`). Read [defining-providers.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/defining-providers.md)
+- **Hierarchical Injectors:** Understanding injector layers (`EnvironmentInjector`, `ElementInjector`), resolution rules, and `viewProviders`. Read [hierarchical-injectors.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/hierarchical-injectors.md)
+- **Migrations & Upgrades:** Modernizing older code bases via automated migrations. Read [migrations.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/migrations.md)
+- **Angular MCP Server:** Supported features and configuration of the Model Context Protocol language tools. Read [mcp.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/mcp.md)
 
 ## Anti-patterns to refuse
 

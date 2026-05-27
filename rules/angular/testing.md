@@ -1,7 +1,7 @@
 ---
 name: angular-testing
 description: Concrete Angular testing patterns — TestBed configuration, signal-input harnesses, router and HTTP testing utilities, and behavior-first test design.
-version: 1.1.0
+version: 1.2.0
 required: false
 category: angular
 tools:
@@ -15,6 +15,7 @@ source_urls:
   - https://angular.dev/guide/testing/services
   - https://angular.dev/guide/testing/http
   - https://material.angular.io/cdk/test-harnesses/overview
+  - https://github.com/angular/angular/tree/main/skills/dev-skills/angular-developer/references
 applies_to:
   - src/app/**/*.spec.ts
   - src/app/**/*.test.ts
@@ -198,6 +199,15 @@ describe('UserService', () => {
 - Use `data-testid` (or the project's existing convention) for stable selectors. Do not assert on CSS classes or text that changes with copy edits.
 - Avoid brittle template snapshots unless the project already uses them and the assertion is intentionally structural.
 - Do not migrate the project's test runner, assertion library, or harness choices as part of a feature change.
+
+## Deep-Dive Reference Materials
+
+Coding agents should fetch the raw text of these references programmatically when writing or modifying tests:
+
+- **Testing Fundamentals:** Best practices for unit testing, async patterns, and `TestBed`. Read [testing-fundamentals.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/testing-fundamentals.md)
+- **Component Harnesses:** CDK component harnesses for robust, layout-insulated test assertions. Read [component-harnesses.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/component-harnesses.md)
+- **Router Testing:** Testing navigation scenarios via `RouterTestingHarness`. Read [router-testing.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/router-testing.md)
+- **End-to-End Testing:** Cypress-based browser/integration test structures. Read [e2e-testing.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/e2e-testing.md)
 
 ## Anti-patterns to refuse
 

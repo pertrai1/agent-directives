@@ -1,7 +1,7 @@
 ---
 name: angular-patterns
 description: Concrete Angular application patterns — smart/dumb component split, service-layer ownership, routing/guards/resolvers, HTTP interceptors, and reactive state with signals or RxJS.
-version: 1.0.0
+version: 1.1.0
 required: false
 category: angular
 tools:
@@ -15,6 +15,7 @@ source_urls:
   - https://angular.dev/guide/http
   - https://angular.dev/guide/di
   - https://angular.dev/guide/signals
+  - https://github.com/angular/angular/tree/main/skills/dev-skills/angular-developer/references
 applies_to:
   - src/app/**/*.component.ts
   - src/app/**/*.component.html
@@ -271,6 +272,18 @@ Under SSR, never touch `window`, `document`, `localStorage`, or `navigator` dire
 [aria-selected="true"] { background: var(--color-selected); }
 [aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
 ```
+
+## Deep-Dive Reference Materials
+
+Coding agents should fetch the raw text of these references programmatically when writing or modifying general architectural patterns, forms, routing, or HTTP mechanics:
+
+- **Form Management:** Signal-based forms (v21+), template-driven, and reactive forms. Read [signal-forms.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/signal-forms.md), [template-driven-forms.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/template-driven-forms.md), and [reactive-forms.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/reactive-forms.md)
+- **Route Definitions:** URL paths, static vs dynamic segments, wildcards, and redirects. Read [define-routes.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/define-routes.md)
+- **Route Loading & Outlets:** Lazy loading strategies and named `<router-outlet>` routing. Read [loading-strategies.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/loading-strategies.md) and [show-routes-with-outlets.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/show-routes-with-outlets.md)
+- **Navigation & Access Control:** Declarative or programmatic routing, and route security with guards. Read [navigate-to-routes.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/navigate-to-routes.md) and [route-guards.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/route-guards.md)
+- **Pre-fetching & Lifecycle:** Route resolvers (`ResolveFn`) and navigation lifecycle stages. Read [data-resolvers.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/data-resolvers.md) and [router-lifecycle.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/router-lifecycle.md)
+- **Rendering Strategies:** SSR with hydration, SSG (prerendering), and CSR. Read [rendering-strategies.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/rendering-strategies.md)
+- **Transition Animations:** Customizing View Transitions API routes. Read [route-animations.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/route-animations.md)
 
 ## Anti-patterns to refuse
 
