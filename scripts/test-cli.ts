@@ -234,9 +234,12 @@ test("sync --rules auto installs Angular rules for Angular projects", () => {
     writeFileSync(join(cwd, "CLAUDE.md"), "# project\n");
     writeFileSync(join(cwd, "angular.json"), "{}\n");
     const { stdout } = runCli("sync --yes --rules auto", { cwd });
-    assertContains(stdout, { needle: "Installing 3 selected rule entries (angular)", context: "sync rules auto output" });
+    assertContains(stdout, { needle: "Installing 6 selected rule entries (angular)", context: "sync rules auto output" });
+    assertFileExists(join(cwd, "rules/angular/coding-style.md"));
     assertFileExists(join(cwd, "rules/angular/components-and-templates.md"));
+    assertFileExists(join(cwd, "rules/angular/patterns.md"));
     assertFileExists(join(cwd, "rules/angular/project-structure.md"));
+    assertFileExists(join(cwd, "rules/angular/security.md"));
     assertFileExists(join(cwd, "rules/angular/testing.md"));
   });
 });

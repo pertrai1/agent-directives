@@ -13,7 +13,7 @@ dependencies between files.
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
 | **Skills** | 13 skills | Code reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, subagent-driven development, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, production readiness reviewer, harness hooks reviewer, and MCP integration reviewer |
-| **Rules** | 3 Angular rules | Lazy-loaded Angular project, component/template, and testing standards selected by stack or explicit category |
+| **Rules** | 6 Angular rules | Lazy-loaded Angular project structure, components/templates, coding style, application patterns, security, and testing standards — selected by stack or explicit category |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 | **Tooling** | TypeScript scripts | Validate directive wiring, assemble eval scenarios, record loaded-file manifests, and generate eval health reports |
 

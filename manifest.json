@@ -6,7 +6,7 @@
       "type": "directive",
       "path": "directives/adaptive-routing.md",
       "description": "Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.",
-      "version": "1.4.0",
+      "version": "1.6.0",
       "required": true,
       "category": "workflow",
       "tools": [
@@ -384,10 +384,10 @@
       ]
     },
     {
-      "id": "angular-components-and-templates",
+      "id": "angular-coding-style",
       "type": "rule",
-      "path": "rules/angular/components-and-templates.md",
-      "description": "Angular component and template rules for typed, maintainable Angular UI changes.",
+      "path": "rules/angular/coding-style.md",
+      "description": "Concrete Angular coding-style patterns — signals, dependency injection with inject(), change detection, RxJS usage, and TypeScript strictness for Angular code.",
       "version": "1.0.0",
       "required": false,
       "category": "angular",
@@ -396,13 +396,85 @@
         "copilot",
         "codex",
         "cursor"
+      ],
+      "applies_to": [
+        "src/app/**/*.ts",
+        "src/**/*.ts"
+      ]
+    },
+    {
+      "id": "angular-components-and-templates",
+      "type": "rule",
+      "path": "rules/angular/components-and-templates.md",
+      "description": "Concrete patterns for building modern Angular components, signal-based inputs/outputs, OnPush change detection, and v17+ control-flow templates.",
+      "version": "1.1.0",
+      "required": false,
+      "category": "angular",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ],
+      "applies_to": [
+        "src/app/**/*.component.ts",
+        "src/app/**/*.component.html",
+        "src/app/**/*.component.css",
+        "src/app/**/*.component.scss"
+      ]
+    },
+    {
+      "id": "angular-patterns",
+      "type": "rule",
+      "path": "rules/angular/patterns.md",
+      "description": "Concrete Angular application patterns — smart/dumb component split, service-layer ownership, routing/guards/resolvers, HTTP interceptors, and reactive state with signals or RxJS.",
+      "version": "1.0.0",
+      "required": false,
+      "category": "angular",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ],
+      "applies_to": [
+        "src/app/**/*.component.ts",
+        "src/app/**/*.component.html",
+        "src/app/**/*.service.ts",
+        "src/app/**/*.store.ts",
+        "src/app/**/*.routes.ts",
+        "src/app/**/*.guard.ts",
+        "src/app/**/*.resolver.ts",
+        "src/app/**/*.interceptor.ts"
       ]
     },
     {
       "id": "angular-project-structure",
       "type": "rule",
       "path": "rules/angular/project-structure.md",
-      "description": "Angular workspace and project-structure standards for agents working in Angular applications.",
+      "description": "Concrete Angular workspace, file-naming, feature-folder, and provider-bootstrapping standards for agents working in Angular applications.",
+      "version": "1.1.0",
+      "required": false,
+      "category": "angular",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ],
+      "applies_to": [
+        "angular.json",
+        "package.json",
+        "src/main.ts",
+        "src/app/**/*.ts",
+        "src/app/**/*.html"
+      ]
+    },
+    {
+      "id": "angular-security",
+      "type": "rule",
+      "path": "rules/angular/security.md",
+      "description": "Concrete Angular security rules — XSS prevention, HttpClient discipline, secret handling, route guards, and SSR safety.",
       "version": "1.0.0",
       "required": false,
       "category": "angular",
@@ -411,14 +483,22 @@
         "copilot",
         "codex",
         "cursor"
+      ],
+      "applies_to": [
+        "src/app/**/*.component.ts",
+        "src/app/**/*.component.html",
+        "src/app/**/*.service.ts",
+        "src/app/**/*.interceptor.ts",
+        "src/app/**/*.guard.ts",
+        "src/environments/**/*.ts"
       ]
     },
     {
       "id": "angular-testing",
       "type": "rule",
       "path": "rules/angular/testing.md",
-      "description": "Angular testing rules for component, service, and integration-style Angular changes.",
-      "version": "1.0.0",
+      "description": "Concrete Angular testing patterns — TestBed configuration, signal-input harnesses, router and HTTP testing utilities, and behavior-first test design.",
+      "version": "1.1.0",
       "required": false,
       "category": "angular",
       "tools": [
@@ -426,6 +506,11 @@
         "copilot",
         "codex",
         "cursor"
+      ],
+      "applies_to": [
+        "src/app/**/*.spec.ts",
+        "src/app/**/*.test.ts",
+        "src/**/*.spec.ts"
       ]
     }
   ]

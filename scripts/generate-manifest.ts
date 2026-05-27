@@ -16,6 +16,7 @@ interface ManifestEntry {
   required: boolean;
   category: string;
   tools: string[];
+  applies_to?: string[];
 }
 
 interface Manifest {
@@ -91,7 +92,7 @@ function readEntry(path: string, type: ManifestEntryType): ManifestEntry {
   const fm = parseFrontmatter(text);
   const id = String(fm.name ?? '').replace(/^['"]|['"]$/g, '');
   if (!id) throw new Error(`Missing 'name' in ${path}`);
-  return {
+  const entry: ManifestEntry = {
     id,
     type,
     path,
@@ -101,6 +102,13 @@ function readEntry(path: string, type: ManifestEntryType): ManifestEntry {
     category: requireString(fm.category, { key: 'category', path }),
     tools: requireStringArray(fm.tools, { key: 'tools', path }),
   };
+  // applies_to is optional and only present on file-scoped entries (most rules).
+  // Surfacing it here makes manifest.json a self-sufficient discovery index so
+  // the routing directive does not need to enumerate every rule inline.
+  if (Array.isArray(fm.applies_to) && fm.applies_to.length > 0 && fm.applies_to.every((p) => typeof p === 'string')) {
+    entry.applies_to = fm.applies_to as string[];
+  }
+  return entry;
 }
 
 const directives = readdirSync(join(repoRoot, 'directives'))

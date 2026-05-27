@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 1.4.0
+version: 1.6.0
 required: true
 category: workflow
 tools:
@@ -138,13 +138,27 @@ work but do not replace directives or skills.
 - Do not load unrelated framework rule packs. Project-local instructions override
   rule-pack guidance when they conflict.
 
-Initial rule pack:
+### Selecting rules by discovery
 
-| Situation / evidence | Selected rules |
-| --- | --- |
-| Angular project structure, routing, source layout, or workspace config (`angular.json`, `@angular/core`, or Angular app files) | `rules/angular/project-structure.md` |
-| Angular component, template, component style, inputs/outputs, lifecycle, accessibility, or UI behavior | `rules/angular/components-and-templates.md` |
-| Angular tests, specs, services under test, or Angular behavior changes needing test evidence | `rules/angular/testing.md` |
+Do not maintain a per-rule routing table in this directive. Rule packs grow, and
+this directive loads on every task; an inline catalog would put every rule pack's
+metadata in always-loaded context. Discover matching rules on demand instead:
+
+1. **Detect the stack** from project evidence. For example, `angular.json` or an
+   `@angular/core` dependency selects the `angular` pack.
+2. **Open the rule index.** Each rule entry in `manifest.json` carries `category`
+   (the pack), `description` (what it governs), and `applies_to` (the file globs
+   it scopes to). The `rules/<pack>/` directory holds the same entries on disk;
+   read a rule's frontmatter for the authoritative scope.
+3. **Match before loading.** Load a rule only when its `applies_to` globs match a
+   file you will touch *and* its `description` is relevant to what the task
+   actually changes. A glob match alone is not enough — editing a
+   `*.component.ts` file does not pull in the security rule unless the task
+   involves untrusted input, HTTP, secrets, or SSR.
+4. **Skip absent packs.** Do not load a pack whose evidence is missing, and do
+   not load a whole pack by default.
+
+The only pack today is `rules/angular/`.
 
 ---
 

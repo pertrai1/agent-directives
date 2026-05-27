@@ -1,7 +1,7 @@
 ---
 name: angular-project-structure
-description: Angular workspace and project-structure standards for agents working in Angular applications.
-version: 1.0.0
+description: Concrete Angular workspace, file-naming, feature-folder, and provider-bootstrapping standards for agents working in Angular applications.
+version: 1.1.0
 required: false
 category: angular
 tools:
@@ -13,33 +13,125 @@ source_urls:
   - https://angular.dev/style-guide
   - https://angular.dev/tools/cli
   - https://angular.dev/reference/configs/workspace-config
+  - https://angular.dev/guide/ngmodules/standalone
 applies_to:
   - angular.json
   - package.json
+  - src/main.ts
   - src/app/**/*.ts
   - src/app/**/*.html
 ---
 
 # Angular Project Structure Rules
 
-**Load when:** The project contains `angular.json` or `@angular/core`, or the task touches Angular app structure, routes, components, services, templates, or tests.
+**Load when:** The project contains `angular.json` or `@angular/core`, or the task touches Angular app structure, routes, file layout, providers, or bootstrap configuration.
+
+## Version Awareness
+
+Confirm the Angular version (`ng version` or `package.json`) before suggesting structure. Standalone APIs and the v17+ application builder are now defaults; do not invent NgModules on a standalone-first project, and do not migrate a working NgModule layout as a side effect of an unrelated change.
 
 ## Sources
-
-Track source material explicitly so future updates can verify whether the rule is stale:
 
 - Angular Style Guide — https://angular.dev/style-guide
 - Angular CLI Overview — https://angular.dev/tools/cli
 - Angular Workspace Configuration — https://angular.dev/reference/configs/workspace-config
+- Standalone APIs — https://angular.dev/guide/ngmodules/standalone
 
 ## Rules
 
-- Prefer Angular CLI-generated structure and names unless the project already has a stronger local convention.
-- Keep related files together by feature or component. Do not create broad catch-all folders for unrelated utilities.
-- Keep Angular-specific code under the existing app/source root; do not introduce a parallel structure unless project evidence requires it.
-- Follow existing project routing, state-management, and shared-library boundaries before adding new locations.
-- Treat `angular.json`, builder targets, and TypeScript config edits as project-wide changes. Keep them narrow and verify with the relevant configured Angular command.
-- Do not add framework rules from another ecosystem, such as React or Vue, to Angular-only work.
+### File and folder naming
+
+Follow Angular CLI conventions — one artifact per file. Use kebab-case file names and PascalCase class names:
+
+- `user-profile.component.ts` + `user-profile.component.html` + `user-profile.component.scss` + `user-profile.component.spec.ts`
+- `user.service.ts`, `auth.guard.ts`, `date-format.pipe.ts`, `logging.interceptor.ts`, `user.resolver.ts`
+- Test files live next to the unit they test, named `<name>.spec.ts`.
+- Generate scaffolding with the CLI rather than handwriting it: `ng generate component features/users/user-card --change-detection=OnPush --inline-style=false`.
+
+### Feature folders
+
+Group by feature, then by artifact. Do not create catch-all `shared/` or `utils/` buckets for unrelated code.
+
+```
+src/app/
+  core/                 # app-wide singletons: auth, http interceptors, app-level guards
+  shared/               # reusable presentational components, pipes, directives
+  features/
+    users/
+      users.routes.ts
+      user-list/
+        user-list.component.{ts,html,scss,spec.ts}
+      user-detail/
+        user-detail.component.{ts,html,scss,spec.ts}
+      user.service.ts
+      user.model.ts
+    auth/
+      auth.routes.ts
+      ...
+  app.config.ts         # application providers (router, http, etc.)
+  app.routes.ts         # top-level routes
+  app.component.ts      # root component
+```
+
+- Keep route configuration co-located with the feature it serves (`users.routes.ts`), and lazy-load via `loadChildren`.
+- Place app-wide providers (`provideRouter`, `provideHttpClient`, interceptors, error handlers) in `app.config.ts`. Bootstrap from `main.ts` with `bootstrapApplication(AppComponent, appConfig)`.
+- A new directory or top-level folder must be justified by existing project evidence. Follow project routing, state-management, and shared-library boundaries before adding new locations.
+
+### Standalone bootstrap
+
+```typescript
+// main.ts
+bootstrapApplication(AppComponent, appConfig).catch(console.error);
+
+// app.config.ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    provideAnimationsAsync(),
+  ],
+};
+```
+
+- Use functional providers (`provideRouter`, `provideHttpClient`, `provideAnimationsAsync`) over the legacy module forms on standalone-first projects.
+- Register HTTP interceptors functionally via `withInterceptors([...])`. Class-based `HTTP_INTERCEPTORS` multi-providers are reserved for NgModule-centered projects.
+
+### Routing layout
+
+```typescript
+// app.routes.ts
+export const routes: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'home' },
+  { path: 'home', loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent) },
+  {
+    path: 'users',
+    loadChildren: () => import('./features/users/users.routes').then(m => m.USERS_ROUTES),
+  },
+  { path: '**', loadComponent: () => import('./shared/not-found/not-found.component').then(m => m.NotFoundComponent) },
+];
+```
+
+- Lazy-load every feature area with `loadChildren` (or `loadComponent` for a single route). Eagerly loading feature trees inflates the initial bundle.
+- Use `withComponentInputBinding()` so route params and query params bind to component `input()` signals automatically.
+- Put guards/resolvers next to the route file (`users.guards.ts`, `user.resolver.ts`), not in a global `guards/` bucket.
+
+### Workspace and config files
+
+- Treat `angular.json`, `tsconfig*.json`, builder targets, and `package.json` script changes as project-wide changes. Keep edits narrow and verify with the configured command (`ng build`, `ng test`, `ng lint`).
+- Do not switch the application builder, change `target`/`module` settings, or rename top-level paths casually — those are coordinated migrations.
+- `environments/environment*.ts` files describe configuration shape, not real secrets. Inject production secrets via CI/CD, not source.
+
+### Cross-ecosystem hygiene
+
+- Do not add React, Vue, or other-framework conventions to an Angular project. If shared code must straddle frameworks, isolate it behind a framework-neutral library.
+- Match the project's existing module system (ESM vs CommonJS) and import style. Use path aliases from `tsconfig.json` where the project already defines them.
+
+## Anti-patterns to refuse
+
+- A single `shared/` directory accumulating unrelated services, pipes, components, and constants.
+- New NgModules created on a standalone-first project just to host providers — use `app.config.ts` or route-level `providers`.
+- Eagerly importing feature components into `app.routes.ts` instead of `loadChildren` / `loadComponent`.
+- Editing `angular.json` builders, `tsconfig` paths, or `package.json` scripts as part of an unrelated component or service change.
 
 ## Evidence
 
