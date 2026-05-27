@@ -20,7 +20,10 @@ applies_to:
   - src/app/**/*.service.ts
   - src/app/**/*.interceptor.ts
   - src/app/**/*.guard.ts
+  - src/app/**/*.routes.ts
   - src/environments/**/*.ts
+  - src/**/*.server.ts
+  - server.ts
 ---
 
 # Angular Security Rules
