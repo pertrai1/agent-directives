@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.3.0
+
+### Minor Changes
+
+- [#42](https://github.com/pertrai1/agent-directives/pull/42) [`797aeab`](https://github.com/pertrai1/agent-directives/commit/797aeabcd8549be6315206bda186e09e61d96a53) Thanks [@pertrai1-bot](https://github.com/pertrai1-bot)! - Add lazy-loaded rule entries and an initial Angular rule pack with CLI auto-detection support.
+
 ## 0.2.1
 
 ### Patch Changes
