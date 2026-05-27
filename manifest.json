@@ -388,7 +388,7 @@
       "type": "rule",
       "path": "rules/angular/coding-style.md",
       "description": "Concrete Angular coding-style patterns — signals, dependency injection with inject(), change detection, RxJS usage, and TypeScript strictness for Angular code.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "required": false,
       "category": "angular",
       "tools": [
@@ -407,7 +407,7 @@
       "type": "rule",
       "path": "rules/angular/components-and-templates.md",
       "description": "Concrete patterns for building modern Angular components, signal-based inputs/outputs, OnPush change detection, and v17+ control-flow templates.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "required": false,
       "category": "angular",
       "tools": [
@@ -428,7 +428,7 @@
       "type": "rule",
       "path": "rules/angular/patterns.md",
       "description": "Concrete Angular application patterns — smart/dumb component split, service-layer ownership, routing/guards/resolvers, HTTP interceptors, and reactive state with signals or RxJS.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "required": false,
       "category": "angular",
       "tools": [
@@ -453,7 +453,7 @@
       "type": "rule",
       "path": "rules/angular/project-structure.md",
       "description": "Concrete Angular workspace, file-naming, feature-folder, and provider-bootstrapping standards for agents working in Angular applications.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "required": false,
       "category": "angular",
       "tools": [
@@ -475,7 +475,7 @@
       "type": "rule",
       "path": "rules/angular/security.md",
       "description": "Concrete Angular security rules — XSS prevention, HttpClient discipline, secret handling, route guards, and SSR safety.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "required": false,
       "category": "angular",
       "tools": [
@@ -501,7 +501,7 @@
       "type": "rule",
       "path": "rules/angular/testing.md",
       "description": "Concrete Angular testing patterns — TestBed configuration, signal-input harnesses, router and HTTP testing utilities, and behavior-first test design.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "required": false,
       "category": "angular",
       "tools": [

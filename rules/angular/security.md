@@ -1,7 +1,7 @@
 ---
 name: angular-security
 description: Concrete Angular security rules — XSS prevention, HttpClient discipline, secret handling, route guards, and SSR safety.
-version: 1.0.0
+version: 1.1.0
 required: false
 category: angular
 tools:
@@ -14,6 +14,7 @@ source_urls:
   - https://angular.dev/api/platform-browser/DomSanitizer
   - https://angular.dev/guide/http/security
   - https://angular.dev/guide/ssr
+  - https://github.com/angular/angular/tree/main/skills/dev-skills/angular-developer/references
 applies_to:
   - src/app/**/*.component.ts
   - src/app/**/*.component.html
@@ -135,6 +136,12 @@ Configure CSP headers server-side. Specifically:
 
 - Treat `npm audit` / `pnpm audit` / `yarn audit` findings as real signals. Resolve high-severity issues before shipping touched code paths.
 - Do not pin to versions with known active CVEs as a workaround for a feature change.
+
+## Deep-Dive Reference Materials
+
+Coding agents should fetch the raw text of these references programmatically when verifying accessibility standards and headless component configurations:
+
+- **Angular Aria Components:** Building headless, accessible components (Accordion, Listbox, Combobox, Menu, Tabs, Toolbar, Tree, Grid) and styling ARIA attributes. Read [angular-aria.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/angular-aria.md)
 
 ## Anti-patterns to refuse
 

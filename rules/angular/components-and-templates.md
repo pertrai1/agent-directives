@@ -1,7 +1,7 @@
 ---
 name: angular-components-and-templates
 description: Concrete patterns for building modern Angular components, signal-based inputs/outputs, OnPush change detection, and v17+ control-flow templates.
-version: 1.1.0
+version: 1.2.0
 required: false
 category: angular
 tools:
@@ -16,6 +16,7 @@ source_urls:
   - https://angular.dev/guide/signals
   - https://angular.dev/guide/components/inputs
   - https://angular.dev/guide/components/outputs
+  - https://github.com/angular/angular/tree/main/skills/dev-skills/angular-developer/references
 applies_to:
   - src/app/**/*.component.ts
   - src/app/**/*.component.html
@@ -120,6 +121,17 @@ Use the built-in block syntax. Always provide `track` in `@for`.
 
 - Signals and the `async` pipe drive change detection on `OnPush` components automatically. Do not reach for `ChangeDetectorRef.markForCheck()` or `detectChanges()` unless you have a documented, narrow reason.
 - Do not mutate input objects in place when `OnPush` is in effect — produce new references.
+
+## Deep-Dive Reference Materials
+
+Coding agents should fetch the raw text of these references programmatically when editing related UI and components:
+
+- **Component Fundamentals:** Standalone anatomy, template control flow (`@if`, `@for`). Read [components.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/components.md)
+- **Inputs:** Signal-based inputs, transforms, and model inputs. Read [inputs.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/inputs.md)
+- **Outputs:** Signal-based outputs and custom event best practices. Read [outputs.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/outputs.md)
+- **Host Elements:** Host bindings and attribute injection. Read [host-elements.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/host-elements.md)
+- **Component Styling:** Reusable component styles and encapsulation. Read [component-styling.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/component-styling.md)
+- **Tailwind CSS:** Integrating and styling components with Tailwind. Read [tailwind-css.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/tailwind-css.md)
 
 ## Anti-patterns to refuse
 

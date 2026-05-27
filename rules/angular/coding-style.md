@@ -1,7 +1,7 @@
 ---
 name: angular-coding-style
 description: Concrete Angular coding-style patterns — signals, dependency injection with inject(), change detection, RxJS usage, and TypeScript strictness for Angular code.
-version: 1.0.0
+version: 1.1.0
 required: false
 category: angular
 tools:
@@ -15,6 +15,7 @@ source_urls:
   - https://angular.dev/guide/di
   - https://angular.dev/guide/components/dependency-injection
   - https://rxjs.dev/guide/operators
+  - https://github.com/angular/angular/tree/main/skills/dev-skills/angular-developer/references
 applies_to:
   - src/app/**/*.ts
   - src/**/*.ts
@@ -146,6 +147,17 @@ search$ = this.query$.pipe(
 - One artifact per file. Co-locate template (`.html`) and styles (`.scss`/`.css`) with the component class.
 - Imports ordered: Angular core/common, third-party, project absolute (`@/...`), project relative (`./...`). Match the project's existing convention if it differs.
 - Member order inside a class: signal fields → injected dependencies → inputs/outputs → other state → constructor (if any) → lifecycle hooks → public methods → private methods. Adjust to project style if it has a stronger local convention.
+
+## Deep-Dive Reference Materials
+
+Coding agents should fetch the raw text of these references programmatically when writing or modifying reactivity, dependency injection, and general code style:
+
+- **Signals Overview:** Core signal concepts (`signal`, `computed`), reactive contexts, `untracked`, and async boundaries. Read [signals-overview.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/signals-overview.md)
+- **Dependent State (`linkedSignal`):** Creating writable state linked to source signals. Read [linked-signal.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/linked-signal.md)
+- **Async Reactivity (`resource`):** Fetching asynchronous data directly into signal state. Read [resource.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/resource.md)
+- **Side Effects (`effect`):** Syncing signals to imperative APIs, cleanup, and `afterRenderEffect`. Read [effects.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/effects.md)
+- **DI Fundamentals:** Dependency injection overview, services, and the `inject()` function. Read [di-fundamentals.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/di-fundamentals.md)
+- **Injection Context:** Allowed execution contexts for `inject()` and `runInInjectionContext`. Read [injection-context.md](https://raw.githubusercontent.com/angular/angular/main/skills/dev-skills/angular-developer/references/injection-context.md)
 
 ## Anti-patterns to refuse
 
