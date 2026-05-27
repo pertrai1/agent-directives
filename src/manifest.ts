@@ -13,6 +13,7 @@ export interface ManifestEntry {
   required: boolean;
   category: string;
   tools: string[];
+  applies_to?: string[];
 }
 
 export interface Manifest {
