@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "llm-core": {
+      "command": "npx",
+      "args": ["-y", "eslint-plugin-llm-core-mcp@0.25.2"]
+    }
+  }
+}
