@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.4.2
+
+### Patch Changes
+
+- [#49](https://github.com/pertrai1/agent-directives/pull/49) [`c3f67dc`](https://github.com/pertrai1/agent-directives/commit/c3f67dc2d7032a6b17697ef1b3cc37e6ff7d3402) Thanks [@pertrai1](https://github.com/pertrai1)! - Clarify AGENTS.md path references and make GitNexus instructions conditional on repositories that use GitNexus.
+
 ## 0.4.1
 
 ### Patch Changes
