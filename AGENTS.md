@@ -15,9 +15,9 @@ This repository is a portable library of AI coding-agent instructions: reusable 
 ## What
 
 - Content-first Markdown repository; there is no package manager, build artifact, or runtime application.
-- `directives/*.md` define workflow rules an agent follows during phases such as routing, workspace isolation, exploration, TDD, verification, and handoff.
-- `skills/*/SKILL.md` define specialist personas/review processes with YAML frontmatter metadata.
-- `rules/*/*.md` define lazy-loaded stack or project standards, starting with Angular.
+- Markdown files directly under `directives/`, such as `directives/adaptive-routing.md`, define workflow rules an agent follows during phases such as routing, workspace isolation, exploration, TDD, verification, and handoff.
+- `SKILL.md` files one directory below `skills/`, such as `skills/code-reviewer/SKILL.md`, define specialist personas/review processes with YAML frontmatter metadata.
+- Markdown files one directory below each rule pack in `rules/`, such as `rules/angular/components-and-templates.md`, define lazy-loaded stack or project standards.
 - `templates/` contains starter instruction files for different agent tools.
 - `evals/` contains manual scenario-based evaluations plus a helper script for assembling directive/skill context.
 
@@ -121,25 +121,33 @@ supporting docs are supplemental rather than binding.
 ## Decision Log Lookup
 
 Before changing repo policy, contributor workflow, or any cross-cutting
-convention, scan frontmatter in `docs/decisions/*.md` if that directory exists
-and load matching active entries. Progressive disclosure — do not bulk-read every
-record.
+convention, scan frontmatter in Markdown files directly under `docs/decisions/`
+if that directory exists and load matching active entries. Progressive disclosure
+— do not bulk-read every record.
 
 ## Repo-Specific Guidance
 
 - Prefer small, consistency-preserving Markdown edits over broad rewrites.
 - Keep frontmatter, prose, template tables, README summaries, and eval scenarios aligned when routing semantics change.
 - Treat `templates/` as user-facing examples. If the root `AGENTS.md` discovers a repo-specific convention that should be reusable, consider whether the template should also change.
-- Treat `evals/scenarios/*.md` as behavioral tests for instructions. When changing `directives/*.md` or `skills/*/SKILL.md`, update an existing scenario or add a targeted one if the change affects routing, required outputs, review heuristics, decision points, or expected agent behavior. Skip eval churn for typo fixes, formatting, frontmatter-only cleanup with no routing effect, or wording that does not change behavior; note the reason in the PR summary.
-- Bump the frontmatter `version` for every existing `directives/*.md` or `skills/*/SKILL.md` file changed in a PR. Use patch for wording or behavior-tightening, minor for new heuristics/routing/evidence coverage, and major for incompatible routing/schema/path changes. Raw deletions are rejected; deprecate with a major version bump before deletion. `npm run version:check` enforces this against the base branch.
-- For eval scenario changes, verify setup with `npm run eval:scenario -- --print-only <scenario-name>` and remove generated `evals/results/runs/...` artifacts before committing unless intentionally updating committed results.
+- Treat Markdown files directly under `evals/scenarios/` as behavioral tests for instructions. When changing Markdown files directly under `directives/` or `SKILL.md` files one directory below `skills/`, update an existing scenario or add a targeted one if the change affects routing, required outputs, review heuristics, decision points, or expected agent behavior. Skip eval churn for typo fixes, formatting, frontmatter-only cleanup with no routing effect, or wording that does not change behavior; note the reason in the PR summary.
+- Bump the frontmatter `version` for every existing Markdown file directly under `directives/` or `SKILL.md` file one directory below `skills/` changed in a PR. Use patch for wording or behavior-tightening, minor for new heuristics/routing/evidence coverage, and major for incompatible routing/schema/path changes. Raw deletions are rejected; deprecate with a major version bump before deletion. `npm run version:check` enforces this against the base branch.
+- For eval scenario changes, verify setup with `npm run eval:scenario -- --print-only <scenario-name>` and remove generated run artifacts under `evals/results/runs/` before committing unless intentionally updating committed results.
 - If a validation schema is implied but not implemented, use a short script to verify the relevant invariant and include the script output in the PR summary.
 
 <!-- gitnexus:start -->
 
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **agent-directives** (917 symbols, 999 relationships, 3 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+Follow this section only when this repository is configured for GitNexus, such as
+when `.gitnexus/meta.json` exists or GitNexus MCP/CLI tools are available. If the
+repository is not using GitNexus, ignore this section and use the normal
+codebase-navigation, architecture-boundary, review, and verification guidance
+selected by adaptive routing.
+
+This project is indexed by GitNexus as **agent-directives** (917 symbols, 999
+relationships, 3 execution flows). Use the GitNexus MCP tools to understand code,
+assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -228,13 +236,9 @@ To check whether embeddings exist, inspect `.gitnexus/meta.json` — the `stats.
 
 ## CLI
 
-| Task                                         | Read this skill file                                        |
-| -------------------------------------------- | ----------------------------------------------------------- |
-| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md`       |
-| Blast radius / "What breaks if I change X?"  | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
-| Trace bugs / "Why is X failing?"             | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md`       |
-| Rename / extract / split / refactor          | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md`     |
-| Tools, resources, schema reference           | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md`           |
-| Index, status, clean, wiki CLI commands      | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md`             |
+If local GitNexus-specific skills are installed for your agent, use the skill
+that matches the task: exploring, impact analysis, debugging, refactoring, tool
+reference, or CLI/index maintenance. Skill installation paths are agent-specific;
+do not assume this repository contains those skill files.
 
 <!-- gitnexus:end -->
