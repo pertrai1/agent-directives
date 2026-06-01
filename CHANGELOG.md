@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.4.3
+
+### Patch Changes
+
+- [#51](https://github.com/pertrai1/agent-directives/pull/51) [`dfaa2a9`](https://github.com/pertrai1/agent-directives/commit/dfaa2a984bb5b6e9d87fcfc1c4be3d6e72494fc9) Thanks [@pertrai1](https://github.com/pertrai1)! - Clarify adaptive routing so installed rule frontmatter is authoritative when a target repo does not include the package manifest.
+
 ## 0.4.2
 
 ### Patch Changes
