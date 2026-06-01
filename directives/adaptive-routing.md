@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 1.6.0
+version: 1.6.1
 required: true
 category: workflow
 tools:
@@ -146,10 +146,11 @@ metadata in always-loaded context. Discover matching rules on demand instead:
 
 1. **Detect the stack** from project evidence. For example, `angular.json` or an
    `@angular/core` dependency selects the `angular` pack.
-2. **Open the rule index.** Each rule entry in `manifest.json` carries `category`
-   (the pack), `description` (what it governs), and `applies_to` (the file globs
-   it scopes to). The `rules/<pack>/` directory holds the same entries on disk;
-   read a rule's frontmatter for the authoritative scope.
+2. **Inspect available rule metadata.** Use `manifest.json` as a compact package
+   index when it is available, but do not assume it was installed into the target
+   repo. The authoritative scope lives in each `rules/<pack>/*.md` file's
+   frontmatter: `category` identifies the pack, `description` says what it
+   governs, and `applies_to` lists the file globs it scopes to.
 3. **Match before loading.** Load a rule only when its `applies_to` globs match a
    file you will touch *and* its `description` is relevant to what the task
    actually changes. A glob match alone is not enough — editing a

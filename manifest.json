@@ -6,7 +6,7 @@
       "type": "directive",
       "path": "directives/adaptive-routing.md",
       "description": "Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.",
-      "version": "1.6.0",
+      "version": "1.6.1",
       "required": true,
       "category": "workflow",
       "tools": [

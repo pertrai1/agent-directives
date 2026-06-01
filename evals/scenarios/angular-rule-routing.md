@@ -14,6 +14,8 @@ Workspace state:
 - `angular.json` exists at the repository root.
 - `src/app/user-card/user-card.component.ts` and `src/app/user-card/user-card.component.html` exist.
 - `src/app/user-card/user-card.component.spec.ts` exists.
+- No root `manifest.json` is available in the target workspace; installed rule
+  files must be selected from their own frontmatter.
 
 Do not preload Angular rule files; the scenario tests whether the router selects them from project evidence and touched paths.
 
@@ -28,6 +30,7 @@ Do not preload Angular rule files; the scenario tests whether the router selects
 - [ ] Selects Angular rules separately from directives and skills: `rules/angular/project-structure.md`, `rules/angular/components-and-templates.md`, `rules/angular/coding-style.md` (for the signal `input()` choice), and `rules/angular/testing.md`.
 - [ ] Does not select `rules/angular/patterns.md` or `rules/angular/security.md` — neither smart/dumb routing/HTTP wiring nor untrusted input is in scope for this prompt.
 - [ ] Mentions Angular project evidence such as `angular.json`, `@angular/core`, or touched `*.component.*` / `*.spec.ts` paths as the reason the Angular rule pack applies.
+- [ ] Does not require a target-workspace `manifest.json`; reads each candidate rule's `category`, `description`, and `applies_to` frontmatter when selecting rules.
 - [ ] Lists test/type/build evidence using project-configured Angular or package scripts, with fallback wording if commands are unavailable.
 
 ## Anti-Behaviors
