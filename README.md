@@ -13,7 +13,7 @@ dependencies between files.
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
 | **Skills** | 13 skills | Code reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, subagent-driven development, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, production readiness reviewer, harness hooks reviewer, and MCP integration reviewer |
-| **Rules** | 6 Angular rules | Lazy-loaded Angular project structure, components/templates, coding style, application patterns, security, and testing standards — selected by stack or explicit category |
+| **Rules** | 11 rules (Angular & Python) | Lazy-loaded workspace, coding style, architectural patterns, security, and testing standards for Angular or Python projects — selected by stack or explicit category |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 | **Tooling** | TypeScript scripts | Validate directive wiring, assemble eval scenarios, record loaded-file manifests, and generate eval health reports |
 
@@ -34,7 +34,7 @@ cd /path/to/your-project
 # Install the required Codex/OpenAI agent directives and skills.
 npx agent-directives sync --tool codex --yes
 
-# Optionally install detected stack rules, such as Angular rules for angular.json/@angular/core projects.
+# Optionally install detected stack rules, such as Angular or Python rules depending on project evidence.
 npx agent-directives sync --tool codex --yes --rules auto
 
 # Add the root instruction file, then edit every <!-- FILL IN: ... --> placeholder.
@@ -266,11 +266,24 @@ Rules are lazy-loaded stack or project standards. They constrain implementation 
 
 ### Angular Rules (`rules/angular/*.md`)
 
-The first rule pack covers Angular projects detected by `angular.json` or `@angular/core` in `package.json`:
+This rule pack covers Angular projects detected by `angular.json` or `@angular/core` in `package.json`:
 
 - `rules/angular/project-structure.md` — Angular workspace, source-root, and project-structure standards
 - `rules/angular/components-and-templates.md` — component, template, accessibility, and typed UI-change standards
-- `rules/angular/testing.md` — Angular component/service testing standards
+- `rules/angular/coding-style.md` — signal primitives, dependency injection (`inject()`), and RxJS guidelines
+- `rules/angular/patterns.md` — controller/service architecture, state management, and change detection standards
+- `rules/angular/security.md` — XSS prevention, HttpClient discipline, route guards, and SSR safety standards
+- `rules/angular/testing.md` — Angular component/service testing and TestBed setup standards
+
+### Python Rules (`rules/python/*.md`)
+
+This rule pack covers Python projects detected by `pyproject.toml`, `requirements.txt`, or other python files:
+
+- `rules/python/project-structure.md` — modern `src-layout`, PEP 621 unified packaging config, and `.gitignore` hygiene
+- `rules/python/coding-style.md` — PEP 585/604 static typing strictness, Pydantic v2 validation decorators, and cooperative asyncio loop safety
+- `rules/python/patterns.md` — Service-Repository separation, explicit constructor dependency injection, exception chaining (`raise ... from`), and context managers
+- `rules/python/security.md` — SQL Injection prevention (prepared statements), safe deserialization (avoiding raw pickle/yaml), command execution boundaries, and path traversal protection
+- `rules/python/testing.md` — function-based pytest fixtures with setup/teardown yields, `pytest-asyncio` loop safety, mock patch limits, and coverage validation
 
 Do not load every rule by default. The root instructions and adaptive router should list selected rule files separately from directives and skills.
 
