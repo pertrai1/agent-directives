@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.5.0
+
+### Minor Changes
+
+- [#53](https://github.com/pertrai1/agent-directives/pull/53) [`90de630`](https://github.com/pertrai1/agent-directives/commit/90de630424a227021ad9acf4dfaca099d368204c) Thanks [@pertrai1-bot](https://github.com/pertrai1-bot)! - Introduce Python rules pack (coding-style, patterns, project-structure, security, testing) and update adaptive routing to lazily load rules on Python workspaces.
+
 ## 0.4.3
 
 ### Patch Changes
