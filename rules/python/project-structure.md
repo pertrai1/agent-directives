@@ -42,7 +42,7 @@ Confirm the target Python version from `pyproject.toml` (`requires-python`), `se
 
 Prefer `src-layout` for packages, CLI tools, and libraries. Placing the primary source module under a nested `src/` directory prevents accidental imports of development modules, guarantees that test suites run against the installed package, and ensures clean distribution packaging.
 
-```
+```text
 # CORRECT — src-layout
 my-project/
 ├── pyproject.toml
@@ -55,7 +55,7 @@ my-project/
     └── test_utils.py
 ```
 
-```
+```text
 # WRONG — Flat-layout (vulnerable to import shadowing & test runner leaks)
 my-project/
 ├── pyproject.toml

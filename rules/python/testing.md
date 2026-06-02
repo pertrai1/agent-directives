@@ -18,6 +18,10 @@ applies_to:
   - "**/*_test.py"
   - "**/test_*.py"
   - "pyproject.toml"
+  - "conftest.py"
+  - "pytest.ini"
+  - "tox.ini"
+  - "setup.cfg"
 ---
 
 # Python Testing Rules

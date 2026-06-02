@@ -144,7 +144,7 @@ Coding agents should fetch the raw text of these references programmatically whe
 
 For style-aligned Python changes, verify linter, formatter, and typechecker correctness:
 
-- Run `ruff check .` (or `flake8` / `pylint`) on the touched paths to verify style compliance.
-- Run `ruff format --check .` (or `black --check .`) to guarantee indentation and string quote standards.
-- Run `mypy .` (or `pyright`) to verify type annotation completeness and strictness.
+- Verify style with `ruff check .` (or `flake8` / `pylint`) on the touched paths to ensure code compliance.
+- Guarantee formatting and string quote standards using `ruff format --check .` (or `black --check .`).
+- Validate type annotation completeness and strictness using `mypy .` (or `pyright`).
 - Execute unit and integration tests (see `rules/python/testing.md`) to assert behavior.
