@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 1.6.1
+version: 1.7.0
 required: true
 category: workflow
 tools:
@@ -145,7 +145,8 @@ this directive loads on every task; an inline catalog would put every rule pack'
 metadata in always-loaded context. Discover matching rules on demand instead:
 
 1. **Detect the stack** from project evidence. For example, `angular.json` or an
-   `@angular/core` dependency selects the `angular` pack.
+   `@angular/core` dependency selects the `angular` pack, while `pyproject.toml` or
+   `requirements.txt` selects the `python` pack.
 2. **Inspect available rule metadata.** Use `manifest.json` as a compact package
    index when it is available, but do not assume it was installed into the target
    repo. The authoritative scope lives in each `rules/<pack>/*.md` file's
@@ -159,7 +160,7 @@ metadata in always-loaded context. Discover matching rules on demand instead:
 4. **Skip absent packs.** Do not load a pack whose evidence is missing, and do
    not load a whole pack by default.
 
-The only pack today is `rules/angular/`.
+Active packs include `rules/angular/` and `rules/python/`.
 
 ---
 
