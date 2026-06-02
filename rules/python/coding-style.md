@@ -24,7 +24,7 @@ applies_to:
 
 ## Version Awareness
 
-Check the python version target in `pyproject.toml` (`requires-python`), `environment.yml`, or `.python-version`. Modern type patterns (PEP 585 collections `list[]`, PEP 604 union `T | None`, PEP 695 generics `type Name[T]`) require Python 3.9, 3.10, or 3.12+ respectively. Ensure Pydantic code uses v2 primitives, not v1.
+Check the python version target in `pyproject.toml` (`requires-python`), `environment.yml`, or `.python-version`. Modern type patterns (PEP 585 collections `list[]`, PEP 604 union `T | None`, PEP 695 generic type parameter syntax like `class Name[T]: ...` / `type Alias[T] = ...`) require Python 3.9, 3.10, or 3.12+ respectively. Ensure Pydantic code uses v2 primitives, not v1.
 
 ## Sources
 

@@ -277,7 +277,7 @@ This rule pack covers Angular projects detected by `angular.json` or `@angular/c
 
 ### Python Rules (`rules/python/*.md`)
 
-This rule pack covers Python projects detected by `pyproject.toml`, `requirements.txt`, or other python files:
+This rule pack covers Python projects detected by Python packaging/config files (e.g., `pyproject.toml`, `requirements.txt`, `setup.py`, `Pipfile`, `poetry.lock`, `uv.lock`, `.python-version`, `environment.yml`):
 
 - `rules/python/project-structure.md` — modern `src-layout`, PEP 621 unified packaging config, and `.gitignore` hygiene
 - `rules/python/coding-style.md` — PEP 585/604 static typing strictness, Pydantic v2 validation decorators, and cooperative asyncio loop safety

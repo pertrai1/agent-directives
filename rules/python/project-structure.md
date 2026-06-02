@@ -28,7 +28,7 @@ applies_to:
 
 ## Version Awareness
 
-Confirm the target Python version from `pyproject.toml` (`requires-python`), `setup.py`, or `.python-version`. Modern projects rely on PEP 621 metadata standards under `[project]` inside `pyproject.toml` and utilize modern lockfiles (`uv.lock`, `poetry.lock`). Do not introduce deprecated setup configurations (like `setup.cfg` or verbose non-declarative `setup.py`) into projects configured for modern unified tool definitions.
+Confirm the target Python version from `pyproject.toml` (`requires-python`), `setup.py`, or `.python-version`. Modern projects rely on PEP 621 metadata standards under `[project]` inside `pyproject.toml` and utilize modern lockfiles (`uv.lock`, `poetry.lock`). Avoid introducing additional packaging configuration files (like `setup.cfg` or imperative `setup.py`) when the project is already configured for a unified `pyproject.toml` toolchain.
 
 ## Sources
 
