@@ -1,7 +1,7 @@
 ---
 name: verification
 description: Requires structured evidence of correctness before quality gates and pull requests.
-version: 1.0.0
+version: 1.1.0
 required: true
 category: workflow
 tools:
@@ -224,6 +224,11 @@ The summary should follow this structure:
 
 Planned scope budget: touch `src/users/create.ts` and `tests/users/create.test.ts` for create-user validation only.
 Scope control: changed only the planned files; no unrelated cleanup, new abstraction, dependency, or configuration surface added.
+
+### Unverified Areas & Risk Justification
+
+List the important things you did not verify, and say whether each one is safe to leave unchecked:
+1. <unverified area> — <why it is safe to skip now / risk justification>
 ```
 
 If anything is `[ ]` or tests are missing, the implementation is not ready.
@@ -231,6 +236,26 @@ Do not open the PR until verification is complete.
 
 For bug fixes and docs/chore changes, include a shorter verification
 block in the same PR section.
+
+---
+
+## Make "Done" Mean Evidence, Not Confidence
+
+Do not say a task is "done" until you provide structured evidence of correctness.
+
+**Storage:**
+- In **autonomous loops**, write this evidence summary directly to `.agents/verification.md` or populate it in the PR description/comments via API/CLI, ensuring it is preserved durably in the repository rather than printed only as ephemeral stdout.
+- In **interactive sessions**, output it to the user or save to `.agents/verification.md` for later reference.
+
+You must provide:
+- **Commands run**: <exact test/lint/build commands executed>
+- **Output summary**: <pasted or excerpted passing console output>
+- **Files changed**: <exact diff files list>
+- **Tests added or updated**: <test suite names and case count>
+- **Behavior proven**: <the actual hit/clean verification trace>
+- **Known gaps**: <remaining edge cases or undocumented limitations>
+
+For generator, CLI, or MCP work, include one manual acceptance check with visible pass/fail console/terminal output.
 
 ---
 

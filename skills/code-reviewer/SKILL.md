@@ -1,7 +1,7 @@
 ---
 name: "code-reviewer"
 description: "Load when the user asks to review a PR, branch, diff, local changes, or says approve, merge, or check this change for bugs, regressions, security, maintainability, or merge risk."
-version: 1.1.0
+version: 1.2.0
 required: true
 category: review
 tools:
@@ -41,6 +41,26 @@ Use the full review process when the change is high-risk, cross-cutting, product
 # Code Review Guidelines
 
 When reviewing a pull request, branch, diff, or local change:
+
+## Step 0: The Review Brief
+
+Before writing the actual review, produce a compact Review Brief to focus your attention on material risk zones. 
+
+**Storage:** 
+- In **autonomous loops**, write this brief to `.agents/review-brief.md` (or submit it directly as a PR comment/draft via API).
+- In **interactive sessions**, you may output it directly to the user or save it to `.agents/review-brief.md` for later reference.
+
+```text
+Reviewing PR/Issue [ID/Name].
+
+Focus areas:
+- Risk areas: <security, migration, CI, or performance risks>
+- Files that must be inspected: <source files containing the core logic>
+- Edge cases to test: <untrusted input, boundaries, empty states>
+- Required commands: <test, lint, and build execution scripts>
+- What counts as blocking: <what will trigger a REQUEST_CHANGES verdict>
+- What should be ignored: <known style differences, non-blocking pre-existing debt>
+```
 
 ## Review Heuristics (What to Check)
 

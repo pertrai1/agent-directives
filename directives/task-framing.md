@@ -1,7 +1,7 @@
 ---
 name: task-framing
 description: Frames non-trivial, ambiguous, high-risk, or cross-cutting tasks before substantial edits.
-version: 1.0.0
+version: 1.1.0
 required: true
 category: workflow
 tools:
@@ -99,6 +99,18 @@ Use a compact scope-budget line before substantial edits:
 ```md
 Scope budget: I expect to touch <files/areas> with <kind of edit>; I will not change <nearby-but-out-of-scope areas> unless evidence shows they are required or the user explicitly requests it.
 ```
+
+## 🛑 Risky Implementation Gate (Stop and Ask)
+
+If a planned choice affects publishing, package boundaries, generated files, user-facing behavior, or CI/release, you MUST stop and present:
+- **Option chosen**: <the proposed path>
+- **Alternative rejected**: <at least one other viable path>
+- **Why this is safe for now**: <justification of risk>
+- **What follow-up is created**: <durable debt tracking or issue created>
+
+**Execution and Storage:**
+- In **interactive sessions**, present this to the user and wait for confirmation before writing or modifying code.
+- In **autonomous loops**, write this analysis directly to `.agents/blocked-risky-choice.md` and exit/fail the run (or pause state) to alert the orchestrator. If the loop must proceed autonomously without stopping, choose the most conservative alternative and write the full reasoning durably to `.agents/risky-choices-log.md` for later reference.
 
 ## Depth, Risk, and Slice Gate
 

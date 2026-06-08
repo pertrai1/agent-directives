@@ -1,7 +1,7 @@
 ---
 name: "product-requirements-writer"
 description: "Load when the user wants to turn a feature idea, product request, vague requirement, or problem statement into a concrete PRD/spec before implementation planning or coding."
-version: 1.0.0
+version: 1.1.0
 required: false
 category: planning
 tools:
@@ -92,21 +92,36 @@ If the user asks for the PRD immediately and the gaps are minor, state assumptio
 
 ### 3. Refine Raw Ideas Before Writing
 
-When the request is still a raw idea rather than a clear feature request, do a lightweight refinement pass before generating the PRD:
+When the request is still a raw idea rather than a clear feature request, do a lightweight refinement pass before generating the PRD. Force yourself to explore exactly 3 product directions (where relevant, or for moderate-to-complex features) to avoid accepting the first plausible idea:
 
-1. Restate the idea as a crisp "How might we..." problem statement.
-2. Offer 2-3 meaningfully different directions, including the simplest useful version.
-3. Ask the user to choose a direction if the choice changes scope, user value, or success criteria.
-4. Capture key assumptions to validate and an explicit MVP scope in the PRD.
+1. **Minimal useful version (MVP)** — the smallest proof that validates the core product assumption.
+2. **Developer workflow version** — integrates smoothly with developer/operator tooling.
+3. **Power-user version** — optimizes for scale, advanced configuration, or power workflows.
 
-Do not run a broad ideation workshop by default. Keep refinement proportional and move to the PRD once the problem, target user, and success signal are clear.
+For each direction, define:
+- Who uses it?
+- What problem does it solve?
+- What is the smallest proof?
+- What should be out of scope?
+
+**Execution and Storage:**
+- In **interactive sessions**, present these directions in chat, and ask the user to choose a direction.
+- In **autonomous loops**, do not waste output tokens dumping them in stdout; instead, choose the **Minimal useful version (MVP)** as the default, and write all 3 explored directions directly into the final PRD under a new `## Explored Alternatives` section. 
+
+Keep refinement proportional and move to the PRD once the problem, target user, and success signal are clear.
 
 ### 4. Generate the PRD
 
-Use this structure unless the repo has a stronger local convention:
+Use this structure unless the repo has a stronger local convention. Write the user-facing success sentence/outcome at the very top of the PRD:
 
 ```md
 # PRD: <Feature Name>
+
+## User-Facing Outcome
+- **The user should be able to...** <concrete action the user can perform>
+- **This matters because...** <the actual value or problem solved>
+- **The first version should not...** <the strict MVP boundary>
+- **We will know it worked when...** <observable acceptance check>
 
 ## Overview
 Briefly describe the feature, problem, and intended outcome.
