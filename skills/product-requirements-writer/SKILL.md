@@ -126,6 +126,8 @@ Use this structure unless the repo has a stronger local convention. Write the us
 ## Overview
 Briefly describe the feature, problem, and intended outcome.
 
+<!-- For autonomous loops, insert ## Explored Alternatives here. -->
+
 ## Goals
 - <Specific measurable or observable goal>
 
