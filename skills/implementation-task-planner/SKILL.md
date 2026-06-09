@@ -177,7 +177,7 @@ Follow the repo's existing planning/spec directory if one exists.
 - Use the project-native test/type/lint commands listed in repo instructions.
 - Update each checkbox as work completes.
 - Keep implementation scoped to the PRD non-goals.
-- **🛑 Risky Implementation Gate (Stop and Ask)**: If a choice affects publishing, package boundaries, generated files, user-facing behavior, or CI/release: in interactive sessions, stop and present the options to the user; in autonomous loops, write the analysis to `.agents/blocked-risky-choice.md` and exit/fail the run (or choose the most conservative alternative and write the reasoning durably to `.agents/risky-choices-log.md`). Do not proceed blindly with risky changes.
+- **🛑 Risky Implementation Gate (Stop and Ask)**: If a choice affects publishing, package boundaries, generated files, user-facing behavior, or CI/release: in interactive sessions, stop and present the options to the user; in autonomous loops, write the analysis to `.agents/blocked-risky-choice.md` and exit/fail the run to alert the orchestrator. If the loop must proceed autonomously, choose the most conservative alternative and write the reasoning durably to `.agents/risky-choices-log.md`. Do not proceed blindly with risky changes.
 
 ## Instructions for Completing Tasks
 
