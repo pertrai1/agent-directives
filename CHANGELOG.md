@@ -1,5 +1,16 @@
 # agent-directives
 
+## 0.6.0
+
+### Minor Changes
+
+- [#56](https://github.com/pertrai1/agent-directives/pull/56) [`53be141`](https://github.com/pertrai1/agent-directives/commit/53be14169e42f9efd6c2764b3e0485635575e029) Thanks [@pertrai1-bot](https://github.com/pertrai1-bot)! - Adds steering/product-thinking gates from issue [#55](https://github.com/pertrai1/agent-directives/issues/55) to core directives.
+  - Adds "Review Brief" step to the code-reviewer skill.
+  - Introduces a "Risky Implementation Gate" to task-framing.
+  - Improves PRD and task templates with user-facing outcomes and product direction exploration.
+  - Adds a post-merge "Feature Cleanup Phase" to context-handoff.
+  - Strengthens verification with "Unverified Areas & Risk Justification".
+
 ## 0.5.0
 
 ### Minor Changes
