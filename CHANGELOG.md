@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.7.0
+
+### Minor Changes
+
+- [#59](https://github.com/pertrai1/agent-directives/pull/59) [`6926a66`](https://github.com/pertrai1/agent-directives/commit/6926a6688bd3763478eb92fb19338c84fcaf051f) Thanks [@pertrai1](https://github.com/pertrai1)! - Add `directives/agent-permissions.md` — a portable advisory directive defining agent read/write/command/network permission boundaries, protected file categories, risky command categories, denied-until-explicit actions, and escalation/blocked-work reporting protocols. Route it conditionally via adaptive routing when work touches protected files, risky commands, package manager operations, deploys, infra, secrets, CI, or repo policy.
+
 ## 0.6.0
 
 ### Minor Changes
