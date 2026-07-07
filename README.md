@@ -186,6 +186,15 @@ isolation first, prefers native workspace/worktree tooling when available, falls
 back to `git worktree` only when needed, and requires setup/baseline proof in the
 workspace where implementation will actually run.
 
+### Agent Permissions (`directives/agent-permissions.md`)
+
+Defines portable read/write/command/network permission boundaries and escalation
+behavior for agents working in a repository. Categorizes actions into
+least-privilege defaults, protected file approval, risky command approval, and
+denied-until-explicit actions, plus an escalation and blocked-work reporting
+protocol. Advisory only — does not replace IDE, harness, sandbox, or CI
+enforcement.
+
 
 ### Context Handoff (`directives/context-handoff.md`)
 

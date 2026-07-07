@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 1.7.0
+version: 1.8.0
 required: true
 category: workflow
 tools:
@@ -203,6 +203,7 @@ Required directives:
 - `directives/task-framing.md` when non-trivial, ambiguous, high-risk, or cross-cutting
 - `directives/type-driven-development.md` for typed projects or public contracts
 - `directives/test-driven-development.md` for behavior-changing code
+- `directives/agent-permissions.md` when work touches protected files, risky commands, package manager operations, deployment, infrastructure, secrets, CI, or repo policy
 - `directives/verification.md`
 - `directives/context-handoff.md` when switching major phases or handing off work
 
@@ -334,9 +335,10 @@ Escalate to Full Path or add a specialized path when any of these are true:
 
 | Risk trigger | Add |
 | --- | --- |
-| Auth, permissions, security, privacy, payments, data loss | Full Path + Production Readiness Review + stronger verification |
+| Auth, permissions, security, privacy, payments, data loss | Full Path + Production Readiness Review + stronger verification; load `directives/agent-permissions.md` |
 | Database schema, migrations, persistence, queues | Full Path + Production Readiness Review + explicit rollback/edge-case proof |
 | External services, async jobs, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility | Full Path + Production Readiness Review |
+| Protected files, risky commands, package manager operations, deploys, infra, secrets, CI, or repo policy changes | Load `directives/agent-permissions.md`; escalate per its protocol before proceeding |
 | Agent harness hooks or deterministic agent automation | Policy/Full/Review Path + Harness Hooks Review |
 | MCP servers/tools, agent-accessible APIs, or write-capable agent tools | Policy/Full/Review Path + MCP Integration Review; add Production Readiness Review for sensitive production systems |
 | Public API, exported types, package entry points | Full Path + Integration Proof + Boundary Path |

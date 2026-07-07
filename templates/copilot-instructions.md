@@ -78,6 +78,7 @@ For detailed guidance on each workflow rule, load `directives/adaptive-routing.m
 then load only the selected directive:
 
 - `directives/adaptive-routing.md` — Selects workflow path and required directives/skills
+- `directives/agent-permissions.md` — Defines agent read/write/command/network permission boundaries and escalation behavior
 - `directives/workspace-isolation.md` — Protect mutable work with an isolated workspace; prefer native tools, then git fallback
 - `directives/codebase-navigation.md` — SAFE exploration pattern
 - `directives/architecture-boundaries.md` — Preserve dependency DAG and import rules

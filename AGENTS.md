@@ -78,6 +78,7 @@ They govern **how** you work. Do not load unrelated directives just to satisfy c
 | Directive                        | What it governs                                                                         | File                                             |
 | -------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
 | Adaptive Routing                 | Selects workflow path and required directives/skills                                    | `directives/adaptive-routing.md`                 |
+| Agent Permissions                | Defines agent read/write/command/network permission boundaries and escalation behavior  | `directives/agent-permissions.md`                |
 | Workspace Isolation              | Protect mutable work with an isolated workspace; prefer native tools, then git fallback | `directives/workspace-isolation.md`              |
 | Codebase Navigation              | SAFE exploration before implementation, review, or unfamiliar work                      | `directives/codebase-navigation.md`              |
 | Architecture Boundaries          | Preserve dependency DAG, public APIs, imports/exports, and file reference integrity     | `directives/architecture-boundaries.md`          |
