@@ -1,7 +1,12 @@
 node_modules/
 evals/results/runs/*/
 
-.gitnexus/
-.omc/
 dist/
 *.tgz
+
+.gitnexus/
+.omc/
+.claude/
+.codex/
+.opencode/
+.pi/
