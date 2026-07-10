@@ -86,7 +86,7 @@ test("release workflow builds, checks, publishes with provenance, and creates Gi
     "npm run check",
     "npm pack --dry-run",
     "npm view agent-directives version",
-    "npm@latest publish --access public --provenance",
+    "npm publish --access public --provenance",
     "gh release create",
   ]) {
     assert(workflow.includes(expected), `release workflow must contain: ${expected}`);
