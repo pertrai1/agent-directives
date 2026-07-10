@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 1.8.0
+version: 1.9.1
 required: true
 category: workflow
 tools:
@@ -94,6 +94,26 @@ block.
    the task. Do not expand scope, rewrite adjacent code, introduce abstractions,
    apply drive-by formatting, perform whole-file rewrites, or fix unrelated
    issues unless current evidence requires it or the user explicitly requests it.
+
+---
+
+## Composite Task Routing
+
+For non-trivial requests with multiple intents, decompose before selecting skills:
+
+1. Split the request into atomic work items, where each item should need one
+   primary directive, skill, or rule family.
+2. Map each item to matching workflow paths, skills, and rules using the skill
+   discovery map plus available manifest, rule, and frontmatter metadata.
+3. Compose the final route by merging required paths and ordering dependent work.
+   For debugging tasks that require regression coverage and boundary review, use
+   this order: reproduce → add or update the failing regression test → fix →
+   rerun the test → boundary review before merge readiness.
+4. If the first decomposition uses vague steps like "fix issue" or "review
+   code," revise it using the names and descriptions of matching directives,
+   skills, or rules.
+5. Do not load all matched candidates. Load selected files only; when ambiguity
+   matters, state why near-matches were not loaded.
 
 ---
 
