@@ -2,10 +2,19 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseFrontmatter } from './frontmatter.js';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 
 type ManifestEntryType = 'directive' | 'skill' | 'rule';
+
+interface ManifestRouting {
+  triggers?: string[];
+  commonPaths?: string[];
+  capabilityTags?: string[];
+  dependsAfter?: string[];
+  oftenComposesWith?: string[];
+}
 
 interface ManifestEntry {
   id: string;
@@ -17,53 +26,12 @@ interface ManifestEntry {
   category: string;
   tools: string[];
   applies_to?: string[];
+  routing?: ManifestRouting;
 }
 
 interface Manifest {
   version: string;
   entries: ManifestEntry[];
-}
-
-const FRONTMATTER_OPEN_LENGTH = 4;
-
-function parseFrontmatter(text: string): Record<string, unknown> {
-  const normalized = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
-  if (!normalized.startsWith('---\n')) return {};
-  const end = normalized.indexOf('\n---\n', FRONTMATTER_OPEN_LENGTH);
-  if (end === -1) return {};
-  const raw = normalized.slice(FRONTMATTER_OPEN_LENGTH, end);
-  const result: Record<string, unknown> = {};
-  let i = 0;
-  const lines = raw.split('\n');
-  while (i < lines.length) {
-    const line = lines[i];
-    const scalar = line.match(/^(\w[\w-]*):\s+(.+)$/);
-    if (scalar) {
-      const val = scalar[2].replace(/^['"]|['"]$/g, '');
-      if (val === 'true') {
-        result[scalar[1]] = true;
-      } else if (val === 'false') {
-        result[scalar[1]] = false;
-      } else {
-        result[scalar[1]] = val;
-      }
-      i++;
-      continue;
-    }
-    const listKey = line.match(/^(\w[\w-]*):\s*$/);
-    if (listKey) {
-      const items: string[] = [];
-      i++;
-      while (i < lines.length && lines[i].match(/^\s+-\s+/)) {
-        items.push(lines[i].replace(/^\s+-\s+/, '').replace(/^['"]|['"]$/g, ''));
-        i++;
-      }
-      result[listKey[1]] = items;
-      continue;
-    }
-    i++;
-  }
-  return result;
 }
 
 interface FieldContext {
@@ -87,6 +55,62 @@ function requireStringArray(value: unknown, ctx: FieldContext): string[] {
   return value as string[];
 }
 
+function optionalStringArray(value: unknown, ctx: FieldContext): string[] | undefined {
+  if (value === undefined) return undefined;
+  const ok = Array.isArray(value) && value.length > 0 && value.every((item) => typeof item === 'string' && item.length > 0);
+  if (!ok) throw new Error(`Invalid optional '${ctx.key}' in ${ctx.path}; expected a non-empty string array`);
+  return value as string[];
+}
+
+function optionalMapping({ value, key, path }: { value: unknown; key: string; path: string }): Record<string, unknown> {
+  if (value === undefined) return {};
+  if (!value || Array.isArray(value) || typeof value !== 'object') {
+    throw new Error(`Invalid optional '${key}' in ${path}; expected a mapping`);
+  }
+  return value as Record<string, unknown>;
+}
+
+function uniqueStrings(values: Array<string[] | undefined>): string[] | undefined {
+  const merged = values.flatMap((value) => value ?? []);
+  const unique = [...new Set(merged)];
+  return unique.length > 0 ? unique : undefined;
+}
+
+function readArray({ source, keys, path }: { source: Record<string, unknown>; keys: string[]; path: string }): string[] | undefined {
+  const values = keys.map((key) => optionalStringArray(source[key], { key, path }));
+  return uniqueStrings(values);
+}
+
+function buildRouting(fm: Record<string, unknown>, path: string): ManifestRouting | undefined {
+  const routingSource = optionalMapping({ value: fm.routing, key: 'routing', path });
+  const routing: ManifestRouting = {};
+
+  const triggers = uniqueStrings([
+    optionalStringArray(fm.triggers, { key: 'triggers', path }),
+    readArray({ source: routingSource, keys: ['triggers'], path }),
+  ]);
+  if (triggers) routing.triggers = triggers;
+
+  const commonPaths = uniqueStrings([
+    optionalStringArray(fm.applies_to, { key: 'applies_to', path }),
+    readArray({ source: routingSource, keys: ['commonPaths', 'common_paths', 'paths'], path }),
+  ]);
+  if (commonPaths) routing.commonPaths = commonPaths;
+
+  const capabilityTags = uniqueStrings([
+    readArray({ source: routingSource, keys: ['capabilityTags', 'capability_tags', 'applies_to'], path }),
+  ]);
+  if (capabilityTags) routing.capabilityTags = capabilityTags;
+
+  const dependsAfter = readArray({ source: routingSource, keys: ['dependsAfter', 'depends_after'], path });
+  if (dependsAfter) routing.dependsAfter = dependsAfter;
+
+  const oftenComposesWith = readArray({ source: routingSource, keys: ['oftenComposesWith', 'often_composes_with'], path });
+  if (oftenComposesWith) routing.oftenComposesWith = oftenComposesWith;
+
+  return Object.keys(routing).length > 0 ? routing : undefined;
+}
+
 function readEntry(path: string, type: ManifestEntryType): ManifestEntry {
   const text = readFileSync(join(repoRoot, path), 'utf8');
   const fm = parseFrontmatter(text);
@@ -108,6 +132,8 @@ function readEntry(path: string, type: ManifestEntryType): ManifestEntry {
   if (Array.isArray(fm.applies_to) && fm.applies_to.length > 0 && fm.applies_to.every((p) => typeof p === 'string')) {
     entry.applies_to = fm.applies_to as string[];
   }
+  const routing = buildRouting(fm, path);
+  if (routing) entry.routing = routing;
   return entry;
 }
 

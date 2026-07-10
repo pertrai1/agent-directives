@@ -4,6 +4,14 @@ import { fileURLToPath } from 'node:url';
 
 export type ManifestEntryType = 'directive' | 'skill' | 'rule';
 
+export interface ManifestRouting {
+  triggers?: string[];
+  commonPaths?: string[];
+  capabilityTags?: string[];
+  dependsAfter?: string[];
+  oftenComposesWith?: string[];
+}
+
 export interface ManifestEntry {
   id: string;
   type: ManifestEntryType;
@@ -14,6 +22,7 @@ export interface ManifestEntry {
   category: string;
   tools: string[];
   applies_to?: string[];
+  routing?: ManifestRouting;
 }
 
 export interface Manifest {

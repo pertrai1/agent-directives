@@ -14,7 +14,21 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "every-task",
+          "workflow-selection",
+          "directive-selection"
+        ],
+        "capabilityTags": [
+          "implementation",
+          "debugging",
+          "review",
+          "exploration",
+          "policy-change"
+        ]
+      }
     },
     {
       "id": "agent-permissions",
@@ -29,7 +43,23 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "protected-file",
+          "risky-command",
+          "install-command",
+          "deploy-command",
+          "secrets",
+          "permissions"
+        ],
+        "capabilityTags": [
+          "implementation",
+          "debugging",
+          "policy-change",
+          "review"
+        ]
+      }
     },
     {
       "id": "architecture-boundaries",
@@ -44,7 +74,17 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "imports",
+          "exports",
+          "packages",
+          "architecture",
+          "shared-code",
+          "dependency-direction"
+        ]
+      }
     },
     {
       "id": "codebase-navigation",
@@ -59,7 +99,14 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "orientation",
+          "unfamiliar-codebase",
+          "multi-step-work"
+        ]
+      }
     },
     {
       "id": "context-handoff",
@@ -72,7 +119,23 @@
       "tools": [
         "claude",
         "codex"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "directive-boundary",
+          "session-handoff",
+          "context-compaction",
+          "long-running-task",
+          "multi-phase-workflow"
+        ],
+        "capabilityTags": [
+          "implementation",
+          "debugging",
+          "review",
+          "exploration",
+          "policy-change"
+        ]
+      }
     },
     {
       "id": "error-memory",
@@ -85,7 +148,14 @@
       "tools": [
         "claude",
         "codex"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "repeated-mistakes",
+          "error-memory",
+          "post-task-learning"
+        ]
+      }
     },
     {
       "id": "exploration-mode",
@@ -100,7 +170,15 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "explore",
+          "investigate",
+          "compare-options",
+          "uncertain-approach"
+        ]
+      }
     },
     {
       "id": "session-decisions",
@@ -113,7 +191,15 @@
       "tools": [
         "claude",
         "codex"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "policy-change",
+          "architecture-decision",
+          "workflow-change",
+          "cross-cutting-convention"
+        ]
+      }
     },
     {
       "id": "specification-driven-development",
@@ -128,7 +214,15 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "new-feature",
+          "api-addition",
+          "cross-cutting-change",
+          "specification"
+        ]
+      }
     },
     {
       "id": "task-framing",
@@ -143,7 +237,15 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "non-trivial-task",
+          "ambiguous-task",
+          "high-risk-task",
+          "cross-cutting-change"
+        ]
+      }
     },
     {
       "id": "test-driven-development",
@@ -158,7 +260,15 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "behavior-change",
+          "new-feature",
+          "bug-fix",
+          "refactor-with-behavior"
+        ]
+      }
     },
     {
       "id": "type-driven-development",
@@ -173,7 +283,15 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "types",
+          "public-api",
+          "typed-project",
+          "service-boundary"
+        ]
+      }
     },
     {
       "id": "verification",
@@ -188,7 +306,15 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "verification",
+          "pre-pr",
+          "quality-gates",
+          "implementation-complete"
+        ]
+      }
     },
     {
       "id": "workspace-isolation",
@@ -201,7 +327,19 @@
       "tools": [
         "claude",
         "codex"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "isolated-workspace",
+          "worktree",
+          "branch-isolation",
+          "feature-work"
+        ],
+        "capabilityTags": [
+          "implementation",
+          "debugging"
+        ]
+      }
     },
     {
       "id": "architecture-boundary-reviewer",
@@ -216,7 +354,21 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "imports",
+          "exports",
+          "packages",
+          "shared-code",
+          "service-boundaries",
+          "architecture-review"
+        ],
+        "commonPaths": [
+          "boundary-path",
+          "review-path"
+        ]
+      }
     },
     {
       "id": "code-reviewer",
@@ -231,7 +383,20 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "pull-request",
+          "pr-review",
+          "code-review",
+          "branch-review",
+          "diff-review",
+          "merge-risk"
+        ],
+        "commonPaths": [
+          "review-path"
+        ]
+      }
     },
     {
       "id": "codebase-health-reviewer",
@@ -246,7 +411,21 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "typescript",
+          "javascript",
+          "refactor",
+          "cleanup",
+          "fallow",
+          "codebase-health"
+        ],
+        "commonPaths": [
+          "full-path",
+          "review-path"
+        ]
+      }
     },
     {
       "id": "harness-hooks-reviewer",
@@ -261,7 +440,24 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "agent-hooks",
+          "harness-hooks",
+          "start-hook",
+          "stop-hook",
+          "pre-write-hook",
+          "pre-command-hook",
+          "post-change-automation",
+          "deterministic-agent-automation"
+        ],
+        "commonPaths": [
+          "full-path",
+          "review-path",
+          "policy-path"
+        ]
+      }
     },
     {
       "id": "implementation-task-planner",
@@ -276,7 +472,21 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "task-planning",
+          "implementation-plan",
+          "prd-to-tasks",
+          "acceptance-criteria-to-tasks",
+          "task-list"
+        ],
+        "commonPaths": [
+          "exploration-path",
+          "full-path",
+          "policy-path"
+        ]
+      }
     },
     {
       "id": "mcp-integration-reviewer",
@@ -291,7 +501,23 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "mcp-server",
+          "mcp-tool",
+          "agent-tool-schema",
+          "internal-tool-bridge",
+          "structured-search-tool",
+          "agent-accessible-api",
+          "agent-write-tool"
+        ],
+        "commonPaths": [
+          "full-path",
+          "review-path",
+          "policy-path"
+        ]
+      }
     },
     {
       "id": "product-requirements-writer",
@@ -306,7 +532,21 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "prd",
+          "product-requirements",
+          "feature-spec",
+          "requirements-discovery",
+          "vague-feature-request"
+        ],
+        "commonPaths": [
+          "exploration-path",
+          "full-path",
+          "policy-path"
+        ]
+      }
     },
     {
       "id": "production-readiness-reviewer",
@@ -321,7 +561,27 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "production-readiness",
+          "production-safety",
+          "migration",
+          "persistence",
+          "external-service",
+          "async-job",
+          "auth-security-privacy",
+          "infra-config-deploy",
+          "critical-user-path",
+          "performance-scale",
+          "cross-service-compatibility"
+        ],
+        "commonPaths": [
+          "full-path",
+          "debugging-path",
+          "review-path"
+        ]
+      }
     },
     {
       "id": "self-audit",
@@ -336,7 +596,18 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "after-refactor",
+          "before-verification",
+          "full-path",
+          "pre-pr"
+        ],
+        "commonPaths": [
+          "full-path"
+        ]
+      }
     },
     {
       "id": "spec-reviewer",
@@ -351,7 +622,19 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "written-spec",
+          "specification",
+          "acceptance-criteria",
+          "design-review"
+        ],
+        "commonPaths": [
+          "full-path",
+          "review-path"
+        ]
+      }
     },
     {
       "id": "subagent-driven-development",
@@ -366,7 +649,21 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "subagent-orchestration",
+          "delegated-implementation",
+          "implementation-plan-execution",
+          "multi-task-plan",
+          "parallel-agent-work"
+        ],
+        "commonPaths": [
+          "full-path",
+          "debugging-path",
+          "policy-path"
+        ]
+      }
     },
     {
       "id": "systematic-debugging",
@@ -381,7 +678,21 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "bug",
+          "failing-test",
+          "ci-failure",
+          "build-failure",
+          "integration-failure",
+          "regression",
+          "flaky-behavior"
+        ],
+        "commonPaths": [
+          "debugging-path"
+        ]
+      }
     },
     {
       "id": "test-reviewer",
@@ -396,7 +707,20 @@
         "copilot",
         "codex",
         "cursor"
-      ]
+      ],
+      "routing": {
+        "triggers": [
+          "tests",
+          "test-review",
+          "tdd",
+          "coverage",
+          "assertions"
+        ],
+        "commonPaths": [
+          "full-path",
+          "review-path"
+        ]
+      }
     },
     {
       "id": "angular-coding-style",
@@ -415,7 +739,13 @@
       "applies_to": [
         "src/app/**/*.ts",
         "src/**/*.ts"
-      ]
+      ],
+      "routing": {
+        "commonPaths": [
+          "src/app/**/*.ts",
+          "src/**/*.ts"
+        ]
+      }
     },
     {
       "id": "angular-components-and-templates",
@@ -436,7 +766,15 @@
         "src/app/**/*.component.html",
         "src/app/**/*.component.css",
         "src/app/**/*.component.scss"
-      ]
+      ],
+      "routing": {
+        "commonPaths": [
+          "src/app/**/*.component.ts",
+          "src/app/**/*.component.html",
+          "src/app/**/*.component.css",
+          "src/app/**/*.component.scss"
+        ]
+      }
     },
     {
       "id": "angular-patterns",
@@ -461,7 +799,19 @@
         "src/app/**/*.guard.ts",
         "src/app/**/*.resolver.ts",
         "src/app/**/*.interceptor.ts"
-      ]
+      ],
+      "routing": {
+        "commonPaths": [
+          "src/app/**/*.component.ts",
+          "src/app/**/*.component.html",
+          "src/app/**/*.service.ts",
+          "src/app/**/*.store.ts",
+          "src/app/**/*.routes.ts",
+          "src/app/**/*.guard.ts",
+          "src/app/**/*.resolver.ts",
+          "src/app/**/*.interceptor.ts"
+        ]
+      }
     },
     {
       "id": "angular-project-structure",
@@ -483,7 +833,16 @@
         "src/main.ts",
         "src/app/**/*.ts",
         "src/app/**/*.html"
-      ]
+      ],
+      "routing": {
+        "commonPaths": [
+          "angular.json",
+          "package.json",
+          "src/main.ts",
+          "src/app/**/*.ts",
+          "src/app/**/*.html"
+        ]
+      }
     },
     {
       "id": "angular-security",
@@ -509,7 +868,20 @@
         "src/environments/**/*.ts",
         "src/**/*.server.ts",
         "server.ts"
-      ]
+      ],
+      "routing": {
+        "commonPaths": [
+          "src/app/**/*.component.ts",
+          "src/app/**/*.component.html",
+          "src/app/**/*.service.ts",
+          "src/app/**/*.interceptor.ts",
+          "src/app/**/*.guard.ts",
+          "src/app/**/*.routes.ts",
+          "src/environments/**/*.ts",
+          "src/**/*.server.ts",
+          "server.ts"
+        ]
+      }
     },
     {
       "id": "angular-testing",
@@ -529,7 +901,14 @@
         "src/app/**/*.spec.ts",
         "src/app/**/*.test.ts",
         "src/**/*.spec.ts"
-      ]
+      ],
+      "routing": {
+        "commonPaths": [
+          "src/app/**/*.spec.ts",
+          "src/app/**/*.test.ts",
+          "src/**/*.spec.ts"
+        ]
+      }
     },
     {
       "id": "python-coding-style",
@@ -547,7 +926,12 @@
       ],
       "applies_to": [
         "**/*.py"
-      ]
+      ],
+      "routing": {
+        "commonPaths": [
+          "**/*.py"
+        ]
+      }
     },
     {
       "id": "python-patterns",
@@ -565,7 +949,12 @@
       ],
       "applies_to": [
         "**/*.py"
-      ]
+      ],
+      "routing": {
+        "commonPaths": [
+          "**/*.py"
+        ]
+      }
     },
     {
       "id": "python-project-structure",
@@ -588,7 +977,17 @@
         "poetry.lock",
         "uv.lock",
         "**/*.py"
-      ]
+      ],
+      "routing": {
+        "commonPaths": [
+          "pyproject.toml",
+          "setup.py",
+          "requirements.txt",
+          "poetry.lock",
+          "uv.lock",
+          "**/*.py"
+        ]
+      }
     },
     {
       "id": "python-security",
@@ -608,7 +1007,14 @@
         "**/*.py",
         "pyproject.toml",
         "requirements.txt"
-      ]
+      ],
+      "routing": {
+        "commonPaths": [
+          "**/*.py",
+          "pyproject.toml",
+          "requirements.txt"
+        ]
+      }
     },
     {
       "id": "python-testing",
@@ -633,7 +1039,19 @@
         "pytest.ini",
         "tox.ini",
         "setup.cfg"
-      ]
+      ],
+      "routing": {
+        "commonPaths": [
+          "tests/**/*.py",
+          "**/*_test.py",
+          "**/test_*.py",
+          "pyproject.toml",
+          "conftest.py",
+          "pytest.ini",
+          "tox.ini",
+          "setup.cfg"
+        ]
+      }
     }
   ]
 }

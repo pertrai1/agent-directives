@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+import { execSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
@@ -7,6 +8,7 @@ import {
   assertFileMissing,
   assertNotContains,
   reportResults,
+  repoRoot,
   runCli,
   test,
   withTempProject,
@@ -42,6 +44,31 @@ test("filters list by flags (required, category, type, tool)", () => {
     assertContains(tool, { needle: "adaptive-routing", context: "list --tool" });
     assertNotContains(tool, { needle: "workspace-isolation", context: "list --tool" });
   });
+});
+
+console.log("\nmanifest");
+test("manifest generation rejects non-mapping routing frontmatter", () => {
+  const target = join(repoRoot, "directives", "codebase-navigation.md");
+  const original = readFileSync(target, "utf8");
+  const invalid = original.replace("routing:\n  load: conditional", "routing: true");
+
+  try {
+    writeFileSync(target, invalid);
+    let stderr = "";
+    try {
+      execSync("tsx scripts/generate-manifest.ts", {
+        cwd: repoRoot,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+    } catch (error) {
+      stderr = String((error as { stderr?: Buffer | string }).stderr ?? error);
+    }
+    if (!stderr) throw new Error("expected manifest generation to fail");
+    assertContains(stderr, { needle: "Invalid optional 'routing' in directives/codebase-navigation.md", context: "routing shape" });
+  } finally {
+    writeFileSync(target, original);
+  }
 });
 
 console.log("\ncontext-audit");
