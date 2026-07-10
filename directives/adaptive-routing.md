@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 1.9.0
+version: 1.9.1
 required: true
 category: workflow
 tools:
@@ -105,9 +105,10 @@ For non-trivial requests with multiple intents, decompose before selecting skill
    primary directive, skill, or rule family.
 2. Map each item to matching workflow paths, skills, and rules using the skill
    discovery map plus available manifest, rule, and frontmatter metadata.
-3. Compose the final route by merging required paths and ordering dependent work
-   such as reproduce before fix, fix before regression test, and implementation
-   before review.
+3. Compose the final route by merging required paths and ordering dependent work.
+   For debugging tasks that require regression coverage and boundary review, use
+   this order: reproduce → add or update the failing regression test → fix →
+   rerun the test → boundary review before merge readiness.
 4. If the first decomposition uses vague steps like "fix issue" or "review
    code," revise it using the names and descriptions of matching directives,
    skills, or rules.

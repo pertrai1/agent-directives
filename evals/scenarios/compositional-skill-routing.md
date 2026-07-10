@@ -31,8 +31,8 @@ specialist skills, and composes the final workflow path.
       regression test update or addition.
 - [ ] Agent loads `skills/architecture-boundary-reviewer/SKILL.md` because moved
       shared utility imports require boundary review.
-- [ ] Agent orders the route so reproduction precedes the fix, the regression
-      test proves the fix, and boundary review happens before merge readiness.
+- [ ] Agent orders the route as reproduce → add or update the failing regression
+      test → fix → rerun the test → boundary review before merge readiness.
 - [ ] Agent names selected directive/skill files explicitly in the route output.
 
 ## Anti-Behaviors
@@ -54,5 +54,5 @@ specialist skills, and composes the final workflow path.
 | --- | --- | --- |
 | **Decomposition** | Breaks the prompt into concrete debugging, regression-test, and boundary-review work items | Uses vague buckets such as "fix issue" or "review code" |
 | **Skill selection** | Selects the three canonical skills required by the matched intents and avoids unrelated reviewer skills | Omits a required skill or bulk-loads all candidates |
-| **Route composition** | Merges Debugging and Boundary paths and orders dependent work before merge review | Picks one path only or performs review before reproducing/fixing |
+| **Route composition** | Merges Debugging and Boundary paths and orders reproduce → regression test → fix → rerun test → boundary review before merge readiness | Picks one path only or performs review before reproducing/fixing |
 | **Candidate discipline** | States why near-matches were not loaded when ambiguity matters | Treats all possible matches as required context |
