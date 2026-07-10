@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.8.0
+
+### Minor Changes
+
+- [#64](https://github.com/pertrai1/agent-directives/pull/64) [`be5cc49`](https://github.com/pertrai1/agent-directives/commit/be5cc4959e6abfba7de03c96e2823820605d4523) Thanks [@pertrai1](https://github.com/pertrai1)! - Add composite task routing guidance and eval coverage, expose routing metadata in the manifest, and add selected-entry context audit support.
+
 ## 0.7.0
 
 ### Minor Changes
