@@ -93,6 +93,7 @@ npx agent-directives add code-reviewer --tool claude --force
 
 npx agent-directives check --tool codex
 npx agent-directives context-audit --tool codex --required
+npx agent-directives context-audit --tool codex --entries adaptive-routing,systematic-debugging,test-reviewer,architecture-boundary-reviewer
 npx agent-directives context-audit --tool codex --required --max-tokens 12000
 npx agent-directives sync --tool claude --yes
 npx agent-directives sync --tool claude --yes --rules auto
@@ -106,9 +107,12 @@ Use `context-audit` to estimate how much prompt budget a tool/profile consumes b
 ```bash
 npx agent-directives context-audit --tool codex --required
 npx agent-directives context-audit --tool claude --max-tokens 20000
+npx agent-directives context-audit --tool codex --entries adaptive-routing,systematic-debugging,test-reviewer,architecture-boundary-reviewer
 ```
 
 The estimate uses a simple `characters / 4` heuristic and reports total tokens, required vs optional counts, and the largest directive/skill/rule files. With `--max-tokens`, the command exits non-zero when the selected entries exceed the budget, making it usable in CI.
+
+Use `--entries` with comma-separated manifest IDs to audit a selected route or composite task payload before loading it into an agent. In selected-entry mode, the report compares the chosen entries against all entries available for the same `--tool` scope and shows estimated token savings. When `--entries` is present, selection is by explicit ID plus tool compatibility; `--required` remains the existing required-only mode only when no entries are passed. Unknown IDs or IDs that do not support the requested tool are rejected with a clear error.
 
 ### Tool auto-detection
 
