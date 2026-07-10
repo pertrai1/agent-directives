@@ -160,11 +160,16 @@ function largestEntries(entries: ContextAuditEntry[], count: number): ContextAud
 
 function buildComparison(options: { selected?: string[]; available: ManifestEntry[]; selectedTotals: EntryTotals }): ContextAuditComparison | undefined {
   if (!options.selected) return undefined;
-  const availableAudited = options.available.map(auditEntry);
-  const availableTotals = totalEntries(availableAudited);
+  const selectedIds = new Set(options.selected);
+  const unselectedAvailable = options.available.filter((entry) => !selectedIds.has(entry.id));
+  const unselectedTotals = totalEntries(unselectedAvailable.map(auditEntry));
+  const availableTotals = {
+    bytes: options.selectedTotals.bytes + unselectedTotals.bytes,
+    estimatedTokens: options.selectedTotals.estimatedTokens + unselectedTotals.estimatedTokens,
+  };
   const savingsTokens = availableTotals.estimatedTokens - options.selectedTotals.estimatedTokens;
   return {
-    availableEntries: availableAudited.length,
+    availableEntries: options.available.length,
     availableBytes: availableTotals.bytes,
     availableEstimatedTokens: availableTotals.estimatedTokens,
     savingsTokens,

@@ -86,11 +86,15 @@ test("audits selected entries against available tool context", () => {
   });
 });
 
-test("rejects unknown selected context audit entries", () => {
+test("rejects unknown and unsupported selected context audit entries", () => {
   withTempProject((cwd) => {
     const unknown = runCli("context-audit --tool codex --entries adaptive-routing,missing-route-entry", { cwd, allowFail: true });
     if (unknown.code === 0) throw new Error("expected non-zero exit for unknown selected entry");
     assertContains(unknown.stderr, { needle: "Unknown --entries id: 'missing-route-entry'", context: "unknown selected entry" });
+
+    const unsupported = runCli("context-audit --tool cursor --entries workspace-isolation", { cwd, allowFail: true });
+    if (unsupported.code === 0) throw new Error("expected non-zero exit for unsupported selected entry");
+    assertContains(unsupported.stderr, { needle: "Selected entry does not support tool 'cursor': 'workspace-isolation'", context: "unsupported selected entry" });
   });
 });
 
