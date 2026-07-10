@@ -62,8 +62,11 @@ function optionalStringArray(value: unknown, ctx: FieldContext): string[] | unde
   return value as string[];
 }
 
-function objectValue(value: unknown): Record<string, unknown> {
-  if (!value || Array.isArray(value) || typeof value !== 'object') return {};
+function optionalMapping({ value, key, path }: { value: unknown; key: string; path: string }): Record<string, unknown> {
+  if (value === undefined) return {};
+  if (!value || Array.isArray(value) || typeof value !== 'object') {
+    throw new Error(`Invalid optional '${key}' in ${path}; expected a mapping`);
+  }
   return value as Record<string, unknown>;
 }
 
@@ -79,7 +82,7 @@ function readArray({ source, keys, path }: { source: Record<string, unknown>; ke
 }
 
 function buildRouting(fm: Record<string, unknown>, path: string): ManifestRouting | undefined {
-  const routingSource = objectValue(fm.routing);
+  const routingSource = optionalMapping({ value: fm.routing, key: 'routing', path });
   const routing: ManifestRouting = {};
 
   const triggers = uniqueStrings([
