@@ -92,6 +92,39 @@ test("reports prompt weight and rejects malformed options", () => {
   });
 });
 
+test("audits selected entries against available tool context", () => {
+  withTempProject((cwd) => {
+    const selected = runCli(
+      "context-audit --tool codex --entries adaptive-routing,systematic-debugging,test-reviewer,architecture-boundary-reviewer --largest 2",
+      { cwd },
+    ).stdout;
+    assertContains(selected, { needle: "Context audit for codex selected entries", context: "selected audit heading" });
+    assertContains(selected, { needle: "Selected entries: 4", context: "selected audit count" });
+    assertContains(selected, { needle: "Available entries for codex:", context: "selected audit available" });
+    assertContains(selected, { needle: "Estimated savings:", context: "selected audit savings" });
+    assertContains(selected, { needle: "systematic-debugging", context: "selected audit largest" });
+
+    const requiredWithEntries = runCli(
+      "context-audit --tool codex --required --entries architecture-boundary-reviewer",
+      { cwd },
+    ).stdout;
+    assertContains(requiredWithEntries, { needle: "Selected entries: 1", context: "selected overrides required count" });
+    assertContains(requiredWithEntries, { needle: "architecture-boundary-reviewer", context: "selected overrides required entry" });
+  });
+});
+
+test("rejects unknown and unsupported selected context audit entries", () => {
+  withTempProject((cwd) => {
+    const unknown = runCli("context-audit --tool codex --entries adaptive-routing,missing-route-entry", { cwd, allowFail: true });
+    if (unknown.code === 0) throw new Error("expected non-zero exit for unknown selected entry");
+    assertContains(unknown.stderr, { needle: "Unknown --entries id: 'missing-route-entry'", context: "unknown selected entry" });
+
+    const unsupported = runCli("context-audit --tool cursor --entries workspace-isolation", { cwd, allowFail: true });
+    if (unsupported.code === 0) throw new Error("expected non-zero exit for unsupported selected entry");
+    assertContains(unsupported.stderr, { needle: "Selected entry does not support tool 'cursor': 'workspace-isolation'", context: "unsupported selected entry" });
+  });
+});
+
 console.log("\nsync and check");
 test("installs required entries and validates check command", () => {
   withTempProject((cwd) => {

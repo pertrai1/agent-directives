@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Command } from 'commander';
-import { buildContextAudit, renderContextAudit } from './context-audit.js';
+import { buildContextAudit, ContextAuditSelectionError, renderContextAudit } from './context-audit.js';
 import { filterEntries, findEntry, loadManifest, packageRoot, type ManifestEntry, type ManifestEntryType } from './manifest.js';
 import { installEntry, isEntryInstalled, type InstallResult } from './install.js';
 import { renderEntryList } from './renderEntryList.js';
@@ -60,9 +60,16 @@ function parseIntegerOption(value: string, opts: { flag: string; minimum: number
   return parsed;
 }
 
-const program = new Command();
+function parseEntryIdsOption(value: string): string[] {
+  const ids = value.split(',').map((id) => id.trim()).filter(Boolean);
+  if (ids.length === 0) {
+    console.error(`Invalid --entries '${value}'. Expected a comma-separated list of manifest entry IDs.`);
+    process.exit(1);
+  }
+  return Array.from(new Set(ids));
+}
 
-program
+const program = new Command()
   .name('agent-directives')
   .description('Install agent directives, skills, and rules into your project')
   .version(pkg.version);
@@ -142,24 +149,37 @@ program
   .command('context-audit')
   .description('Estimate prompt weight for directives, skills, and rules')
   .option('-t, --tool <tool>', `Filter by target tool (${KNOWN_TOOLS.join(', ')})`)
-  .option('-r, --required', 'Only include always-loaded required entries')
+  .option('-r, --required', 'Only include always-loaded required entries when --entries is not provided')
+  .option('--entries <ids>', 'Comma-separated manifest entry IDs to audit as a selected route payload')
   .option('--max-tokens <tokens>', 'Fail when the estimated token count exceeds this budget')
   .option('--largest <count>', 'Number of largest entries to show', '10')
-  .action((opts: { tool?: string; required?: boolean; maxTokens?: string; largest?: string }) => {
+  .action((opts: { tool?: string; required?: boolean; entries?: string; maxTokens?: string; largest?: string }) => {
     if (opts.tool && !isTool(opts.tool)) {
       console.error(`Unknown tool '${opts.tool}'. Expected one of: ${KNOWN_TOOLS.join(', ')}`);
       process.exit(1);
     }
     const maxTokens = opts.maxTokens === undefined ? undefined : parseIntegerOption(opts.maxTokens, { flag: '--max-tokens', minimum: 0 });
     const largest = opts.largest === undefined ? undefined : parseIntegerOption(opts.largest, { flag: '--largest', minimum: 1 });
+    const selectedEntryIds = opts.entries === undefined ? undefined : parseEntryIdsOption(opts.entries);
 
     const manifest = loadManifest();
-    const result = buildContextAudit(manifest.entries, {
-      tool: opts.tool,
-      requiredOnly: opts.required,
-      maxTokens,
-      largest,
-    });
+    const result = (() => {
+      try {
+        return buildContextAudit(manifest.entries, {
+          tool: opts.tool,
+          requiredOnly: selectedEntryIds ? false : opts.required,
+          selectedEntryIds,
+          maxTokens,
+          largest,
+        });
+      } catch (error) {
+        if (error instanceof ContextAuditSelectionError) {
+          console.error(error.message);
+          process.exit(1);
+        }
+        throw error;
+      }
+    })();
     const rendered = renderContextAudit(result);
     if (result.overBudget) {
       console.error(rendered);
