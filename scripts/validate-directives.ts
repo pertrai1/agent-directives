@@ -2,6 +2,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseFrontmatterBlock } from './frontmatter.js';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const errors: string[] = [];
@@ -43,6 +44,41 @@ function normalizeText(text: string): string {
 
 function unquoteYamlScalar(value: string): string {
   return value.replace(/^['"]|['"]$/g, '');
+}
+
+function validateStringArrayShape({ path, keyPath, value }: { path: string; keyPath: string; value: unknown }): void {
+  if (value === undefined) return;
+  const ok = Array.isArray(value) && value.length > 0 && value.every((item) => typeof item === 'string' && item.length > 0);
+  if (!ok) fail(`${path}: optional routing metadata '${keyPath}' must be a non-empty string array`);
+}
+
+function validateRoutingMetadata(path: string, fm: string): void {
+  const parsed = parseFrontmatterBlock(fm);
+  validateStringArrayShape({ path, keyPath: 'triggers', value: parsed.triggers });
+  validateStringArrayShape({ path, keyPath: 'applies_to', value: parsed.applies_to });
+
+  const routing = parsed.routing;
+  if (routing === undefined) return;
+  if (!routing || typeof routing !== 'object' || Array.isArray(routing)) {
+    fail(`${path}: optional routing metadata 'routing' must be a mapping`);
+    return;
+  }
+
+  for (const key of [
+    'triggers',
+    'paths',
+    'applies_to',
+    'commonPaths',
+    'common_paths',
+    'capabilityTags',
+    'capability_tags',
+    'dependsAfter',
+    'depends_after',
+    'oftenComposesWith',
+    'often_composes_with',
+  ]) {
+    validateStringArrayShape({ path, keyPath: `routing.${key}`, value: (routing as Record<string, unknown>)[key] });
+  }
 }
 
 function validateRequiredKeys(path: string, fm: string): void {
@@ -117,6 +153,7 @@ function validateFrontmatter(path: string): void {
   validateCategoryValue(path, fm);
   validateToolsValues(path, fm);
   validateNameMatches(path, fm);
+  validateRoutingMetadata(path, fm);
 }
 
 function validateReferencedPaths(path: string): void {

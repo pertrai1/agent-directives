@@ -77,6 +77,11 @@ The `agent-directives` CLI reads `manifest.json` and copies the requested entrie
 into the current working directory. Use it from the project that should receive
 the files.
 
+`manifest.json` also exposes compact optional `routing` metadata, such as
+triggers, common paths, and capability tags, so external tools or agents can use
+the manifest as a lightweight routing index without loading full instruction
+bodies up front.
+
 ### Commands
 
 ```bash
