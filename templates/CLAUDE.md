@@ -53,6 +53,7 @@ phase sequence, no skipping steps:
 | -1   | **ORIENT**   | **Navigate codebase safely**             | See codebase-navigation directive (SAFE pattern)                              |
 | -0.5 | **BOUNDARIES** | **Classify touched files and dependency edges** | See architecture-boundaries directive when imports/exports/packages/shared code may change |
 | 0    | **BASELINE** | **Verify starting state is clean**       | <!-- FILL IN: baseline verification command --> all pass                      |
+| 0.5  | **SPEC**     | **Create or identify the durable written specification before implementation** | See specification-driven development; spec depth may scale, presence must not |
 | 1    | TYPES        | Define types first                       | Type-check passes                                                            |
 | 2    | RED          | Write ONE failing test                   | Test fails                                                                   |
 | 3    | GREEN        | Write minimum code to pass               | New test passes, all existing tests still pass, type-check passes             |
@@ -63,7 +64,7 @@ phase sequence, no skipping steps:
 | 5.5  | **HANDOFF**  | **Compact current task state when routed** | See `directives/context-handoff.md` for phase/session handoff |
 | 6    | COMMIT       | Atomic commit                            | One behavior per commit                                                      |
 
-Steps 2–6 repeat for each behavior. Do not batch.
+Steps 0.5-6 repeat for each behavior-changing slice. Do not batch.
 
 ## Directives
 
@@ -75,8 +76,8 @@ Load `directives/adaptive-routing.md` first, then load only the directives it se
 - **Codebase Navigation** — SAFE exploration pattern before implementation (`directives/codebase-navigation.md`)
 - **Architecture Boundaries** — Preserve dependency DAG and import rules (`directives/architecture-boundaries.md`)
 - **Exploration Mode** — Pre-implementation investigation and thinking stance (`directives/exploration-mode.md`)
-- **Task Framing** — Intake checklist for non-trivial work (`directives/task-framing.md`)
-- **Specification-Driven Development** — Write specs before code, implement against specs, verify after (`directives/specification-driven-development.md`)
+- **Task Framing** — Intake checklist that hands off to specification-driven development (`directives/task-framing.md`)
+- **Specification-Driven Development** — Create or identify durable specs before implementation, verify after (`directives/specification-driven-development.md`)
 - **Type-First Development** — Define types before writing implementation code (`directives/type-driven-development.md`)
 - **Test-Driven Development** — Strict RED/GREEN/REFACTOR cycle for behavior-changing code (`directives/test-driven-development.md`)
 - **Verification Protocol** — Structured evidence of correctness before GATES (`directives/verification.md`)
@@ -105,9 +106,9 @@ Load the relevant skill selected by adaptive routing for the task type.
 ## Task Framing (Mandatory for Non-Trivial Work)
 
 Before implementing a non-trivial, ambiguous, or cross-cutting task, load and
-follow the task-framing directive. It defines the minimum framing checklist,
-when a proposal must precede implementation, and which supporting docs are
-supplemental rather than binding.
+follow the task-framing directive. It defines the minimum framing checklist and
+hands behavior-changing work to specification-driven development for the
+required durable specification before implementation.
 
 ## Decision Log Lookup
 

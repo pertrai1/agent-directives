@@ -191,7 +191,7 @@ presence to zero:
 | Small (single fn) | Yes      | Skip   | Brief         | 1, 3-5 |
 | Medium (feature)  | Yes      | Yes    | Yes           | 1-5    |
 | Large (cross-cut) | Yes      | Yes    | Yes           | 1-5    |
-| Fix (bug)         | Brief    | If cross-cutting | Brief regression contract | 1, 3-5 |
+| Fix (bug)         | Brief    | If cross-cutting | Brief regression contract | 1, 3-5; include 2 when cross-cutting |
 
 **Rule of thumb:** If you can hold the full change in your head, a brief
 proposal is sufficient. If you can't, write the design and spec.

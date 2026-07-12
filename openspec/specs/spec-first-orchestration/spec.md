@@ -64,3 +64,12 @@ Every changed directive or skill SHALL receive the policy-appropriate version bu
 #### Scenario: Repository validation succeeds
 - **WHEN** the change is complete
 - **THEN** OpenSpec validation, scenario setup validation, manifest/version checks, repository checks, and whitespace checks pass without generated run artifacts left behind
+
+### Requirement: Published guidance remains aligned
+Published README and template guidance SHALL present the same spec-first
+implementation gate as adaptive routing, so consumers who start from packaged
+templates do not bypass the durable specification requirement.
+
+#### Scenario: Consumer template starts from a specification
+- **WHEN** an agent follows a packaged starter template for implementation or behavior-changing work
+- **THEN** the template requires creating or identifying a durable written specification before type, test, or implementation phases begin

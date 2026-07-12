@@ -23,6 +23,12 @@ Delete this comment block when done.
 These rules are routed by `directives/adaptive-routing.md`. Load that directive
 first, then load the corresponding detailed directive from `directives/`.
 
+### Specification First
+
+For every implementation or behavior-changing task, create or identify the
+durable written specification before types, tests, or implementation. Spec depth
+may scale with task size, but spec presence must not be skipped.
+
 ### Types First
 
 Define types before writing any implementation code. Run the project's type-check
@@ -37,7 +43,8 @@ Follow the RED/GREEN/REFACTOR cycle for behavior-changing code:
 3. Clean up if needed → confirm all tests still pass
 4. Repeat for each behavior — do not batch
 
-**Never** write behavior-changing implementation before a failing test exists.
+**Never** write behavior-changing implementation before a durable specification
+and a failing test exist.
 
 ### No Skipping Steps
 
@@ -69,6 +76,7 @@ After routing, report:
 - `any` type or implicit `any`
 - `it.skip()` in tests
 - Fake assertions (`expect(true).toBe(true)`)
+- Writing behavior-changing implementation before a durable specification exists
 - Writing behavior-changing implementation before a failing test exists
 - Batching multiple behaviors into one commit
 
@@ -83,8 +91,8 @@ then load only the selected directive:
 - `directives/codebase-navigation.md` — SAFE exploration pattern
 - `directives/architecture-boundaries.md` — Preserve dependency DAG and import rules
 - `directives/exploration-mode.md` — Pre-implementation investigation stance
-- `directives/task-framing.md` — Intake checklist for non-trivial work
-- `directives/specification-driven-development.md` — Write specs before code, verify after
+- `directives/task-framing.md` — Intake checklist that hands off to specification-driven development
+- `directives/specification-driven-development.md` — Create or identify durable specs before implementation, verify after
 - `directives/type-driven-development.md` — Types before implementation
 - `directives/test-driven-development.md` — RED/GREEN/REFACTOR cycle
 - `directives/verification.md` — Evidence of correctness before GATES

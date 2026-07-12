@@ -228,9 +228,9 @@ commands generic with TypeScript as an example.
 
 ### Task Framing (`directives/task-framing.md`)
 
-Intake checklist for non-trivial work. Eight-point framing checklist that
-catches ambiguous requirements before implementation starts. Defines when a
-proposal must precede implementation.
+Intake checklist for non-trivial work. Nine-point framing checklist that catches
+ambiguous requirements before implementation starts and hands behavior-changing
+work to specification-driven development for the required durable specification.
 
 ### Codebase Navigation (`directives/codebase-navigation.md`)
 
@@ -255,9 +255,10 @@ Fills the gap between codebase navigation (how to search) and task framing
 
 ### Specification-Driven Development (`directives/specification-driven-development.md`)
 
-Write specifications before code, implement against specs, verify after.
-Five-phase loop: propose, design, specify, implement, verify. Operates above
-TDD (correctness) and type-driven (shapes) — this directive defines what and why.
+Create or identify durable specifications before implementation, implement
+against specs, verify after. Five-phase loop: propose, design, specify,
+implement, verify. Operates above TDD (correctness) and type-driven (shapes) —
+this directive defines what and why.
 
 ### Verification Protocol (`directives/verification.md`)
 

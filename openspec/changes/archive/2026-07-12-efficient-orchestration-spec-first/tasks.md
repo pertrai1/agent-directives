@@ -13,6 +13,7 @@
 
 - [x] 3.1 Add a focused eval scenario covering spec-first routing and all five orchestration findings.
 - [x] 3.2 Apply required directive/skill version bumps and regenerate `manifest.json`.
+- [x] 3.3 Align packaged README and template guidance with the spec-first implementation gate.
 
 ## 4. Review and Verification
 
