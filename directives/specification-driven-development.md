@@ -1,7 +1,7 @@
 ---
 name: specification-driven-development
-description: Requires written specifications for features or changes large enough that build-and-see would risk rework.
-version: 1.0.0
+description: Requires a durable written specification before every implementation or behavior-changing task, with depth proportional to risk and complexity.
+version: 2.0.0
 required: false
 category: workflow
 tools:
@@ -11,6 +11,9 @@ tools:
   - cursor
 triggers:
   - new-feature
+  - implementation
+  - behavior-change
+  - bug-fix
   - api-addition
   - cross-cutting-change
   - specification
@@ -20,7 +23,11 @@ routing:
 
 # Specification-Driven Development Directive
 
-**When to load:** Load this directive when building features or changes that are large enough to benefit from written specifications before implementation. Applies to new features, cross-cutting changes, API additions, and any work where "build it and see" risks significant rework.
+**When to load:** Load this directive before every implementation or
+behavior-changing task. This includes features, bug fixes, refactors, API
+additions, cross-cutting changes, and behavior-affecting configuration or policy
+edits. Purely conversational, review-only, and non-behavioral Light Path tasks do
+not require an implementation specification.
 
 This directive governs how the agent defines what it's going to build before
 building it, then verifies the result against that definition. It operates at a
@@ -175,15 +182,16 @@ verification checks three dimensions:
 
 ## Progressive Depth
 
-Not every change needs all five phases. Scale the specification to the
-complexity of the change:
+Every implementation needs a durable specification, but not every change needs
+the same document depth. Scale depth to complexity; never scale specification
+presence to zero:
 
 | Change Size       | Proposal | Design | Detailed Spec | Phases |
 | ----------------- | -------- | ------ | ------------- | ------ |
 | Small (single fn) | Yes      | Skip   | Brief         | 1, 3-5 |
 | Medium (feature)  | Yes      | Yes    | Yes           | 1-5    |
 | Large (cross-cut) | Yes      | Yes    | Yes           | 1-5    |
-| Fix (bug)         | Brief    | Skip   | Skip          | 1, 4-5 |
+| Fix (bug)         | Brief    | If cross-cutting | Brief regression contract | 1, 3-5 |
 
 **Rule of thumb:** If you can hold the full change in your head, a brief
 proposal is sufficient. If you can't, write the design and spec.
@@ -240,7 +248,7 @@ is valuable — it means the specification caught a bad assumption early.
 | ----------------------- | -------------------------------------------------------- |
 | Test-Driven Development | Spec scenarios feed into TDD test cases                  |
 | Type-Driven Development | Spec requirements define what types should express       |
-| Task Framing            | Proposal phase overlaps with task framing — either works |
+| Task Framing            | Intake comes first; its output feeds this directive's Propose/Design/Specify phases |
 | Codebase Navigation     | Use SAFE pattern during design to understand the system  |
 | Verification            | Phase 5 uses the verification protocol for spec checking |
 | Exploration Mode        | Use exploration during proposal/design to investigate    |
@@ -275,4 +283,6 @@ the others fill in specific mechanics.
 
 ---
 
-_This directive is mandatory for features and cross-cutting changes. It is optional for trivial fixes, docs changes, and configuration updates where the change is obvious._
+_This directive is mandatory for every implementation or behavior-changing task.
+Specification depth is proportional; specification presence is not. It is not
+required for purely conversational, review-only, or non-behavioral Light Path work._

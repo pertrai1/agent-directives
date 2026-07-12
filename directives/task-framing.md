@@ -1,7 +1,7 @@
 ---
 name: task-framing
 description: Frames non-trivial, ambiguous, high-risk, or cross-cutting tasks before substantial edits.
-version: 1.1.0
+version: 1.2.0
 required: true
 category: workflow
 tools:
@@ -75,9 +75,22 @@ Before major edits, establish:
 If any of these materially affect the implementation and remain unknown, ask a
 concise clarifying question before major edits.
 
-## When a Proposal Should Precede Implementation
+This checklist is the intake to a specification, not a substitute for one. If
+the task will implement or change behavior, the agent MUST next load
+`directives/specification-driven-development.md` and record the durable
+specification before RED/GREEN or implementation edits.
 
-Provide a short proposed approach before major edits when:
+## Handoff to Specification-Driven Development
+
+For every implementation or behavior-changing task, use
+`directives/specification-driven-development.md` as the single proposal and
+contract workflow. Task framing establishes the problem, constraints,
+assumptions, failure modes, evidence plan, and scope budget; specification-driven
+development then owns the Propose, Design, and Specify outputs. Do not create a
+second interchangeable proposal under this directive.
+
+The specification's proposal must precede implementation. Full design depth is
+especially important when:
 
 - The task changes repo policy or contributor workflow
 - The task is cross-cutting
@@ -85,7 +98,7 @@ Provide a short proposed approach before major edits when:
 - Multiple plausible implementations exist with different tradeoffs
 - External behavior must be verified before coding
 
-The proposal should name:
+The specification proposal should name:
 
 - chosen approach
 - main assumptions
@@ -142,6 +155,8 @@ tracer bullet or a full feature pass:
 
 Prefer a tracer bullet when the feature crosses multiple layers, user feedback
 may change the shape, or a full implementation would require speculative code.
+The tracer bullet is still implementation and MUST be covered by the written
+specification before it starts.
 
 When reasoning or research is part of the task, separate:
 
