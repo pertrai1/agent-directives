@@ -53,7 +53,7 @@ phase sequence, no skipping steps:
 | -1   | **ORIENT**   | **Navigate codebase safely**             | See codebase-navigation directive (SAFE pattern)                              |
 | -0.5 | **BOUNDARIES** | **Classify touched files and dependency edges** | See architecture-boundaries directive when imports/exports/packages/shared code may change |
 | 0    | **BASELINE** | **Verify starting state is clean**       | <!-- FILL IN: baseline verification command --> all pass                      |
-| 0.5  | **SPEC**     | **Create or identify the durable written specification before implementation** | See specification-driven development; spec depth may scale, presence must not |
+| 0.5  | **SPEC**     | **Create or identify the durable written specification before implementation** | See specification-driven development; spec depth may scale, spec presence must not scale to zero |
 | 1    | TYPES        | Define types first                       | Type-check passes                                                            |
 | 2    | RED          | Write ONE failing test                   | Test fails                                                                   |
 | 3    | GREEN        | Write minimum code to pass               | New test passes, all existing tests still pass, type-check passes             |
