@@ -29,6 +29,21 @@ additions, cross-cutting changes, and behavior-affecting configuration or policy
 edits. Purely conversational, review-only, and non-behavioral Light Path tasks do
 not require an implementation specification.
 
+**Examples:**
+
+| Requires a spec | Does not require a spec |
+| --- | --- |
+| New feature or endpoint | Docs-only wording change or typo fix |
+| Bug fix that changes behavior | Comment or docstring update with no code change |
+| Refactor that changes public API or contracts | Pure internal refactor with no behavior change (still consider a brief proposal) |
+| Cross-cutting change (auth, data model, config schema) | Formatting, linting, or whitespace-only changes |
+| Behavior-affecting config or policy edit | Adding/updating a code example in a README |
+| Adding a new dependency that changes runtime behavior | Renaming a variable or file with no behavior change |
+| Migration or schema change | Answering a question or reviewing code with no edits |
+
+When in doubt, ask: "Does this change what the system does, or only how it's
+described?" Behavior changes need a spec; description-only changes do not.
+
 This directive governs how the agent defines what it's going to build before
 building it, then verifies the result against that definition. It operates at a
 higher level than TDD (which governs test mechanics) and type-driven development
