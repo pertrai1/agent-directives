@@ -1,5 +1,12 @@
 # agent-directives
 
+## 0.9.0
+
+### Minor Changes
+
+- [#68](https://github.com/pertrai1/agent-directives/pull/68) [`577dadb`](https://github.com/pertrai1/agent-directives/commit/577dadb554da4d9cb4e2801ccb93fcb516d56727) Thanks [@pertrai1](https://github.com/pertrai1)! - Require durable specifications before implementation and improve routing,
+  handoff-state discovery, and delegation sizing guidance.
+
 ## 0.8.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "agent-directives",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Reusable agent directives, skills, and CLI tooling for AI coding workflows",
   "license": "MIT",
   "author": "Rob Simpson <rsimpson2@me.com>",
