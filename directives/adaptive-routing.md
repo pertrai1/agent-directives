@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 1.9.1
+version: 1.11.0
 required: true
 category: workflow
 tools:
@@ -31,6 +31,29 @@ implementation, debugging, review, or exploration.
 The router selects the lightest workflow that still proves safety. Do not load
 every directive by default. Load the directives and skills required by the task
 intent, risk level, and touched surfaces.
+
+---
+
+## Fast Path Decision
+
+Use this table before reading the detailed workflow-path sections. If the Light
+Path row clearly matches and no risk trigger applies, select it, report the
+one-line route, and skip the detailed non-Light path guidance.
+
+| Intent | Default path | First required next step | Evidence |
+| --- | --- | --- | --- |
+| Non-behavioral typo, wording, comment, or formatting only | Light | Minimal orientation; no implementation-spec artifact required | Diff + relevant gate |
+| New feature, behavior change, API change, or meaningful refactor | Full | Write or identify the durable spec via `directives/specification-driven-development.md` | Spec scenarios + RED/GREEN + gates |
+| Bug or regression | Debugging + Full | Write the brief expected-behavior/regression spec before the failing test or fix | Reproduction + spec + fix proof |
+| Import, export, package, shared-code, or path change | Boundary + relevant base path | Classify dependency edges; complete the base path's spec gate before edits | Boundary proof + base-path evidence |
+| Directive, skill, workflow, or repo-policy change | Policy + Full | Frame the task, then complete Propose/Design/Specify before edits | Spec review + eval/gates + decision log when durable |
+| PR, branch, diff, or local-change review | Review | Load routed reviewer skills; do not implement unless asked | Structured findings |
+| Investigation, explanation, PRD/spec writing, or task planning | Exploration | Investigate or write planning artifacts; do not implement | Repo evidence + requested artifact |
+| Mutable work in a shared, dirty, or default-branch checkout | Relevant base path + Workspace Isolation | Isolate or report an explicit safe fallback before edits | Isolation proof + base-path evidence |
+
+**Global implementation gate:** Every implementation or behavior-changing task
+MUST have a durable written specification before RED/GREEN or implementation
+edits begin. Specification depth is proportional; specification presence is not.
 
 ---
 
@@ -94,6 +117,14 @@ block.
    the task. Do not expand scope, rewrite adjacent code, introduce abstractions,
    apply drive-by formatting, perform whole-file rewrites, or fix unrelated
    issues unless current evidence requires it or the user explicitly requests it.
+9. **Act when ready.** Do not re-derive facts already established in the
+   conversation, re-litigate a decision the user has already made, or narrate
+   options you will not pursue. If you are weighing a choice, give a
+   recommendation, not an exhaustive survey.
+10. **Specify before implementing.** For every implementation or behavior-changing
+   task, load `directives/specification-driven-development.md` and create or
+   identify the durable governing specification before RED/GREEN or code/content
+   implementation edits. Scale depth, never presence.
 
 ---
 
@@ -220,7 +251,12 @@ Use for normal implementation work:
 Required directives:
 
 - `directives/codebase-navigation.md`
+- `directives/error-memory.md` during orientation when `docs/ERRORS.md` contains
+  entries relevant to the current task or touched area
 - `directives/task-framing.md` when non-trivial, ambiguous, high-risk, or cross-cutting
+- `directives/specification-driven-development.md` before every implementation
+  or behavior-changing edit; brief specifications are sufficient only where its
+  progressive-depth rules allow
 - `directives/type-driven-development.md` for typed projects or public contracts
 - `directives/test-driven-development.md` for behavior-changing code
 - `directives/agent-permissions.md` when work touches protected files, risky commands, package manager operations, deployment, infrastructure, secrets, CI, or repo policy
@@ -252,6 +288,8 @@ Use for:
 Required:
 
 - `skills/systematic-debugging/SKILL.md`
+- use `directives/specification-driven-development.md` to record the expected
+  behavior and regression contract before writing the failing test or fix
 - reproduce the failure before changing code
 - add or identify a failing regression test when behavior changed
 - use `directives/test-driven-development.md` for the fix when production behavior changes
@@ -339,7 +377,8 @@ Use for changes to:
 Required:
 
 - `directives/task-framing.md`
-- proposal before major edits when tradeoffs exist
+- `directives/specification-driven-development.md` before implementation edits;
+  use its Propose/Design/Specify phases as the proposal and implementation contract
 - bump the frontmatter `version` for every existing `directives/*.md` or `skills/*/SKILL.md` file changed in the PR; use patch for wording/behavior tightening, minor for new heuristics/routing/evidence coverage, and major for incompatible routing/schema/path changes; raw deletions are rejected, so deprecate with a major version bump before deletion
 - `directives/session-decisions.md` if the accepted change establishes or changes durable policy
 - `directives/verification.md` before PR
@@ -405,21 +444,3 @@ classification and avoid making the current change worse.
 | Opportunistic refactors or cleanup outside the task | Increases review surface and hides behavior risk |
 | Adding abstractions for hypothetical future use | Produces unnecessary code and weakens local fit |
 | Printing or rewriting whole files when a targeted patch would work | Wastes context and increases accidental churn |
-
----
-
-## Quick Reference
-
-| Intent | Default path | Evidence |
-| --- | --- | --- |
-| Docs/typo/comment only | Light | diff + relevant gate |
-| New feature | Full | RED/GREEN, functional proof, gates |
-| Bug/regression | Debugging + TDD | reproduction, failing test/command, fix proof |
-| Refactor | Full | no-behavior-change proof, tests, gates |
-| Import/export/package/shared change | Boundary + relevant base path | boundary proof |
-| Repo edits from shared/default checkout | relevant base path + Workspace Isolation | isolation proof or explicit fallback |
-| PR/diff review | Review | structured findings |
-| PRD/spec writing | Exploration | product requirements writer, essential questions, no code edits |
-| PRD/spec/issue to task list | Exploration | implementation task planner, repo-grounded file/test/validation tasks, no code edits |
-| Investigation/explanation | Exploration | repo evidence, no edits |
-| Directive/workflow/policy change | Policy | proposal/tradeoffs, verification, handoff for multi-phase work, decision log if durable |

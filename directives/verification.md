@@ -1,7 +1,7 @@
 ---
 name: verification
 description: Requires structured evidence of correctness before quality gates and pull requests.
-version: 1.1.0
+version: 1.2.0
 required: true
 category: workflow
 tools:
@@ -259,6 +259,37 @@ For generator, CLI, or MCP work, include one manual acceptance check with visibl
 
 ---
 
+## In-Flight Progress Claims
+
+Before reporting progress on a long-running task, audit each claim against a
+tool result from this session. Only report work you can point to evidence for;
+if something is not yet verified, say so explicitly. If tests fail, say so
+with the output; if a step was skipped, say that.
+
+---
+
+## Autonomous Operation
+
+When operating autonomously (cron-driven, delegated, or no human in the loop):
+the user is not watching and cannot answer questions mid-task. For reversible
+actions that follow from the original request, proceed without asking. Before
+ending your turn, check your last paragraph: if it is a plan, a question, or a
+promise about work you have not done, do that work now with tool calls. End only
+when the task is complete or you are blocked on input only the user can provide.
+
+---
+
+## Interval-Based Verification (Long-Running Tasks)
+
+For tasks that span many cycles or a long duration, establish a verification
+checkpoint at regular intervals. Run a focused subagent or self-check against
+the specification at each checkpoint. Treat each checkpoint as a
+mini-verification: functional proof, test passage, scope control. Stop
+accumulating changes if findings exceed what a single REFACTOR cycle can
+address.
+
+---
+
 ## Quality Gate Feedback
 
 Run the project-native gates selected by `directives/adaptive-routing.md`.
@@ -285,6 +316,9 @@ and show that the current change did not make it worse.
 | Skipping boundary proof for dependency changes | Passing tests do not prove architectural validity       |
 | Claiming verification without showing output | Evidence, not claims                                  |
 | Running GATES before verification            | Verification catches issues GATES misses              |
+| Reporting progress without tool evidence     | Claims must map to session tool results               |
+| Ending autonomous turn with a plan or question | The work must be done, not described               |
+| Accumulating changes without checkpoints in long tasks | Verification must happen at intervals, not only at the end |
 
 ---
 

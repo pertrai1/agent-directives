@@ -1,7 +1,7 @@
 ---
 name: "subagent-driven-development"
 description: "Load when executing an existing implementation plan with multiple mostly independent tasks using delegated subagents, fresh task context, parent-owned review, and final integration verification."
-version: 1.0.0
+version: 1.1.0
 required: false
 category: workflow
 tools:
@@ -55,7 +55,10 @@ Do not load this skill when:
   resources
 - the active runtime lacks safe delegation support; use the normal Full Path and
   state that subagent orchestration is unavailable
-- the orchestration overhead is larger than the risk of simply doing a small edit
+- the task touches fewer than approximately three files or one clear
+  function/section; by default, keep that work in the parent because prompt-writing
+  and review overhead exceeds the likely benefit, unless isolation or specialist
+  review materially reduces risk
 
 ## Core Principle: Parent Owns Scope, Subagents Own Slices
 
