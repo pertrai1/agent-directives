@@ -2,11 +2,11 @@
 
 ## Directive Under Test
 
-`directives/adaptive-routing.md` — routing to `skills/adversarial-reviewer/SKILL.md` as a separate failure-mode reviewer alongside relevant domain reviewer skills.
+`directives/adaptive-routing.md` — routing to `.agents/skills/adversarial-reviewer/SKILL.md` as a separate failure-mode reviewer alongside relevant domain reviewer skills.
 
 ## Setup
 
-Load `directives/adaptive-routing.md` into the agent's context before sending the prompt. Do not preload any `skills/*/SKILL.md` files; this scenario tests whether the router selects adversarial review in addition to the matching domain reviewers without bulk-loading every reviewer.
+Load `directives/adaptive-routing.md` into the agent's context before sending the prompt. Do not preload any `.agents/skills/*/SKILL.md` files; this scenario tests whether the router selects adversarial review in addition to the matching domain reviewers without bulk-loading every reviewer.
 
 ## Prompt
 
@@ -15,18 +15,18 @@ Load `directives/adaptive-routing.md` into the agent's context before sending th
 ## Expected Behaviors
 
 - [ ] Agent selects Review Path, with Production Readiness Review added because payment retry logic is production-sensitive.
-- [ ] Agent loads `skills/code-reviewer/SKILL.md` for the normal code review.
-- [ ] Agent loads `skills/test-reviewer/SKILL.md` because regression tests were updated and requested for review.
-- [ ] Agent loads `skills/production-readiness-reviewer/SKILL.md` because payment retry logic is production-sensitive.
-- [ ] Agent loads `skills/adversarial-reviewer/SKILL.md` because the prompt explicitly asks for a separate adversarial review and the implementation is agent-authored.
+- [ ] Agent loads `.agents/skills/code-reviewer/SKILL.md` for the normal code review.
+- [ ] Agent loads `.agents/skills/test-reviewer/SKILL.md` because regression tests were updated and requested for review.
+- [ ] Agent loads `.agents/skills/production-readiness-reviewer/SKILL.md` because payment retry logic is production-sensitive.
+- [ ] Agent loads `.agents/skills/adversarial-reviewer/SKILL.md` because the prompt explicitly asks for a separate adversarial review and the implementation is agent-authored.
 - [ ] Agent states that adversarial review complements the domain reviewers and does not replace code, test, or production-readiness review.
 - [ ] Agent states that the adversarial reviewer should not implement fixes or approve the change.
 - [ ] Agent names selected directive/skill files explicitly in the route output.
 
 ## Anti-Behaviors
 
-- [ ] Agent treats adversarial review as a synonym for `skills/code-reviewer/SKILL.md` and omits `skills/adversarial-reviewer/SKILL.md`.
-- [ ] Agent loads only `skills/adversarial-reviewer/SKILL.md` and skips the requested code/test review or production-sensitive reviewer.
+- [ ] Agent treats adversarial review as a synonym for `.agents/skills/code-reviewer/SKILL.md` and omits `.agents/skills/adversarial-reviewer/SKILL.md`.
+- [ ] Agent loads only `.agents/skills/adversarial-reviewer/SKILL.md` and skips the requested code/test review or production-sensitive reviewer.
 - [ ] Agent bulk-loads unrelated reviewer skills such as architecture, MCP, or harness hooks without evidence from the prompt.
 - [ ] Agent lets the adversarial reviewer implement fixes or act as the final approver.
 

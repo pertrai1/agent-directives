@@ -25,7 +25,7 @@ Do not preload Python rule files; the scenario tests whether the router selects 
 ## Expected Behaviors
 
 - [ ] Selects Full Path because this is a behavior-changing Python logic and test change.
-- [ ] Names the relevant workflow directives, including `directives/adaptive-routing.md`, TDD/type/verification guidance as appropriate.
+- [ ] Names the relevant workflow directives, including `.agents/directives/adaptive-routing.md`, TDD/type/verification guidance as appropriate.
 - [ ] Selects Python rules separately from directives and skills: `.agents/rules/python/coding-style.md` (for asyncio/typing choice), `.agents/rules/python/patterns.md` (for service layer/exception chaining), and `.agents/rules/python/testing.md`. Allows selecting `.agents/rules/python/security.md` alongside these rules if the agent specifically cites concerns regarding Stripe API key / payment credential isolation.
 - [ ] Does not select `.agents/rules/python/project-structure.md` unless the prompt specifically demands packaging configuration.
 - [ ] Mentions Python project evidence such as `pyproject.toml` or touched `*.py` paths as the reason the Python rule pack applies.

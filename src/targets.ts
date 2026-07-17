@@ -15,10 +15,7 @@ export interface TargetConfig {
 }
 
 function resolveFileCopyPath(entry: ManifestEntry, cwd: string): string {
-  if (entry.type === 'directive' || entry.type === 'skill' || entry.type === 'rule') {
-    return join(cwd, '.agents', entry.path);
-  }
-  return join(cwd, entry.path);
+  return join(cwd, '.agents', entry.path);
 }
 
 export const TARGETS: Record<Tool, TargetConfig> = {
