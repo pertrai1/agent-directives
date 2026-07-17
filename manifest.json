@@ -91,7 +91,7 @@
       "type": "directive",
       "path": "directives/codebase-navigation.md",
       "description": "Guides progressive codebase orientation with the SAFE pattern before implementation, review, or unfamiliar work.",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "required": true,
       "category": "workflow",
       "tools": [
@@ -113,7 +113,7 @@
       "type": "directive",
       "path": "directives/context-handoff.md",
       "description": "Compresses task state at directive or session boundaries so later phases can continue from a compact, current-state handoff instead of drifting through accumulated chat history.",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "required": false,
       "category": "workflow",
       "tools": [
@@ -232,7 +232,7 @@
       "type": "directive",
       "path": "directives/task-framing.md",
       "description": "Frames non-trivial, ambiguous, high-risk, or cross-cutting tasks before substantial edits.",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "required": true,
       "category": "workflow",
       "tools": [
@@ -255,7 +255,7 @@
       "type": "directive",
       "path": "directives/test-driven-development.md",
       "description": "Defines RED/GREEN/REFACTOR expectations for behavior-changing implementation work and bug fixes.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "required": false,
       "category": "testing",
       "tools": [
@@ -301,7 +301,7 @@
       "type": "directive",
       "path": "directives/verification.md",
       "description": "Requires structured evidence of correctness before quality gates and pull requests.",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "required": true,
       "category": "workflow",
       "tools": [
@@ -494,7 +494,7 @@
       "type": "skill",
       "path": "skills/implementation-task-planner/SKILL.md",
       "description": "Load when the user has a PRD, issue, acceptance criteria, or requirements doc and wants a staged implementation task list with relevant files, tests, validation steps, and review checkpoints.",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "required": false,
       "category": "planning",
       "tools": [
@@ -554,7 +554,7 @@
       "type": "skill",
       "path": "skills/product-requirements-writer/SKILL.md",
       "description": "Load when the user wants to turn a feature idea, product request, vague requirement, or problem statement into a concrete PRD/spec before implementation planning or coding.",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "required": false,
       "category": "planning",
       "tools": [
@@ -671,7 +671,7 @@
       "type": "skill",
       "path": "skills/subagent-driven-development/SKILL.md",
       "description": "Load when executing an existing implementation plan with multiple mostly independent tasks using delegated subagents, fresh task context, parent-owned review, and final integration verification.",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "required": false,
       "category": "workflow",
       "tools": [
