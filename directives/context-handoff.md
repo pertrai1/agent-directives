@@ -54,7 +54,7 @@ Before starting or resuming work, list the `.agents/` directory and inspect any
 existing handoff, verification, blocked-choice, risky-choice, or cleanup files
 before assuming clean state. When the task or handoff points to a repeated
 failure pattern, load the relevant `docs/ERRORS.md` entries through
-`directives/error-memory.md` during orientation.
+`.agents/directives/error-memory.md` during orientation.
 
 ---
 

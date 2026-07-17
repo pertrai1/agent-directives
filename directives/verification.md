@@ -292,7 +292,7 @@ address.
 
 ## Quality Gate Feedback
 
-Run the project-native gates selected by `directives/adaptive-routing.md`.
+Run the project-native gates selected by `.agents/directives/adaptive-routing.md`.
 Treat test, lint, type-check, build, static-analysis, and review-bot output as
 implementation feedback, not ceremony.
 
