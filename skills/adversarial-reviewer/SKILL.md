@@ -27,9 +27,8 @@ change creates bugs, regresses behavior, fails its specification, or lacks enoug
 evidence to merge safely.
 
 This skill complements the domain reviewer skills. It does not replace
-`skills/code-reviewer/SKILL.md`, `skills/test-reviewer/SKILL.md`,
-`skills/spec-reviewer/SKILL.md`, `skills/architecture-boundary-reviewer/SKILL.md`,
-or production/security-specific review. Domain reviewers ask whether their area
+code review, test review, spec review, architecture boundary review, or
+production/security-specific review. Domain reviewers ask whether their area
 is merge-ready. The adversarial reviewer asks: **"How could this still be
 wrong?"**
 

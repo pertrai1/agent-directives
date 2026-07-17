@@ -134,7 +134,7 @@ Pass `--tool` explicitly when auto-detection is ambiguous or wrong.
 
 ### Install layout
 
-For `claude`, `copilot`, and `codex`, directive and skill entries are installed
+For `claude`, `copilot`, and `codex`, directive, skill, and rule entries are installed
 under the project's `.agents/` directory:
 
 - directives → `.agents/directives/<name>.md`
