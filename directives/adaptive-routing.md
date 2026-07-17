@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 1.11.0
+version: 1.12.0
 required: true
 category: workflow
 tools:
@@ -163,6 +163,7 @@ If no row matches, state that no specialist skill is required.
 | Executing an existing implementation plan with multiple mostly independent tasks using delegated subagents or isolated worker sessions | Full / Debugging / Policy | `skills/subagent-driven-development/SKILL.md` |
 | Bug, regression, failing test, failing CI/build/lint/type-check, or unexpected behavior | Debugging | `skills/systematic-debugging/SKILL.md` |
 | Reviewing a PR, branch, diff, or local changes | Review | `skills/code-reviewer/SKILL.md` |
+| Explicit adversarial, red-team, independent failure-mode review, or high-risk/broad/agent-authored change needing separate skeptical review | Review / Full | `skills/adversarial-reviewer/SKILL.md` in addition to relevant domain reviewer skills |
 | Writing, changing, or reviewing tests/eval scenarios | Full / Review | `skills/test-reviewer/SKILL.md` |
 | Implementation must be checked against a written spec/PRD | Full / Review | `skills/spec-reviewer/SKILL.md` |
 | Imports, exports, package boundaries, folders, services, shared utilities, or dependency direction change | Boundary / Review | `skills/architecture-boundary-reviewer/SKILL.md` |
@@ -200,7 +201,7 @@ metadata in always-loaded context. Discover matching rules on demand instead:
    `requirements.txt` selects the `python` pack.
 2. **Inspect available rule metadata.** Use `manifest.json` as a compact package
    index when it is available, but do not assume it was installed into the target
-   repo. The authoritative scope lives in each `rules/<pack>/*.md` file's
+   repo. The authoritative scope lives in each `.agents/rules/<pack>/*.md` file's
    frontmatter: `category` identifies the pack, `description` says what it
    governs, and `applies_to` lists the file globs it scopes to.
 3. **Match before loading.** Load a rule only when its `applies_to` globs match a
@@ -211,7 +212,7 @@ metadata in always-loaded context. Discover matching rules on demand instead:
 4. **Skip absent packs.** Do not load a pack whose evidence is missing, and do
    not load a whole pack by default.
 
-Active packs include `rules/angular/` and `rules/python/`.
+Active packs include `.agents/rules/angular/` and `.agents/rules/python/`.
 
 ---
 
@@ -339,6 +340,7 @@ Use when the user asks to review a PR, branch, diff, or local changes.
 Required skills:
 
 - `skills/code-reviewer/SKILL.md` for baseline PR/branch/diff/local-change review
+- `skills/adversarial-reviewer/SKILL.md` for explicit adversarial/red-team/failure-mode review, or when a high-risk, broad, or agent-authored implementation needs an independent skeptical reviewer; use it in addition to relevant domain reviewer skills, not as a replacement
 - `skills/test-reviewer/SKILL.md` for tests
 - `skills/spec-reviewer/SKILL.md` for spec-backed work
 - `skills/architecture-boundary-reviewer/SKILL.md` for imports/exports/packages/shared code
@@ -406,6 +408,7 @@ Escalate to Full Path or add a specialized path when any of these are true:
 | Failing CI/test/build/lint/type-check | Debugging Path |
 | Cross-cutting policy or workflow | Policy Path |
 | Large diff or broad refactor | Full Path + Self-Audit + Codebase Health Review + Context Handoff |
+| Significant agent-authored implementation needing independent skepticism, or explicit adversarial review request | Full/Review Path as applicable + Adversarial Review + relevant domain reviewer skills |
 
 ---
 

@@ -14,15 +14,22 @@ export interface TargetConfig {
   resolvePath: (entry: ManifestEntry, cwd: string) => string;
 }
 
+function resolveFileCopyPath(entry: ManifestEntry, cwd: string): string {
+  if (entry.type === 'directive' || entry.type === 'skill' || entry.type === 'rule') {
+    return join(cwd, '.agents', entry.path);
+  }
+  return join(cwd, entry.path);
+}
+
 export const TARGETS: Record<Tool, TargetConfig> = {
   claude: {
-    resolvePath: (entry, cwd) => join(cwd, entry.path),
+    resolvePath: resolveFileCopyPath,
   },
   copilot: {
-    resolvePath: (entry, cwd) => join(cwd, entry.path),
+    resolvePath: resolveFileCopyPath,
   },
   codex: {
-    resolvePath: (entry, cwd) => join(cwd, entry.path),
+    resolvePath: resolveFileCopyPath,
   },
   cursor: {
     resolvePath: (entry, cwd) => join(cwd, '.cursor', 'rules', `${entry.id}.mdc`),

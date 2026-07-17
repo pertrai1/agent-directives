@@ -134,16 +134,18 @@ test("installs required entries and validates check command", () => {
 
     runCli("sync --tool claude --yes", { cwd });
     const expected = [
-      "directives/adaptive-routing.md",
-      "directives/codebase-navigation.md",
-      "directives/task-framing.md",
-      "directives/verification.md",
-      "skills/code-reviewer/SKILL.md",
-      "skills/systematic-debugging/SKILL.md",
-      "skills/test-reviewer/SKILL.md"
+      ".agents/directives/adaptive-routing.md",
+      ".agents/directives/codebase-navigation.md",
+      ".agents/directives/task-framing.md",
+      ".agents/directives/verification.md",
+      ".agents/skills/code-reviewer/SKILL.md",
+      ".agents/skills/systematic-debugging/SKILL.md",
+      ".agents/skills/test-reviewer/SKILL.md"
     ];
     for (const file of expected) assertFileExists(join(cwd, file));
-    assertFileMissing(join(cwd, "directives/architecture-boundaries.md"));
+    assertFileMissing(join(cwd, "directives/adaptive-routing.md"));
+    assertFileMissing(join(cwd, "skills/code-reviewer/SKILL.md"));
+    assertFileMissing(join(cwd, ".agents/directives/architecture-boundaries.md"));
 
     const successCheck = runCli("check --tool claude", { cwd }).stdout;
     assertContains(successCheck, { needle: "All", context: "check success" });
@@ -168,7 +170,7 @@ test("sync --rules auto installs Angular rules for Angular projects", () => {
       "coding-style.md", "components-and-templates.md", "patterns.md",
       "project-structure.md", "security.md", "testing.md"
     ];
-    for (const f of expected) assertFileExists(join(cwd, `rules/angular/${f}`));
+    for (const f of expected) assertFileExists(join(cwd, `.agents/rules/angular/${f}`));
   });
 });
 
@@ -176,7 +178,7 @@ test("sync --rules auto does not install Angular rules for non-Angular projects"
   withTempProject((cwd) => {
     writeFileSync(join(cwd, "CLAUDE.md"), "# project\n");
     runCli("sync --yes --rules auto", { cwd });
-    assertFileMissing(join(cwd, "rules/angular/components-and-templates.md"));
+    assertFileMissing(join(cwd, ".agents/rules/angular/components-and-templates.md"));
   });
 });
 
@@ -187,7 +189,7 @@ test("sync --rules auto installs Python rules for Python projects", () => {
     const { stdout } = runCli("sync --yes --rules auto", { cwd });
     assertContains(stdout, { needle: "Installing 5 selected rule entries (python)", context: "sync rules auto output" });
     const expected = ["coding-style.md", "patterns.md", "project-structure.md", "security.md", "testing.md"];
-    for (const f of expected) assertFileExists(join(cwd, `rules/python/${f}`));
+    for (const f of expected) assertFileExists(join(cwd, `.agents/rules/python/${f}`));
   });
 });
 
@@ -195,7 +197,7 @@ test("sync --rules auto does not install Python rules for non-Python projects", 
   withTempProject((cwd) => {
     writeFileSync(join(cwd, "CLAUDE.md"), "# project\n");
     runCli("sync --yes --rules auto", { cwd });
-    assertFileMissing(join(cwd, "rules/python/coding-style.md"));
+    assertFileMissing(join(cwd, ".agents/rules/python/coding-style.md"));
   });
 });
 
@@ -211,13 +213,13 @@ console.log("\nadd");
 test("adds different types of entries (directives, rules, skills)", () => {
   withTempProject((cwd) => {
     runCli("add adaptive-routing --tool claude", { cwd });
-    assertFileExists(join(cwd, "directives/adaptive-routing.md"));
+    assertFileExists(join(cwd, ".agents/directives/adaptive-routing.md"));
 
     runCli("add angular-components-and-templates --tool claude", { cwd });
-    assertFileExists(join(cwd, "rules/angular/components-and-templates.md"));
+    assertFileExists(join(cwd, ".agents/rules/angular/components-and-templates.md"));
 
     runCli("add code-reviewer --tool claude", { cwd });
-    assertFileExists(join(cwd, "skills/code-reviewer/SKILL.md"));
+    assertFileExists(join(cwd, ".agents/skills/code-reviewer/SKILL.md"));
 
     runCli("add adaptive-routing --tool cursor", { cwd });
     assertFileExists(join(cwd, ".cursor/rules/adaptive-routing.mdc"));
@@ -232,17 +234,17 @@ test("adds different types of entries (directives, rules, skills)", () => {
 
 test("refuses to overwrite different content without force and overwrites with force", () => {
   withTempProject((cwd) => {
-    mkdirSync(join(cwd, "directives"), { recursive: true });
-    writeFileSync(join(cwd, "directives/adaptive-routing.md"), "custom content");
+    mkdirSync(join(cwd, ".agents/directives"), { recursive: true });
+    writeFileSync(join(cwd, ".agents/directives/adaptive-routing.md"), "custom content");
 
     const noForce = runCli("add adaptive-routing --tool claude", { cwd, allowFail: true });
     if (noForce.code === 0) throw new Error("expected non-zero exit code without force");
-    if (readFileSync(join(cwd, "directives/adaptive-routing.md"), "utf8") !== "custom content") {
+    if (readFileSync(join(cwd, ".agents/directives/adaptive-routing.md"), "utf8") !== "custom content") {
       throw new Error("file was overwritten without --force");
     }
 
     runCli("add adaptive-routing --tool claude --force", { cwd });
-    const content = readFileSync(join(cwd, "directives/adaptive-routing.md"), "utf8");
+    const content = readFileSync(join(cwd, ".agents/directives/adaptive-routing.md"), "utf8");
     if (content === "custom content") throw new Error("file was not overwritten with force");
     assertContains(content, { needle: "adaptive-routing", context: "forced overwrite" });
   });

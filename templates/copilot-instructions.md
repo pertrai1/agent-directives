@@ -20,8 +20,8 @@ Delete this comment block when done.
 
 ## Key Rules
 
-These rules are routed by `directives/adaptive-routing.md`. Load that directive
-first, then load the corresponding detailed directive from `directives/`.
+These rules are routed by `.agents/directives/adaptive-routing.md`. Load that directive
+first, then load the corresponding detailed directive from `.agents/directives/`.
 
 ### Specification First
 
@@ -62,11 +62,11 @@ one commit. Each behavior gets its own test-commit + implementation-commit pair.
 
 ## Mandatory Workflow
 
-**Load `directives/adaptive-routing.md` first.**
+**Load `.agents/directives/adaptive-routing.md` first.**
 
 The root file provides project-specific context plus compact routing pointers: commands, repo layout, local constraints, and any client-specific workflow reminders.
 
-Workflow path selection, directive loading, skill loading, rule selection, and evidence requirements live in `directives/adaptive-routing.md`.
+Workflow path selection, directive loading, skill loading, rule selection, and evidence requirements live in `.agents/directives/adaptive-routing.md`.
 
 After routing, report:
 `Route: <path>; using <directive/skill files>; rules: <rule files or none>; evidence: <checks>.`
@@ -82,41 +82,42 @@ After routing, report:
 
 ## Directives
 
-For detailed guidance on each workflow rule, load `directives/adaptive-routing.md` first,
+For detailed guidance on each workflow rule, load `.agents/directives/adaptive-routing.md` first,
 then load only the selected directive:
 
-- `directives/adaptive-routing.md` — Selects workflow path and required directives/skills
-- `directives/agent-permissions.md` — Defines agent read/write/command/network permission boundaries and escalation behavior
-- `directives/workspace-isolation.md` — Protect mutable work with an isolated workspace; prefer native tools, then git fallback
-- `directives/codebase-navigation.md` — SAFE exploration pattern
-- `directives/architecture-boundaries.md` — Preserve dependency DAG and import rules
-- `directives/exploration-mode.md` — Pre-implementation investigation stance
-- `directives/task-framing.md` — Intake checklist that hands off to specification-driven development
-- `directives/specification-driven-development.md` — Create or identify durable specs before implementation, verify after
-- `directives/type-driven-development.md` — Types before implementation
-- `directives/test-driven-development.md` — RED/GREEN/REFACTOR cycle
-- `directives/verification.md` — Evidence of correctness before GATES
-- `directives/error-memory.md` — Persistent memory for repeated mistakes
-- `directives/context-handoff.md` — Compact current task state at phase/session boundaries
-- `directives/session-decisions.md` — Durable decision capture
+- `.agents/directives/adaptive-routing.md` — Selects workflow path and required directives/skills
+- `.agents/directives/agent-permissions.md` — Defines agent read/write/command/network permission boundaries and escalation behavior
+- `.agents/directives/workspace-isolation.md` — Protect mutable work with an isolated workspace; prefer native tools, then git fallback
+- `.agents/directives/codebase-navigation.md` — SAFE exploration pattern
+- `.agents/directives/architecture-boundaries.md` — Preserve dependency DAG and import rules
+- `.agents/directives/exploration-mode.md` — Pre-implementation investigation stance
+- `.agents/directives/task-framing.md` — Intake checklist that hands off to specification-driven development
+- `.agents/directives/specification-driven-development.md` — Create or identify durable specs before implementation, verify after
+- `.agents/directives/type-driven-development.md` — Types before implementation
+- `.agents/directives/test-driven-development.md` — RED/GREEN/REFACTOR cycle
+- `.agents/directives/verification.md` — Evidence of correctness before GATES
+- `.agents/directives/error-memory.md` — Persistent memory for repeated mistakes
+- `.agents/directives/context-handoff.md` — Compact current task state at phase/session boundaries
+- `.agents/directives/session-decisions.md` — Durable decision capture
 
 ## Skills
 
 Load the relevant skill selected by adaptive routing for the task type.
 
-- `skills/code-reviewer/SKILL.md` — Before reviewing PRs, branches, diffs, or local changes
-- `skills/test-reviewer/SKILL.md` — Before writing or reviewing any test
-- `skills/spec-reviewer/SKILL.md` — Before merging when a written spec exists
-- `skills/product-requirements-writer/SKILL.md` — Before turning a feature idea or vague requirement into a PRD/spec
-- `skills/implementation-task-planner/SKILL.md` — Before turning a PRD, issue, or acceptance criteria into implementation tasks
-- `skills/subagent-driven-development/SKILL.md` — Before executing an existing implementation plan through delegated subagents or isolated worker sessions
-- `skills/self-audit/SKILL.md` — After REFACTOR, before VERIFY on every Full Path cycle
-- `skills/systematic-debugging/SKILL.md` — Before fixing bugs, failing tests, CI failures, or regressions
-- `skills/architecture-boundary-reviewer/SKILL.md` — Before merging changes to imports, exports, packages, services, shared code, or folder boundaries
-- `skills/codebase-health-reviewer/SKILL.md` — Before merging TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes
-- `skills/production-readiness-reviewer/SKILL.md` — Before merging/reviewing production-sensitive changes: persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility
-- `skills/harness-hooks-reviewer/SKILL.md` — Before adding/reviewing agent harness hooks, start/stop hooks, pre-action hooks, or deterministic agent automation
-- `skills/mcp-integration-reviewer/SKILL.md` — Before adding/reviewing MCP servers/tools, agent tool schemas, internal API bridges, or write-capable agent tools
+- `.agents/skills/code-reviewer/SKILL.md` — Before reviewing PRs, branches, diffs, or local changes
+- `.agents/skills/adversarial-reviewer/SKILL.md` — Before explicit adversarial/red-team/failure-mode review or high-risk, broad, or agent-authored changes needing a separate skeptical reviewer
+- `.agents/skills/test-reviewer/SKILL.md` — Before writing or reviewing any test
+- `.agents/skills/spec-reviewer/SKILL.md` — Before merging when a written spec exists
+- `.agents/skills/product-requirements-writer/SKILL.md` — Before turning a feature idea or vague requirement into a PRD/spec
+- `.agents/skills/implementation-task-planner/SKILL.md` — Before turning a PRD, issue, or acceptance criteria into implementation tasks
+- `.agents/skills/subagent-driven-development/SKILL.md` — Before executing an existing implementation plan through delegated subagents or isolated worker sessions
+- `.agents/skills/self-audit/SKILL.md` — After REFACTOR, before VERIFY on every Full Path cycle
+- `.agents/skills/systematic-debugging/SKILL.md` — Before fixing bugs, failing tests, CI failures, or regressions
+- `.agents/skills/architecture-boundary-reviewer/SKILL.md` — Before merging changes to imports, exports, packages, services, shared code, or folder boundaries
+- `.agents/skills/codebase-health-reviewer/SKILL.md` — Before merging TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes
+- `.agents/skills/production-readiness-reviewer/SKILL.md` — Before merging/reviewing production-sensitive changes: persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility
+- `.agents/skills/harness-hooks-reviewer/SKILL.md` — Before adding/reviewing agent harness hooks, start/stop hooks, pre-action hooks, or deterministic agent automation
+- `.agents/skills/mcp-integration-reviewer/SKILL.md` — Before adding/reviewing MCP servers/tools, agent tool schemas, internal API bridges, or write-capable agent tools
 
 ## Decision Log Lookup
 

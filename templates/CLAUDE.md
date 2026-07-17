@@ -36,11 +36,11 @@ Delete this comment block when done.
 
 **NEVER commit directly to `main`.** Work on a feature branch. No exceptions.
 
-**Load `directives/adaptive-routing.md` first.**
+**Load `.agents/directives/adaptive-routing.md` first.**
 
 The root file provides project-specific context plus compact routing pointers: commands, repo layout, local constraints, and any client-specific workflow reminders.
 
-Workflow path selection, directive loading, skill loading, rule selection, and evidence requirements live in `directives/adaptive-routing.md`.
+Workflow path selection, directive loading, skill loading, rule selection, and evidence requirements live in `.agents/directives/adaptive-routing.md`.
 
 After routing, report:
 `Route: <path>; using <directive/skill files>; rules: <rule files or none>; evidence: <checks>.`
@@ -58,50 +58,51 @@ phase sequence, no skipping steps:
 | 2    | RED          | Write ONE failing test                   | Test fails                                                                   |
 | 3    | GREEN        | Write minimum code to pass               | New test passes, all existing tests still pass, type-check passes             |
 | 4    | REFACTOR     | Clean up if needed                       | All tests still pass                                                         |
-| 4.5  | **SELF-AUDIT** | **Triage weakest assumptions and anomalies** | See `skills/self-audit/SKILL.md` — route findings: 🔁 fix → step 2, 📋 document, or 🧑 ask human |
+| 4.5  | **SELF-AUDIT** | **Triage weakest assumptions and anomalies** | See `.agents/skills/self-audit/SKILL.md` — route findings: 🔁 fix → step 2, 📋 document, or 🧑 ask human |
 | 4.75 | **VERIFY**   | **Produce verification summary**         | See verification directive — target 📋 documented Jenga entries               |
 | 5    | GATES        | Run quality gates                        | <!-- FILL IN: gates commands -->                                             |
-| 5.5  | **HANDOFF**  | **Compact current task state when routed** | See `directives/context-handoff.md` for phase/session handoff |
+| 5.5  | **HANDOFF**  | **Compact current task state when routed** | See `.agents/directives/context-handoff.md` for phase/session handoff |
 | 6    | COMMIT       | Atomic commit                            | One behavior per commit                                                      |
 
 Steps 0.5-6 repeat for each behavior-changing slice. Do not batch.
 
 ## Directives
 
-Load `directives/adaptive-routing.md` first, then load only the directives it selects for the current task.
+Load `.agents/directives/adaptive-routing.md` first, then load only the directives it selects for the current task.
 
-- **Adaptive Routing** — Selects workflow path and required directives/skills (`directives/adaptive-routing.md`)
-- **Agent Permissions** — Defines agent read/write/command/network permission boundaries and escalation behavior (`directives/agent-permissions.md`)
-- **Workspace Isolation** — Protect mutable work with an isolated workspace; prefer native tools, then git fallback (`directives/workspace-isolation.md`)
-- **Codebase Navigation** — SAFE exploration pattern before implementation (`directives/codebase-navigation.md`)
-- **Architecture Boundaries** — Preserve dependency DAG and import rules (`directives/architecture-boundaries.md`)
-- **Exploration Mode** — Pre-implementation investigation and thinking stance (`directives/exploration-mode.md`)
-- **Task Framing** — Intake checklist that hands off to specification-driven development (`directives/task-framing.md`)
-- **Specification-Driven Development** — Create or identify durable specs before implementation, verify after (`directives/specification-driven-development.md`)
-- **Type-First Development** — Define types before writing implementation code (`directives/type-driven-development.md`)
-- **Test-Driven Development** — Strict RED/GREEN/REFACTOR cycle for behavior-changing code (`directives/test-driven-development.md`)
-- **Verification Protocol** — Structured evidence of correctness before GATES (`directives/verification.md`)
-- **Error Memory** — Persistent memory for repeated mistakes (`directives/error-memory.md`)
-- **Context Handoff** — Compact current task state at phase/session boundaries (`directives/context-handoff.md`)
-- **Session Decisions** — Durable decision capture at task completion (`directives/session-decisions.md`)
+- **Adaptive Routing** — Selects workflow path and required directives/skills (`.agents/directives/adaptive-routing.md`)
+- **Agent Permissions** — Defines agent read/write/command/network permission boundaries and escalation behavior (`.agents/directives/agent-permissions.md`)
+- **Workspace Isolation** — Protect mutable work with an isolated workspace; prefer native tools, then git fallback (`.agents/directives/workspace-isolation.md`)
+- **Codebase Navigation** — SAFE exploration pattern before implementation (`.agents/directives/codebase-navigation.md`)
+- **Architecture Boundaries** — Preserve dependency DAG and import rules (`.agents/directives/architecture-boundaries.md`)
+- **Exploration Mode** — Pre-implementation investigation and thinking stance (`.agents/directives/exploration-mode.md`)
+- **Task Framing** — Intake checklist that hands off to specification-driven development (`.agents/directives/task-framing.md`)
+- **Specification-Driven Development** — Create or identify durable specs before implementation, verify after (`.agents/directives/specification-driven-development.md`)
+- **Type-First Development** — Define types before writing implementation code (`.agents/directives/type-driven-development.md`)
+- **Test-Driven Development** — Strict RED/GREEN/REFACTOR cycle for behavior-changing code (`.agents/directives/test-driven-development.md`)
+- **Verification Protocol** — Structured evidence of correctness before GATES (`.agents/directives/verification.md`)
+- **Error Memory** — Persistent memory for repeated mistakes (`.agents/directives/error-memory.md`)
+- **Context Handoff** — Compact current task state at phase/session boundaries (`.agents/directives/context-handoff.md`)
+- **Session Decisions** — Durable decision capture at task completion (`.agents/directives/session-decisions.md`)
 
 ## Skills
 
 Load the relevant skill selected by adaptive routing for the task type.
 
-- **Code Reviewer** — Before reviewing PRs, branches, diffs, or local changes (`skills/code-reviewer/SKILL.md`)
-- **Test Reviewer** — Before writing or reviewing any test (`skills/test-reviewer/SKILL.md`)
-- **Spec Reviewer** — Before merging when a written spec exists (`skills/spec-reviewer/SKILL.md`)
-- **Product Requirements Writer** — Before turning a feature idea or vague requirement into a PRD/spec (`skills/product-requirements-writer/SKILL.md`)
-- **Implementation Task Planner** — Before turning a PRD, issue, or acceptance criteria into implementation tasks (`skills/implementation-task-planner/SKILL.md`)
-- **Subagent-Driven Development** — Before executing an existing implementation plan through delegated subagents or isolated worker sessions (`skills/subagent-driven-development/SKILL.md`)
-- **Self-Audit** — After REFACTOR, before VERIFY on every Full Path cycle (`skills/self-audit/SKILL.md`)
-- **Systematic Debugging** — Before fixing bugs, failing tests, CI failures, or regressions (`skills/systematic-debugging/SKILL.md`)
-- **Architecture Boundary Reviewer** — Before merging changes to imports, exports, packages, services, shared code, or folder boundaries (`skills/architecture-boundary-reviewer/SKILL.md`)
-- **Codebase Health Reviewer** — Before merging TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes (`skills/codebase-health-reviewer/SKILL.md`)
-- **Production Readiness Reviewer** — Before merging/reviewing production-sensitive changes: persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility (`skills/production-readiness-reviewer/SKILL.md`)
-- **Harness Hooks Reviewer** — Before adding/reviewing agent harness hooks, start/stop hooks, pre-action hooks, or deterministic agent automation (`skills/harness-hooks-reviewer/SKILL.md`)
-- **MCP Integration Reviewer** — Before adding/reviewing MCP servers/tools, agent tool schemas, internal API bridges, or write-capable agent tools (`skills/mcp-integration-reviewer/SKILL.md`)
+- **Code Reviewer** — Before reviewing PRs, branches, diffs, or local changes (`.agents/skills/code-reviewer/SKILL.md`)
+- **Adversarial Reviewer** — Before explicit adversarial/red-team/failure-mode review or high-risk, broad, or agent-authored changes needing a separate skeptical reviewer (`.agents/skills/adversarial-reviewer/SKILL.md`)
+- **Test Reviewer** — Before writing or reviewing any test (`.agents/skills/test-reviewer/SKILL.md`)
+- **Spec Reviewer** — Before merging when a written spec exists (`.agents/skills/spec-reviewer/SKILL.md`)
+- **Product Requirements Writer** — Before turning a feature idea or vague requirement into a PRD/spec (`.agents/skills/product-requirements-writer/SKILL.md`)
+- **Implementation Task Planner** — Before turning a PRD, issue, or acceptance criteria into implementation tasks (`.agents/skills/implementation-task-planner/SKILL.md`)
+- **Subagent-Driven Development** — Before executing an existing implementation plan through delegated subagents or isolated worker sessions (`.agents/skills/subagent-driven-development/SKILL.md`)
+- **Self-Audit** — After REFACTOR, before VERIFY on every Full Path cycle (`.agents/skills/self-audit/SKILL.md`)
+- **Systematic Debugging** — Before fixing bugs, failing tests, CI failures, or regressions (`.agents/skills/systematic-debugging/SKILL.md`)
+- **Architecture Boundary Reviewer** — Before merging changes to imports, exports, packages, services, shared code, or folder boundaries (`.agents/skills/architecture-boundary-reviewer/SKILL.md`)
+- **Codebase Health Reviewer** — Before merging TypeScript/JavaScript refactors, cleanup, shared utilities, or Fallow-relevant changes (`.agents/skills/codebase-health-reviewer/SKILL.md`)
+- **Production Readiness Reviewer** — Before merging/reviewing production-sensitive changes: persistence, external services, async jobs, auth/security/privacy, infra/config/deploy, critical user paths, performance/scale, or cross-service compatibility (`.agents/skills/production-readiness-reviewer/SKILL.md`)
+- **Harness Hooks Reviewer** — Before adding/reviewing agent harness hooks, start/stop hooks, pre-action hooks, or deterministic agent automation (`.agents/skills/harness-hooks-reviewer/SKILL.md`)
+- **MCP Integration Reviewer** — Before adding/reviewing MCP servers/tools, agent tool schemas, internal API bridges, or write-capable agent tools (`.agents/skills/mcp-integration-reviewer/SKILL.md`)
 
 ## Task Framing (Mandatory for Non-Trivial Work)
 

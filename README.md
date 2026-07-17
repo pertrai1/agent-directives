@@ -12,7 +12,7 @@ dependencies between files.
 | **Workflow** | 10 directives | Govern how the agent works: adaptive routing, workspace isolation, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
-| **Skills** | 13 skills | Code reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, subagent-driven development, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, production readiness reviewer, harness hooks reviewer, and MCP integration reviewer |
+| **Skills** | 14 skills | Code reviewer, adversarial reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, subagent-driven development, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, production readiness reviewer, harness hooks reviewer, and MCP integration reviewer |
 | **Rules** | 11 rules (Angular & Python) | Lazy-loaded workspace, coding style, architectural patterns, security, and testing standards for Angular or Python projects — selected by stack or explicit category |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 | **Tooling** | TypeScript scripts | Validate directive wiring, assemble eval scenarios, record loaded-file manifests, and generate eval health reports |
@@ -21,7 +21,7 @@ dependencies between files.
 
 The repository contains two things you install into your own project:
 
-1. **Directive, skill, and rule files** — copied from `directives/`, `skills/`, and `rules/`.
+1. **Directive, skill, and rule files** — copied into `.agents/directives/`, `.agents/skills/`, and `.agents/rules/`.
 2. **A root instruction file** — copied from `templates/` and renamed for your agent
    (`AGENTS.md`, `CLAUDE.md`, or `.github/copilot-instructions.md`).
 
@@ -50,7 +50,7 @@ template instead.
 After installation, open the root instruction file and:
 
 1. Fill in the project-specific placeholders.
-2. Keep `directives/adaptive-routing.md` as the first directive the agent loads.
+2. Keep `.agents/directives/adaptive-routing.md` as the first directive the agent loads.
 3. Delete directives, skills, or rules your team does not want, then remove matching rows
    from the root instruction file.
 4. Run the check command for your target tool:
@@ -134,10 +134,14 @@ Pass `--tool` explicitly when auto-detection is ambiguous or wrong.
 
 ### Install layout
 
-For `claude`, `copilot`, and `codex`, the CLI preserves the source layout — each
-entry is written to its declared path (`directives/<name>.md`,
-`skills/<name>/SKILL.md`, or `rules/<category>/<name>.md`) relative to the current working directory. The root
-instruction file is left to you so existing project instructions are not
+For `claude`, `copilot`, and `codex`, directive and skill entries are installed
+under the project's `.agents/` directory:
+
+- directives → `.agents/directives/<name>.md`
+- skills → `.agents/skills/<name>/SKILL.md`
+- rules → `.agents/rules/<category>/<name>.md`
+
+The root instruction file is left to you so existing project instructions are not
 accidentally overwritten.
 
 For `cursor`, each entry is flattened to a single file in `.cursor/rules/<id>.mdc`.
@@ -314,6 +318,12 @@ Baseline review skill for pull requests, branches, diffs, and local changes.
 Checks correctness, security, performance, maintainability, tests, and merge risk
 without inventing findings when the change is clean.
 
+### Adversarial Reviewer (`skills/adversarial-reviewer/SKILL.md`)
+
+Runs as a separate skeptical reviewer alongside the relevant domain reviewers.
+Finds credible failure modes, regressions, edge cases, and missing proof without
+implementing fixes or acting as the final approver.
+
 ### Test Reviewer (`skills/test-reviewer/SKILL.md`)
 
 Detects tests that duplicate production logic, use shallow assertions, skip edge
@@ -404,7 +414,7 @@ bounded output, auditability, write safety, and operational failure behavior.
 |----------|-----|----------------|
 | `templates/AGENTS.md` | Codex / general agents | Full directive table with file paths, boundary step, skills table |
 | `templates/CLAUDE.md` | Claude Code | Directives by name with one-line descriptions |
-| `templates/copilot-instructions.md` | GitHub Copilot | Condensed — key rules inlined, points to directives/ for details |
+| `templates/copilot-instructions.md` | GitHub Copilot | Condensed — key rules inlined, points to `.agents/directives/` for details |
 | `templates/decision-log.md` | Any | Blank template matching the session-decisions frontmatter schema |
 
 ## Customization

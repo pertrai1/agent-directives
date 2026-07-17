@@ -27,8 +27,8 @@ Do not preload Angular rule files; the scenario tests whether the router selects
 
 - [ ] Selects Full Path because this is a behavior-changing Angular component/test edit.
 - [ ] Names the relevant workflow directives, including `directives/adaptive-routing.md`, TDD/type/verification guidance as appropriate for a typed behavior change.
-- [ ] Selects Angular rules separately from directives and skills: `rules/angular/project-structure.md`, `rules/angular/components-and-templates.md`, `rules/angular/coding-style.md` (for the signal `input()` choice), and `rules/angular/testing.md`.
-- [ ] Does not select `rules/angular/patterns.md` or `rules/angular/security.md` — neither smart/dumb routing/HTTP wiring nor untrusted input is in scope for this prompt.
+- [ ] Selects Angular rules separately from directives and skills: `.agents/rules/angular/project-structure.md`, `.agents/rules/angular/components-and-templates.md`, `.agents/rules/angular/coding-style.md` (for the signal `input()` choice), and `.agents/rules/angular/testing.md`.
+- [ ] Does not select `.agents/rules/angular/patterns.md` or `.agents/rules/angular/security.md` — neither smart/dumb routing/HTTP wiring nor untrusted input is in scope for this prompt.
 - [ ] Mentions Angular project evidence such as `angular.json`, `@angular/core`, or touched `*.component.*` / `*.spec.ts` paths as the reason the Angular rule pack applies.
 - [ ] Does not require a target-workspace `manifest.json`; reads each candidate rule's `category`, `description`, and `applies_to` frontmatter when selecting rules.
 - [ ] Lists test/type/build evidence using project-configured Angular or package scripts, with fallback wording if commands are unavailable.
