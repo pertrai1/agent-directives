@@ -1,7 +1,7 @@
 ---
 name: task-framing
 description: Frames non-trivial, ambiguous, high-risk, or cross-cutting tasks before substantial edits.
-version: 1.2.0
+version: 1.2.1
 required: true
 category: workflow
 tools:
@@ -27,7 +27,7 @@ It applies when the task is non-trivial, ambiguous, high-risk, or cross-cutting.
 'Non-trivial' typically means anything beyond a single-file typo fix or a
 docs-only wording change.
 
-Load this directive when selected by `directives/adaptive-routing.md` before a
+Load this directive when selected by `.agents/directives/adaptive-routing.md` before a
 non-trivial, ambiguous, high-risk, or cross-cutting task — including new
 features, cross-cutting refactors, and anything affecting repo-wide conventions.
 
@@ -77,13 +77,13 @@ concise clarifying question before major edits.
 
 This checklist is the intake to a specification, not a substitute for one. If
 the task will implement or change behavior, the agent MUST next load
-`directives/specification-driven-development.md` and record the durable
+`.agents/directives/specification-driven-development.md` and record the durable
 specification before RED/GREEN or implementation edits.
 
 ## Handoff to Specification-Driven Development
 
 For every implementation or behavior-changing task, use
-`directives/specification-driven-development.md` as the single proposal and
+`.agents/directives/specification-driven-development.md` as the single proposal and
 contract workflow. Task framing establishes the problem, constraints,
 assumptions, failure modes, evidence plan, and scope budget; specification-driven
 development then owns the Propose, Design, and Specify outputs. Do not create a
@@ -140,7 +140,7 @@ If risk is high or depth is complex, choose one route before full implementation
 | Unknown / risk | Route first | Output constraint |
 | --- | --- | --- |
 | Need to understand existing code, runtime, or dependency behavior | Exploration Path (read-only) | No code edits until the unknown is resolved |
-| Behavior, API, or acceptance criteria unclear | Specification-Driven Development | Load `directives/specification-driven-development.md` and define the contract before coding |
+| Behavior, API, or acceptance criteria unclear | Specification-Driven Development | Load `.agents/directives/specification-driven-development.md` and define the contract before coding |
 | Feasibility unknown and throwaway validation is acceptable | Exploration Path (spike) | Temporary code edits allowed for validation only; do not ship spike code without a normal implementation pass |
 | Multi-layer integration or user feedback may change the shape | Full Path | Implement a tracer bullet: the smallest end-to-end slice that proves the path |
 

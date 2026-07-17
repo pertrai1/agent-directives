@@ -1,7 +1,7 @@
 ---
 name: "product-requirements-writer"
 description: "Load when the user wants to turn a feature idea, product request, vague requirement, or problem statement into a concrete PRD/spec before implementation planning or coding."
-version: 1.1.0
+version: 1.1.1
 required: false
 category: planning
 tools:
@@ -40,8 +40,8 @@ Load this skill when the user asks to:
 
 Do not load this skill for:
 
-- reviewing whether implementation matches an existing spec — use `skills/spec-reviewer/SKILL.md`
-- generating implementation tasks from an existing PRD — use `skills/implementation-task-planner/SKILL.md`
+- reviewing whether implementation matches an existing spec — use `.agents/skills/spec-reviewer/SKILL.md`
+- generating implementation tasks from an existing PRD — use `.agents/skills/implementation-task-planner/SKILL.md`
 - fixing bugs, CI, tests, or runtime behavior directly
 - tiny tasks where a PRD would add ceremony without improving decisions
 
@@ -177,7 +177,7 @@ Use lowercase hyphenated names. If the repo already has a planning/spec director
 
 ### 6. Stop Before Implementation
 
-After producing the PRD, stop. Do not generate implementation tasks unless the user asks or routing selects `skills/implementation-task-planner/SKILL.md` as a separate follow-on step. Do not edit product code.
+After producing the PRD, stop. Do not generate implementation tasks unless the user asks or routing selects `.agents/skills/implementation-task-planner/SKILL.md` as a separate follow-on step. Do not edit product code.
 
 ## Output Format
 

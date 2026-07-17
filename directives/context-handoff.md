@@ -1,7 +1,7 @@
 ---
 name: context-handoff
 description: Compresses task state at directive or session boundaries so later phases can continue from a compact, current-state handoff instead of drifting through accumulated chat history.
-version: 1.2.0
+version: 1.2.1
 required: false
 category: workflow
 tools:
@@ -54,7 +54,7 @@ Before starting or resuming work, list the `.agents/` directory and inspect any
 existing handoff, verification, blocked-choice, risky-choice, or cleanup files
 before assuming clean state. When the task or handoff points to a repeated
 failure pattern, load the relevant `docs/ERRORS.md` entries through
-`directives/error-memory.md` during orientation.
+`.agents/directives/error-memory.md` during orientation.
 
 ---
 

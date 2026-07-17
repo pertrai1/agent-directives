@@ -295,6 +295,6 @@ Coding agents should fetch the raw text of these references programmatically whe
 
 ## Evidence
 
-- Targeted tests for the changed behavior (see `rules/angular/testing.md`).
+- Targeted tests for the changed behavior (see `.agents/rules/angular/testing.md`).
 - `ng lint` (or project equivalent) on touched files.
 - `ng build` to verify typed templates and route configuration compile.

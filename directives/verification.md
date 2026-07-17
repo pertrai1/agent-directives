@@ -1,7 +1,7 @@
 ---
 name: verification
 description: Requires structured evidence of correctness before quality gates and pull requests.
-version: 1.2.0
+version: 1.2.1
 required: true
 category: workflow
 tools:
@@ -292,7 +292,7 @@ address.
 
 ## Quality Gate Feedback
 
-Run the project-native gates selected by `directives/adaptive-routing.md`.
+Run the project-native gates selected by `.agents/directives/adaptive-routing.md`.
 Treat test, lint, type-check, build, static-analysis, and review-bot output as
 implementation feedback, not ceremony.
 

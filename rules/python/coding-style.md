@@ -147,4 +147,4 @@ For style-aligned Python changes, verify linter, formatter, and typechecker corr
 - Verify style with `ruff check .` (or `flake8` / `pylint`) on the touched paths to ensure code compliance.
 - Guarantee formatting and string quote standards using `ruff format --check .` (or `black --check .`).
 - Validate type annotation completeness and strictness using `mypy .` (or `pyright`).
-- Execute unit and integration tests (see `rules/python/testing.md`) to assert behavior.
+- Execute unit and integration tests (see `.agents/rules/python/testing.md`) to assert behavior.

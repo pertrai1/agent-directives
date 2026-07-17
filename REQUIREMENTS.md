@@ -440,10 +440,8 @@ considering adoption: what this is, what's included, and how to use it.
       your project root.
    2. Fill in the `<!-- FILL IN -->` placeholders with your project's commands
       and tech stack.
-   3. Copy the `directives/` directory to your project
-      (`.agents/directives/` is the conventional location).
-   4. Copy the `skills/` directory to your project (`skills/` or
-      `.agents/skills/`).
+   3. Copy the `directives/` directory to your project's `.agents/directives/`.
+   4. Copy the `skills/` directory to your project's `.agents/skills/`.
    5. Copy `templates/decision-log.md` to `docs/decisions/TEMPLATE.md` in your
       project.
 4. **Directive details** — For each directive, a 2-3 sentence summary of what

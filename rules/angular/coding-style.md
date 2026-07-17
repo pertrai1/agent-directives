@@ -173,4 +173,4 @@ For style-aligned changes, run the project's lint and typecheck:
 
 - `ng lint` (or the project's lint script) on touched files
 - `tsc --noEmit` or `ng build` to verify typed templates and the public TypeScript surface
-- Targeted tests covering the changed behavior (see `rules/angular/testing.md`)
+- Targeted tests covering the changed behavior (see `.agents/rules/angular/testing.md`)
