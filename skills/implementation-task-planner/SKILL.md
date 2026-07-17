@@ -1,7 +1,7 @@
 ---
 name: "implementation-task-planner"
 description: "Load when the user has a PRD, issue, acceptance criteria, or requirements doc and wants a staged implementation task list with relevant files, tests, validation steps, and review checkpoints."
-version: 1.1.0
+version: 1.1.1
 required: false
 category: planning
 tools:

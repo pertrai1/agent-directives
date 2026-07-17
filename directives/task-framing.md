@@ -1,7 +1,7 @@
 ---
 name: task-framing
 description: Frames non-trivial, ambiguous, high-risk, or cross-cutting tasks before substantial edits.
-version: 1.2.0
+version: 1.2.1
 required: true
 category: workflow
 tools:

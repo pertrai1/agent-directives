@@ -1,7 +1,7 @@
 ---
 name: test-driven-development
 description: Defines RED/GREEN/REFACTOR expectations for behavior-changing implementation work and bug fixes.
-version: 1.0.0
+version: 1.0.1
 required: false
 category: testing
 tools:

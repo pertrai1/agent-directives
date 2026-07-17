@@ -1,7 +1,7 @@
 ---
 name: "subagent-driven-development"
 description: "Load when executing an existing implementation plan with multiple mostly independent tasks using delegated subagents, fresh task context, parent-owned review, and final integration verification."
-version: 1.1.0
+version: 1.1.1
 required: false
 category: workflow
 tools:

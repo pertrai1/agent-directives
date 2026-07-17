@@ -1,7 +1,7 @@
 ---
 name: verification
 description: Requires structured evidence of correctness before quality gates and pull requests.
-version: 1.2.0
+version: 1.2.1
 required: true
 category: workflow
 tools:

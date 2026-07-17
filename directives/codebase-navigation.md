@@ -1,7 +1,7 @@
 ---
 name: codebase-navigation
 description: Guides progressive codebase orientation with the SAFE pattern before implementation, review, or unfamiliar work.
-version: 1.1.0
+version: 1.1.1
 required: true
 category: workflow
 tools:
