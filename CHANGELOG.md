@@ -1,5 +1,13 @@
 # agent-directives
 
+## 0.10.0
+
+### Minor Changes
+
+- [#70](https://github.com/pertrai1/agent-directives/pull/70) [`fb592cd`](https://github.com/pertrai1/agent-directives/commit/fb592cd84dbc3feeef608584452546139f58a39a) Thanks [@pertrai1](https://github.com/pertrai1)! - Install directives, skills, and rules under `.agents/` for claude, copilot, and codex targets while preserving the cursor layout.
+
+- [#70](https://github.com/pertrai1/agent-directives/pull/70) [`fb592cd`](https://github.com/pertrai1/agent-directives/commit/fb592cd84dbc3feeef608584452546139f58a39a) Thanks [@pertrai1](https://github.com/pertrai1)! - Add an adversarial reviewer skill and route explicit failure-mode review requests to it alongside relevant domain reviewers.
+
 ## 0.9.0
 
 ### Minor Changes
