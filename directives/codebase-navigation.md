@@ -1,7 +1,7 @@
 ---
 name: codebase-navigation
 description: Guides progressive codebase orientation with the SAFE pattern before implementation, review, or unfamiliar work.
-version: 1.1.1
+version: 1.1.2
 required: true
 category: workflow
 tools:
@@ -185,8 +185,10 @@ npx fallow dead-code --boundary-violations
 npx fallow dead-code --circular-deps
 ```
 
-If GitNexus is available, use graph context to identify dependents, clusters,
-services, and execution flows before making cross-cutting changes.
+If GitNexus is available, use the existing local CLI/MCP graph context to
+identify dependents, clusters, services, and execution flows before making
+cross-cutting changes. Run it directly, for example with `npx gitnexus ...`; do
+not install GitNexus skills or update agent instruction files just to use it.
 
 ---
 

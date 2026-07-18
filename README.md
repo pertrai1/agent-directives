@@ -21,7 +21,7 @@ dependencies between files.
 
 The repository contains two things you install into your own project:
 
-1. **Directive, skill, and rule files** — copied into `.agents/directives/`, `.agents/skills/`, and `.agents/rules/`.
+1. **Directive, skill, rule, and required template files** — copied into `.agents/directives/`, `.agents/skills/`, `.agents/rules/`, and `.agents/templates/`.
 2. **A root instruction file** — copied from `templates/` and renamed for your agent
    (`AGENTS.md`, `CLAUDE.md`, or `.github/copilot-instructions.md`).
 
@@ -91,6 +91,7 @@ npx agent-directives list --category review
 npx agent-directives list --tool cursor
 npx agent-directives list --type skill
 npx agent-directives list --type rule
+npx agent-directives list --type template
 
 npx agent-directives add code-reviewer --tool claude
 npx agent-directives add angular-components-and-templates --tool claude
@@ -115,7 +116,7 @@ npx agent-directives context-audit --tool claude --max-tokens 20000
 npx agent-directives context-audit --tool codex --entries adaptive-routing,systematic-debugging,test-reviewer,architecture-boundary-reviewer
 ```
 
-The estimate uses a simple `characters / 4` heuristic and reports total tokens, required vs optional counts, and the largest directive/skill/rule files. With `--max-tokens`, the command exits non-zero when the selected entries exceed the budget, making it usable in CI.
+The estimate uses a simple `characters / 4` heuristic and reports total tokens, required vs optional counts, and the largest directive/skill/rule/template files. With `--max-tokens`, the command exits non-zero when the selected entries exceed the budget, making it usable in CI.
 
 Use `--entries` with comma-separated manifest IDs to audit a selected route or composite task payload before loading it into an agent. In selected-entry mode, the report compares the chosen entries against all entries available for the same `--tool` scope and shows estimated token savings. When `--entries` is present, selection is by explicit ID plus tool compatibility; `--required` remains the existing required-only mode only when no entries are passed. Unknown IDs or IDs that do not support the requested tool are rejected with a clear error.
 
@@ -134,17 +135,18 @@ Pass `--tool` explicitly when auto-detection is ambiguous or wrong.
 
 ### Install layout
 
-For `claude`, `copilot`, and `codex`, directive, skill, and rule entries are installed
+For `claude`, `copilot`, and `codex`, directive, skill, rule, and template entries are installed
 under the project's `.agents/` directory:
 
 - directives → `.agents/directives/<name>.md`
 - skills → `.agents/skills/<name>/SKILL.md`
 - rules → `.agents/rules/<category>/<name>.md`
+- templates → `.agents/templates/<name>.md`
 
 The root instruction file is left to you so existing project instructions are not
 accidentally overwritten.
 
-For `cursor`, each entry is flattened to a single file in `.cursor/rules/<id>.mdc`.
+For `cursor`, directive, skill, and rule entries are flattened to single files in `.cursor/rules/<id>.mdc`; templates still install under `.agents/templates/`.
 
 ### Conflict handling
 
@@ -415,7 +417,7 @@ bounded output, auditability, write safety, and operational failure behavior.
 | `templates/AGENTS.md` | Codex / general agents | Full directive table with file paths, boundary step, skills table |
 | `templates/CLAUDE.md` | Claude Code | Directives by name with one-line descriptions |
 | `templates/copilot-instructions.md` | GitHub Copilot | Condensed — key rules inlined, points to `.agents/directives/` for details |
-| `templates/decision-log.md` | Any | Blank template matching the session-decisions frontmatter schema |
+| `templates/decision-log.md` | Any | Blank template installed to `.agents/templates/decision-log.md`, matching the session-decisions frontmatter schema |
 
 ## Customization
 

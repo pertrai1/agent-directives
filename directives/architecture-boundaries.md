@@ -1,7 +1,7 @@
 ---
 name: architecture-boundaries
 description: Preserves architecture DAG boundaries for imports, exports, packages, services, shared code, and dependency direction.
-version: 1.0.0
+version: 1.0.1
 required: false
 category: architecture
 tools:
@@ -129,13 +129,15 @@ separate issue/PR to introduce explicit enforcement.
 
 ### GitNexus for graph-backed orientation
 
-If GitNexus is available, use it to understand dependency and call-chain impact
-before cross-cutting changes:
+If GitNexus is available, use the existing local CLI/MCP tools to understand
+dependency and call-chain impact before cross-cutting changes. Run GitNexus
+directly; do not install GitNexus skills, run setup, or update agent instruction
+files just to use it.
 
 ```bash
-gitnexus analyze
-gitnexus wiki
-gitnexus serve
+npx gitnexus status
+npx gitnexus query "boundary impact"
+npx gitnexus impact SymbolName --direction upstream
 ```
 
 Use GitNexus graph/MCP context to answer:

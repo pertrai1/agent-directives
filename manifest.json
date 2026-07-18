@@ -66,7 +66,7 @@
       "type": "directive",
       "path": "directives/architecture-boundaries.md",
       "description": "Preserves architecture DAG boundaries for imports, exports, packages, services, shared code, and dependency direction.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "required": false,
       "category": "architecture",
       "tools": [
@@ -91,7 +91,7 @@
       "type": "directive",
       "path": "directives/codebase-navigation.md",
       "description": "Guides progressive codebase orientation with the SAFE pattern before implementation, review, or unfamiliar work.",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "required": true,
       "category": "workflow",
       "tools": [
@@ -185,7 +185,7 @@
       "type": "directive",
       "path": "directives/session-decisions.md",
       "description": "Captures durable decisions for repo policy, architecture, workflow, and cross-cutting conventions.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "required": false,
       "category": "memory",
       "tools": [
@@ -376,7 +376,7 @@
       "type": "skill",
       "path": "skills/architecture-boundary-reviewer/SKILL.md",
       "description": "Load when changes touch imports, exports, public APIs, file moves, packages, services, layers, shared code, dependency direction, cycles, or the user asks if architecture boundaries still hold.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "required": false,
       "category": "review",
       "tools": [
@@ -1082,6 +1082,21 @@
           "setup.cfg"
         ]
       }
+    },
+    {
+      "id": "decision-log-template",
+      "type": "template",
+      "path": "templates/decision-log.md",
+      "description": "Blank template matching the session-decisions frontmatter schema and section structure.",
+      "version": "1.0.0",
+      "required": true,
+      "category": "memory",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ]
     }
   ]
 }

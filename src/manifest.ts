@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export type ManifestEntryType = 'directive' | 'skill' | 'rule';
+export type ManifestEntryType = 'directive' | 'skill' | 'rule' | 'template';
 
 export interface ManifestRouting {
   triggers?: string[];

@@ -18,6 +18,11 @@ function resolveFileCopyPath(entry: ManifestEntry, cwd: string): string {
   return join(cwd, '.agents', entry.path);
 }
 
+function resolveCursorPath(entry: ManifestEntry, cwd: string): string {
+  if (entry.type === 'template') return resolveFileCopyPath(entry, cwd);
+  return join(cwd, '.cursor', 'rules', `${entry.id}.mdc`);
+}
+
 export const TARGETS: Record<Tool, TargetConfig> = {
   claude: {
     resolvePath: resolveFileCopyPath,
@@ -29,7 +34,7 @@ export const TARGETS: Record<Tool, TargetConfig> = {
     resolvePath: resolveFileCopyPath,
   },
   cursor: {
-    resolvePath: (entry, cwd) => join(cwd, '.cursor', 'rules', `${entry.id}.mdc`),
+    resolvePath: resolveCursorPath,
   },
 };
 

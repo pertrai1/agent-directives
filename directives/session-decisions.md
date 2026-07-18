@@ -1,7 +1,7 @@
 ---
 name: session-decisions
 description: Captures durable decisions for repo policy, architecture, workflow, and cross-cutting conventions.
-version: 1.0.0
+version: 1.1.0
 required: false
 category: memory
 tools:
@@ -144,9 +144,9 @@ rules.
 
 ## Template
 
-Copy the decision log template from `templates/decision-log.md` (or
-`docs/decisions/TEMPLATE.md` in your project), fill in every section. Delete
-placeholder text. Do not leave `[brackets]` in the output.
+Copy the decision log template from `.agents/templates/decision-log.md` (or
+`docs/decisions/TEMPLATE.md` in projects that maintain a local copy), fill in
+every section. Delete placeholder text. Do not leave `[brackets]` in the output.
 
 ### Required Sections
 
@@ -190,4 +190,4 @@ the approach.
 | Is the reasoning obvious from the diff, and would a future agent avoid re-deciding it anyway? | If yes → skip the log                                               |
 | Before making a cross-cutting change, what do I do first?                                     | Scan decision-log frontmatter and read only matching active entries |
 | Where does the file go?                                                                       | `docs/decisions/YYYY-MM-DD-<topic>.md`                              |
-| What template?                                                                                | Use the decision log template from `templates/decision-log.md`      |
+| What template?                                                                                | Use the decision log template from `.agents/templates/decision-log.md` |
