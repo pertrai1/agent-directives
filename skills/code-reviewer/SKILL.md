@@ -1,7 +1,9 @@
 ---
 name: "code-reviewer"
 description: "Load when the user asks to review a PR, branch, diff, local changes, or says approve, merge, or check this change for bugs, regressions, security, maintainability, or merge risk."
-version: 1.2.0
+version: 1.3.0
+scripts:
+  - scripts/diff.sh
 required: true
 category: review
 tools:
@@ -41,6 +43,20 @@ Use the full review process when the change is high-risk, cross-cutting, product
 # Code Review Guidelines
 
 When reviewing a pull request, branch, diff, or local change:
+
+## Getting the diff
+
+Start from the change itself, not from re-reading whole files. If
+`.agents/skills/code-reviewer/scripts/diff.sh` is present, run it to get a
+scoped, noise-filtered diff (lockfiles/generated/build output excluded, each
+file's diff capped so one large rewrite can't dominate context):
+
+- `bash .agents/skills/code-reviewer/scripts/diff.sh <base>` — vs a base branch (default: auto-detected `origin/main`/`main`)
+- `bash .agents/skills/code-reviewer/scripts/diff.sh --staged` — staged changes
+- `bash .agents/skills/code-reviewer/scripts/diff.sh --working` — all uncommitted changes
+
+If the script is absent, use `git diff` directly. Read full file bodies only for
+the logic a diff can't show. Run it on demand; do not read a cached copy.
 
 ## Step 0: The Review Brief
 

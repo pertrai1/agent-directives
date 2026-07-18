@@ -4,7 +4,8 @@ import { join } from 'node:path';
 import { Command } from 'commander';
 import { buildContextAudit, ContextAuditSelectionError, renderContextAudit } from './context-audit.js';
 import { filterEntries, findEntry, loadManifest, packageRoot, type ManifestEntry, type ManifestEntryType } from './manifest.js';
-import { installEntry, isEntryInstalled, type InstallResult } from './install.js';
+import { hasConflict, installEntry, isEntryInstalled } from './install.js';
+import { reportInstall, tallySummary, type InstallSummary } from './install-report.js';
 import { renderEntryList } from './renderEntryList.js';
 import { selectMultiple } from './prompt.js';
 import { parseRuleCategories } from './rules.js';
@@ -13,7 +14,6 @@ import { KNOWN_TOOLS, detectTool, isTool, type Tool } from './targets.js';
 const pkg = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8')) as { version: string };
 
 const DECIMAL_RADIX = 10;
-type InstallSummary = { installed: number; identical: number; conflict: number };
 
 function resolveTool(provided?: string): Tool {
   if (provided) {
@@ -30,20 +30,6 @@ function resolveTool(provided?: string): Tool {
     process.exit(1);
   }
   return detected;
-}
-
-function reportInstall(entry: ManifestEntry, result: InstallResult): void {
-  switch (result.status) {
-    case 'installed':
-      console.log(`  ✓ ${entry.id}`);
-      break;
-    case 'skipped-identical':
-      console.log(`  = ${entry.id} (already up-to-date)`);
-      break;
-    case 'skipped-conflict':
-      console.error(`  ✗ ${entry.id} (conflict: ${result.path})`);
-      break;
-  }
 }
 
 function parseIntegerOption(value: string, opts: { flag: string; minimum: number }): number {
@@ -93,9 +79,7 @@ function applyEntries(entries: ManifestEntry[], opts: { cwd: string; tool: Tool;
   for (const entry of entries) {
     const result = installEntry(entry, { cwd: opts.cwd, tool: opts.tool, force: opts.force });
     reportInstall(entry, result);
-    if (result.status === 'installed') opts.summary.installed += 1;
-    else if (result.status === 'skipped-identical') opts.summary.identical += 1;
-    else opts.summary.conflict += 1;
+    tallySummary(opts.summary, result);
   }
 }
 
@@ -209,7 +193,7 @@ program
     }
     const result = installEntry(entry, { cwd: process.cwd(), tool, force: opts.force });
     reportInstall(entry, result);
-    if (result.status === 'skipped-conflict') {
+    if (hasConflict(result)) {
       console.error(`Use --force to overwrite.`);
       process.exit(1);
     }

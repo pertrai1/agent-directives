@@ -1,7 +1,9 @@
 ---
 name: context-handoff
 description: Compresses task state at directive or session boundaries so later phases can continue from a compact, current-state handoff instead of drifting through accumulated chat history.
-version: 1.2.1
+version: 1.3.0
+scripts:
+  - scripts/handoff-state.sh
 required: false
 category: workflow
 tools:
@@ -106,6 +108,20 @@ If an audit trail is needed, append historical entries to
 `.agents/handoff-log.md`, but treat that log as historical only. The active
 handoff supersedes the log, prior plans, stale tool output, and abandoned
 approaches.
+
+---
+
+## Gathering Current State
+
+To fill the "Current Task State" and "Files and Surfaces Involved" sections, you
+need the live git state: branch, staged/unstaged/untracked files, recent
+commits, diffstat, and stash. If
+`.agents/directives/scripts/handoff-state.sh` is present, run it once to collect
+all of that in a single capped, read-only snapshot instead of separate
+`git status` / `git log` / `git diff` calls. If the script is absent, gather the
+same facts with those commands directly. Run it at handoff time and paste the
+result into the capsule — never cache the snapshot and reuse it later, since it
+goes stale silently.
 
 ---
 

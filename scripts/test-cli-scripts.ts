@@ -1,0 +1,164 @@
+#!/usr/bin/env tsx
+import { execFileSync, spawnSync } from "node:child_process";
+import { mkdirSync, readFileSync, statSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import {
+  assertContains,
+  assertFileExists,
+  assertFileMissing,
+  reportResults,
+  repoRoot,
+  runCli,
+  test,
+  withTempProject,
+} from "./test-cli-helpers.js";
+
+const EXECUTABLE_BIT = 0o100;
+
+function assertExecutable(path: string): void {
+  if (!(statSync(path).mode & EXECUTABLE_BIT)) throw new Error(`expected executable bit on ${path}`);
+}
+
+console.log("helper scripts");
+test("sync installs required entries' helper scripts as executables under .agents", () => {
+  withTempProject((cwd) => {
+    const { stdout } = runCli("sync --tool claude --yes", { cwd });
+    assertContains(stdout, { needle: "↳ script gates.sh", context: "script sub-line" });
+    // gates.sh (verification) and diff.sh (code-reviewer) are owned by required entries.
+    for (const rel of [".agents/directives/scripts/gates.sh", ".agents/skills/code-reviewer/scripts/diff.sh"]) {
+      const abs = join(cwd, rel);
+      assertFileExists(abs);
+      assertExecutable(abs);
+    }
+  });
+});
+
+test("installs an optional entry's helper script via add", () => {
+  withTempProject((cwd) => {
+    runCli("add session-decisions --tool claude", { cwd });
+    const script = join(cwd, ".agents/directives/scripts/decisions-index.sh");
+    assertFileExists(script);
+    assertExecutable(script);
+  });
+});
+
+test("installs helper scripts under .agents even for cursor", () => {
+  withTempProject((cwd) => {
+    runCli("sync --tool cursor --yes", { cwd });
+    assertFileExists(join(cwd, ".cursor/rules/code-reviewer.mdc"));
+    assertFileExists(join(cwd, ".agents/skills/code-reviewer/scripts/diff.sh"));
+  });
+});
+
+test("helper conflict leaves the entry unchanged without force", () => {
+  withTempProject((cwd) => {
+    const scriptPath = join(cwd, ".agents/directives/scripts/gates.sh");
+    const entryPath = join(cwd, ".agents/directives/verification.md");
+    mkdirSync(dirname(scriptPath), { recursive: true });
+    writeFileSync(scriptPath, "custom script");
+
+    const noForce = runCli("add verification --tool claude", { cwd, allowFail: true });
+    if (noForce.code === 0) throw new Error("expected non-zero exit for conflicting script");
+    assertContains(noForce.stderr, { needle: "script conflict", context: "script conflict report" });
+    if (readFileSync(scriptPath, "utf8") !== "custom script") throw new Error("script overwritten without --force");
+    assertFileMissing(entryPath);
+
+    runCli("add verification --tool claude --force", { cwd });
+    if (readFileSync(scriptPath, "utf8") === "custom script") throw new Error("script not overwritten with --force");
+  });
+});
+
+test("working diff covers the complete working tree", () => {
+  withTempProject((cwd) => {
+    execFileSync("git", ["init", "-q"], { cwd });
+    writeFileSync(join(cwd, "staged.txt"), "base staged\n");
+    writeFileSync(join(cwd, "unstaged.txt"), "base unstaged\n");
+    execFileSync("git", ["add", "staged.txt", "unstaged.txt"], { cwd });
+    execFileSync(
+      "git",
+      ["-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "-qm", "base"],
+      { cwd },
+    );
+
+    writeFileSync(join(cwd, "staged.txt"), "new staged content\n");
+    execFileSync("git", ["add", "staged.txt"], { cwd });
+    writeFileSync(join(cwd, "unstaged.txt"), "new unstaged content\n");
+    writeFileSync(join(cwd, "untracked.txt"), "new untracked content\n");
+
+    const output = execFileSync(
+      "/bin/bash",
+      [join(repoRoot, "skills/code-reviewer/scripts/diff.sh"), "--working"],
+      { cwd, encoding: "utf8" },
+    );
+    for (const expected of [
+      "staged.txt",
+      "new staged content",
+      "unstaged.txt",
+      "new unstaged content",
+      "untracked.txt",
+      "new untracked content",
+    ]) {
+      assertContains(output, { needle: expected, context: "complete working diff" });
+    }
+  });
+});
+
+test("requested unavailable gate fails visibly", () => {
+  withTempProject((cwd) => {
+    writeFileSync(join(cwd, "package.json"), JSON.stringify({ scripts: { check: "node -e \"process.exit(0)\"" } }));
+    const result = spawnSync(
+      "/bin/bash",
+      [join(repoRoot, "directives/scripts/gates.sh"), "test"],
+      { cwd, encoding: "utf8" },
+    );
+    if (result.status === 0) throw new Error("expected unavailable requested gate to fail");
+    assertContains(`${result.stdout}${result.stderr}`, { needle: "Unavailable requested gate: test", context: "missing gate error" });
+  });
+});
+
+test("default gates run the aggregate npm check", () => {
+  withTempProject((cwd) => {
+    const checkScript = "node -e \"require('fs').writeFileSync('check-ran.txt','yes')\"";
+    writeFileSync(join(cwd, "package.json"), JSON.stringify({ scripts: { check: checkScript } }));
+    execFileSync("/bin/bash", [join(repoRoot, "directives/scripts/gates.sh")], { cwd });
+    assertContains(readFileSync(join(cwd, "check-ran.txt"), "utf8"), { needle: "yes", context: "aggregate npm check" });
+  });
+});
+
+test("check reports an entry whose declared helper is missing", () => {
+  withTempProject((cwd) => {
+    runCli("sync --tool claude --yes", { cwd });
+    unlinkSync(join(cwd, ".agents/directives/scripts/gates.sh"));
+
+    const result = runCli("check --tool claude", { cwd, allowFail: true });
+    if (result.code === 0) throw new Error("expected check to fail for a missing declared helper");
+    assertContains(result.stderr, { needle: "verification", context: "missing helper owner" });
+  });
+});
+
+test("decision index emits its table without column", () => {
+  withTempProject((cwd) => {
+    const decisions = join(cwd, "docs/decisions");
+    const commandBin = join(cwd, "bin");
+    mkdirSync(decisions, { recursive: true });
+    mkdirSync(commandBin);
+    writeFileSync(
+      join(decisions, "2026-07-18-example.md"),
+      "---\ndate: 2026-07-18\nkind: process\nscope: repo\nstatus: active\ndomain: example\ntriggers:\n  - example trigger\n---\n",
+    );
+    for (const command of ["find", "sort", "awk", "cat"]) {
+      const source = execFileSync("/bin/sh", ["-c", `command -v ${command}`], { encoding: "utf8" }).trim();
+      symlinkSync(source, join(commandBin, command));
+    }
+
+    const output = execFileSync(
+      "/bin/bash",
+      [join(repoRoot, "directives/scripts/decisions-index.sh"), "--active", decisions],
+      { cwd, encoding: "utf8", env: { ...process.env, PATH: commandBin } },
+    );
+    assertContains(output, { needle: "DATE\tKIND\tSCOPE", context: "unformatted decision header" });
+    assertContains(output, { needle: "2026-07-18\tprocess\trepo\tactive\texample", context: "unformatted decision row" });
+  });
+});
+
+reportResults();
