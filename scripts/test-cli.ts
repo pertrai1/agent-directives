@@ -40,6 +40,10 @@ test("filters list by flags (required, category, type, tool)", () => {
     assertContains(ruleType, { needle: "angular-components-and-templates", context: "list --type rule" });
     assertNotContains(ruleType, { needle: "adaptive-routing", context: "list --type rule" });
 
+    const templateType = runCli("list --type template", { cwd }).stdout;
+    assertContains(templateType, { needle: "decision-log-template", context: "list --type template" });
+    assertNotContains(templateType, { needle: "adaptive-routing", context: "list --type template" });
+
     const tool = runCli("list --tool cursor", { cwd }).stdout;
     assertContains(tool, { needle: "adaptive-routing", context: "list --tool" });
     assertNotContains(tool, { needle: "workspace-isolation", context: "list --tool" });
@@ -140,7 +144,8 @@ test("installs required entries and validates check command", () => {
       ".agents/directives/verification.md",
       ".agents/skills/code-reviewer/SKILL.md",
       ".agents/skills/systematic-debugging/SKILL.md",
-      ".agents/skills/test-reviewer/SKILL.md"
+      ".agents/skills/test-reviewer/SKILL.md",
+      ".agents/templates/decision-log.md"
     ];
     for (const file of expected) assertFileExists(join(cwd, file));
     assertFileMissing(join(cwd, "directives/adaptive-routing.md"));
@@ -157,6 +162,7 @@ test("sync --tool cursor only installs cursor-compatible required entries", () =
     runCli("sync --tool cursor --yes", { cwd });
     assertFileExists(join(cwd, ".cursor/rules/adaptive-routing.mdc"));
     assertFileExists(join(cwd, ".cursor/rules/code-reviewer.mdc"));
+    assertFileExists(join(cwd, ".agents/templates/decision-log.md"));
   });
 });
 

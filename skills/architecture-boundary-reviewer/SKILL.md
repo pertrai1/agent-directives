@@ -1,7 +1,7 @@
 ---
 name: "architecture-boundary-reviewer"
 description: "Load when changes touch imports, exports, public APIs, file moves, packages, services, layers, shared code, dependency direction, cycles, or the user asks if architecture boundaries still hold."
-version: 1.0.0
+version: 1.0.1
 required: false
 category: review
 tools:
@@ -138,16 +138,20 @@ npx fallow dead-code --boundary-violations
 npx fallow dead-code --circular-deps
 ```
 
-For graph-backed orientation with GitNexus:
+For graph-backed orientation with GitNexus, use the existing local CLI/MCP tools
+directly:
 
 ```bash
-gitnexus analyze
-gitnexus wiki
+npx gitnexus status
+npx gitnexus query "boundary impact"
+npx gitnexus impact SymbolName --direction upstream
 ```
 
 Use GitNexus/MCP graph context to identify dependents, clusters, services, and
-execution flows. Treat GitNexus as evidence for understanding impact unless the
-project has explicit GitNexus queries that enforce boundary rules.
+execution flows. Do not install GitNexus skills, run setup, or update agent
+instruction files just to use it. Treat GitNexus as evidence for understanding
+impact unless the project has explicit GitNexus queries that enforce boundary
+rules.
 
 If a tool is unavailable, do not fail the review solely for that reason. State the
 manual evidence used instead.

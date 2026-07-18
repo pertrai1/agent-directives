@@ -75,12 +75,12 @@ const program = new Command()
   .version(pkg.version);
 
 function isManifestEntryType(value: string): value is ManifestEntryType {
-  return value === 'directive' || value === 'skill' || value === 'rule';
+  return value === 'directive' || value === 'skill' || value === 'rule' || value === 'template';
 }
 
 function validateListOptions(opts: { tool?: string; type?: string }): void {
   if (opts.type && !isManifestEntryType(opts.type)) {
-    console.error(`Invalid --type '${opts.type}'. Expected 'directive', 'skill', or 'rule'.`);
+    console.error(`Invalid --type '${opts.type}'. Expected 'directive', 'skill', 'rule', or 'template'.`);
     process.exit(1);
   }
   if (opts.tool && !isTool(opts.tool)) {
@@ -126,7 +126,7 @@ program
   .option('-c, --category <category>', 'Filter by category')
   .option('-r, --required', 'Only show required entries')
   .option('-t, --tool <tool>', `Filter by tool (${KNOWN_TOOLS.join(', ')})`)
-  .option('--type <type>', 'Filter by type (directive, skill, or rule)')
+  .option('--type <type>', 'Filter by type (directive, skill, rule, or template)')
   .action((opts: { category?: string; required?: boolean; tool?: string; type?: string }) => {
     validateListOptions(opts);
     const manifest = loadManifest();
@@ -191,7 +191,7 @@ program
 
 program
   .command('add <id>')
-  .description('Install a single directive, skill, or rule into the current project')
+  .description('Install a single directive, skill, rule, or template into the current project')
   .option('-t, --tool <tool>', `Target tool (${KNOWN_TOOLS.join(', ')})`)
   .option('-f, --force', 'Overwrite an existing file with different content')
   .action((id: string, opts: { tool?: string; force?: boolean }) => {

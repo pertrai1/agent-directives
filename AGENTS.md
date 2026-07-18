@@ -148,10 +148,17 @@ codebase-navigation, architecture-boundary, review, and verification guidance
 selected by adaptive routing.
 
 This project is indexed by GitNexus as **agent-directives** (917 symbols, 999
-relationships, 3 execution flows). Use the GitNexus MCP tools to understand code,
-assess impact, and navigate safely.
+relationships, 3 execution flows). Use the local GitNexus CLI/MCP tools to
+understand code, assess impact, and navigate safely.
 
-> If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
+Run GitNexus directly with `npx gitnexus ...` or the already-configured MCP tools.
+Do **not** install GitNexus skills, run `gitnexus setup`, or modify agent
+instruction files to use GitNexus. If a GitNexus command creates or changes
+agent files such as `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`,
+or `.cursor/rules/**`, treat those changes as tool side effects and revert them
+unless the user explicitly asked to update agent files.
+
+> If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first, then revert any unrelated agent-file side effects.
 
 ## Always Do
 
@@ -220,7 +227,7 @@ Before completing any code modification task, verify:
 
 ## Keeping the Index Fresh
 
-After committing code changes, the GitNexus index becomes stale. Re-run analyze to update it:
+After committing code changes, the GitNexus index becomes stale. Re-run analyze to update the index only:
 
 ```bash
 npx gitnexus analyze
@@ -234,13 +241,22 @@ npx gitnexus analyze --embeddings
 
 To check whether embeddings exist, inspect `.gitnexus/meta.json` — the `stats.embeddings` field shows the count (0 means no embeddings). **Running analyze without `--embeddings` will delete any previously generated embeddings.**
 
-> Claude Code users: A PostToolUse hook handles this automatically after `git commit` and `git merge`.
+Do not run setup or install/update GitNexus agent skills while refreshing the
+index. If an analyze hook or tool side effect modifies agent instruction files,
+revert those unrelated changes before continuing.
 
 ## CLI
 
-If local GitNexus-specific skills are installed for your agent, use the skill
-that matches the task: exploring, impact analysis, debugging, refactoring, tool
-reference, or CLI/index maintenance. Skill installation paths are agent-specific;
-do not assume this repository contains those skill files.
+Use the local CLI directly when MCP helpers are unavailable:
+
+```bash
+npx gitnexus status
+npx gitnexus query "concept"
+npx gitnexus context SymbolName
+npx gitnexus impact SymbolName --direction upstream
+```
+
+Do not install GitNexus skills or update agent files as part of normal GitNexus
+usage in this repository.
 
 <!-- gitnexus:end -->

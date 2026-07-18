@@ -6,7 +6,7 @@ import { parseFrontmatter } from './frontmatter.js';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 
-type ManifestEntryType = 'directive' | 'skill' | 'rule';
+type ManifestEntryType = 'directive' | 'skill' | 'rule' | 'template';
 
 interface ManifestRouting {
   triggers?: string[];
@@ -158,11 +158,24 @@ const skills = readdirSync(join(repoRoot, 'skills'), { withFileTypes: true })
 
 const rules = readMarkdownEntries('rules', 'rule');
 
+const templates: ManifestEntry[] = [
+  {
+    id: 'decision-log-template',
+    type: 'template',
+    path: 'templates/decision-log.md',
+    description: 'Blank template matching the session-decisions frontmatter schema and section structure.',
+    version: '1.0.0',
+    required: true,
+    category: 'memory',
+    tools: ['claude', 'copilot', 'codex', 'cursor'],
+  },
+];
+
 const manifest: Manifest = {
   version: '1.0.0',
-  entries: [...directives, ...skills, ...rules],
+  entries: [...directives, ...skills, ...rules, ...templates],
 };
 
 const outPath = join(repoRoot, 'manifest.json');
 writeFileSync(outPath, JSON.stringify(manifest, null, 2) + '\n');
-console.log(`manifest.json written — ${manifest.entries.length} entries (${directives.length} directives, ${skills.length} skills, ${rules.length} rules)`);
+console.log(`manifest.json written — ${manifest.entries.length} entries (${directives.length} directives, ${skills.length} skills, ${rules.length} rules, ${templates.length} templates)`);
