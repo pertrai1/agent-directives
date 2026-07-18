@@ -1,3 +1,4 @@
+import { basename } from 'node:path';
 import type { InstallResult, InstallStatus } from './install.js';
 import type { ManifestEntry } from './manifest.js';
 
@@ -28,7 +29,7 @@ function reportScript(result: InstallResult, script: InstallResult): void {
     return;
   }
   if (!result.blocked && script.status === 'installed') {
-    console.log(`    ↳ script ${script.path.split('/').at(-1)}`);
+    console.log(`    ↳ script ${basename(script.path)}`);
   }
 }
 

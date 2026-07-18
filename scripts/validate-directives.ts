@@ -90,7 +90,7 @@ function validateScriptPaths(path: string, fm: string): void {
     fail(`${path}: optional 'scripts' must be a non-empty string array`);
     return;
   }
-  const dir = path.slice(0, path.lastIndexOf('/'));
+  const dir = path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : '.';
   for (const script of scripts as string[]) {
     if (script.startsWith('/') || script.includes('..')) {
       fail(`${path}: script path '${script}' must be repo-relative without '..'`);

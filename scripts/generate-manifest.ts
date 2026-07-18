@@ -147,7 +147,7 @@ function readEntry(path: string, type: ManifestEntryType): ManifestEntry {
 function buildScripts(fm: Record<string, unknown>, path: string): string[] | undefined {
   const scripts = optionalStringArray(fm.scripts, { key: 'scripts', path });
   if (!scripts) return undefined;
-  const dir = path.slice(0, path.lastIndexOf('/'));
+  const dir = path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : '.';
   return scripts.map((script) => {
     if (script.startsWith('/') || script.includes('..')) {
       throw new Error(`Invalid script path '${script}' in ${path}; expected a repo-relative path without '..'`);
