@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.12.0
+
+### Minor Changes
+
+- [#74](https://github.com/pertrai1/agent-directives/pull/74) [`3f15c1e`](https://github.com/pertrai1/agent-directives/commit/3f15c1e59d0afe266d9ee5a1617e52497abb896e) Thanks [@pertrai1](https://github.com/pertrai1)! - Install directive/skill helper scripts during sync. Entries can now declare a `scripts:` frontmatter list, and `sync`/`add` copy those scripts (executable, under `.agents/`) alongside the instruction file so downstream projects actually get them. Ships four scripts referenced by the verification, session-decisions, context-handoff directives and the code-reviewer skill: `gates.sh` (capped quality-gate runner), `diff.sh` (scoped review diff), `decisions-index.sh` (decision-log frontmatter index), and `handoff-state.sh` (git state snapshot).
+
 ## 0.11.0
 
 ### Minor Changes
