@@ -46,7 +46,7 @@
     "manifest:check": "npm run manifest && git diff --exit-code manifest.json",
     "pack:check": "npm run build && npm pack --dry-run",
     "cli": "tsx src/cli.ts",
-    "test:cli": "tsx scripts/test-cli.ts",
+    "test:cli": "tsx scripts/test-cli.ts && tsx scripts/test-cli-scripts.ts",
     "test:version-bumps": "tsx scripts/test-version-bumps.ts",
     "test:package-release": "tsx scripts/test-package-release.ts",
     "lint": "eslint .",

@@ -81,6 +81,26 @@ function validateRoutingMetadata(path: string, fm: string): void {
   }
 }
 
+function validateScriptPaths(path: string, fm: string): void {
+  const parsed = parseFrontmatterBlock(fm);
+  const scripts = parsed.scripts;
+  if (scripts === undefined) return;
+  const ok = Array.isArray(scripts) && scripts.length > 0 && scripts.every((item) => typeof item === 'string' && item.length > 0);
+  if (!ok) {
+    fail(`${path}: optional 'scripts' must be a non-empty string array`);
+    return;
+  }
+  const dir = path.slice(0, path.lastIndexOf('/'));
+  for (const script of scripts as string[]) {
+    if (script.startsWith('/') || script.includes('..')) {
+      fail(`${path}: script path '${script}' must be repo-relative without '..'`);
+      continue;
+    }
+    const relative = `${dir}/${script}`;
+    if (!exists(relative)) fail(`${path}: declared script missing: ${relative}`);
+  }
+}
+
 function validateRequiredKeys(path: string, fm: string): void {
   const requiredKeys = ['name', 'description', 'category'];
   if (path.startsWith('rules/')) requiredKeys.push('version');
@@ -154,6 +174,7 @@ function validateFrontmatter(path: string): void {
   validateToolsValues(path, fm);
   validateNameMatches(path, fm);
   validateRoutingMetadata(path, fm);
+  validateScriptPaths(path, fm);
 }
 
 function validateReferencedPaths(path: string): void {

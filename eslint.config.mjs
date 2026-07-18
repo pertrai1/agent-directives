@@ -25,7 +25,7 @@ export default defineConfig([
     },
   },
   {
-    files: ["scripts/**/*.ts", "evals/**/*.ts", "src/cli.ts"],
+    files: ["scripts/**/*.ts", "evals/**/*.ts", "src/cli.ts", "src/install-report.ts"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "llm-core/structured-logging": "off",

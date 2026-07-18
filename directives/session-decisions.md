@@ -1,7 +1,9 @@
 ---
 name: session-decisions
 description: Captures durable decisions for repo policy, architecture, workflow, and cross-cutting conventions.
-version: 1.1.0
+version: 1.2.0
+scripts:
+  - scripts/decisions-index.sh
 required: false
 category: memory
 tools:
@@ -75,6 +77,11 @@ cross-cutting code or documentation convention:
 2. Filter for entries with `status: active`
 3. Match on `domain`, `triggers`, and `applies_to`
 4. Open only the matching logs unless you need a superseded record for history
+
+If `.agents/directives/scripts/decisions-index.sh` is present, run it (add
+`--active` to filter) to get a one-table `date | kind | scope | status | domain
+| triggers` index instead of reading each file — then open only the matching
+record. If the script is absent, grep the frontmatter directly.
 
 Decision logs are for progressive disclosure. Do not load every file in
 `docs/decisions/` by default.

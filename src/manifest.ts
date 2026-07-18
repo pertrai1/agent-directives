@@ -23,6 +23,8 @@ export interface ManifestEntry {
   tools: string[];
   applies_to?: string[];
   routing?: ManifestRouting;
+  /** Repo-relative paths to helper scripts installed alongside this entry (under `.agents/`). */
+  scripts?: string[];
 }
 
 export interface Manifest {

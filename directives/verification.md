@@ -1,7 +1,9 @@
 ---
 name: verification
 description: Requires structured evidence of correctness before quality gates and pull requests.
-version: 1.2.1
+version: 1.3.0
+scripts:
+  - scripts/gates.sh
 required: true
 category: workflow
 tools:
@@ -295,6 +297,13 @@ address.
 Run the project-native gates selected by `.agents/directives/adaptive-routing.md`.
 Treat test, lint, type-check, build, static-analysis, and review-bot output as
 implementation feedback, not ceremony.
+
+If `.agents/directives/scripts/gates.sh` is present, run it to execute the
+detected gates with passing checks collapsed to one line and failures capped to
+their last lines — this keeps unbounded test/build logs out of context. Pass a
+subset (e.g. `bash .agents/directives/scripts/gates.sh lint typecheck`) to scope
+the run. If the script is absent, run your project's test/lint/build commands
+directly. Invoke it on demand; do not read a cached copy of its output.
 
 When a linter or static-analysis rule explains an issue, fix the underlying
 pattern. Do not suppress the rule, weaken configuration, or make superficial

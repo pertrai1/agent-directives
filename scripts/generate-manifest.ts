@@ -27,6 +27,7 @@ interface ManifestEntry {
   tools: string[];
   applies_to?: string[];
   routing?: ManifestRouting;
+  scripts?: string[];
 }
 
 interface Manifest {
@@ -134,7 +135,29 @@ function readEntry(path: string, type: ManifestEntryType): ManifestEntry {
   }
   const routing = buildRouting(fm, path);
   if (routing) entry.routing = routing;
+  const scripts = buildScripts(fm, path);
+  if (scripts) entry.scripts = scripts;
   return entry;
+}
+
+// buildScripts resolves the optional frontmatter `scripts:` list (paths relative
+// to the entry file's directory) into repo-relative paths, validating that each
+// referenced script exists so a broken reference fails manifest generation
+// rather than surfacing as a silently-missing file at install time.
+function buildScripts(fm: Record<string, unknown>, path: string): string[] | undefined {
+  const scripts = optionalStringArray(fm.scripts, { key: 'scripts', path });
+  if (!scripts) return undefined;
+  const dir = path.slice(0, path.lastIndexOf('/'));
+  return scripts.map((script) => {
+    if (script.startsWith('/') || script.includes('..')) {
+      throw new Error(`Invalid script path '${script}' in ${path}; expected a repo-relative path without '..'`);
+    }
+    const relative = `${dir}/${script}`;
+    if (!existsSync(join(repoRoot, relative))) {
+      throw new Error(`Script not found for ${path}: ${relative}`);
+    }
+    return relative;
+  });
 }
 
 const directives = readdirSync(join(repoRoot, 'directives'))
