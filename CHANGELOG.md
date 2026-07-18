@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.11.0
+
+### Minor Changes
+
+- [#72](https://github.com/pertrai1/agent-directives/pull/72) [`2375954`](https://github.com/pertrai1/agent-directives/commit/237595427affa9cd6719fb61ebdec8094421de3c) Thanks [@pertrai1](https://github.com/pertrai1)! - Install the decision-log template during sync by adding template entries to the manifest and copying `templates/decision-log.md` to `.agents/templates/decision-log.md`. Update session-decision guidance to use the installed template path and clarify GitNexus usage should run through existing CLI/MCP tools without installing skills or changing agent instruction files.
+
 ## 0.10.0
 
 ### Minor Changes
