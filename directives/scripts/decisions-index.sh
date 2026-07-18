@@ -33,7 +33,7 @@ fi
 
 # Parse the YAML frontmatter block (between the first two --- lines) of each file
 # and print one tab-separated row. Newest first (filenames are date-prefixed).
-{
+emit_index() {
   printf 'DATE\tKIND\tSCOPE\tSTATUS\tDOMAIN\tFILE\tTRIGGERS\n'
   find "$DIR" -maxdepth 1 -type f -name '*.md' | sort -r | while IFS= read -r file; do
     awk -v fname="$file" -v active_only="$ACTIVE_ONLY" '
@@ -66,4 +66,10 @@ fi
       }
     ' "$file"
   done
-} | column -t -s "$(printf '\t')" 2>/dev/null || cat
+}
+
+if command -v column >/dev/null 2>&1; then
+  emit_index | column -t -s "$(printf '\t')"
+else
+  emit_index
+fi

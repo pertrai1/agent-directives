@@ -58,18 +58,49 @@ cap_per_file() {
 echo "# Review Diff"
 case "$MODE" in
   staged)  echo "(staged changes)"; RANGE=(--cached) ;;
-  working) echo "(all uncommitted changes)"; RANGE=() ;;
+  working) echo "(all uncommitted changes)"; RANGE=(HEAD) ;;
   range)   echo "(vs $BASE)"; RANGE=("${BASE}...HEAD") ;;
 esac
 echo
 
+untracked_files() {
+  git ls-files --others --exclude-standard -- . "${EXCLUDES[@]}"
+}
+
+print_untracked_name_status() {
+  [ "$MODE" = "working" ] || return 0
+  untracked_files | while IFS= read -r file; do
+    printf 'A\t%s\n' "$file"
+  done
+}
+
+print_untracked_diff() {
+  [ "$MODE" = "working" ] || return 0
+  untracked_files | while IFS= read -r file; do
+    git diff --no-index -- /dev/null "$file"
+    status=$?
+    [ "$status" -le 1 ] || return "$status"
+  done
+}
+
 echo "## Changed files"
 git diff --name-status "${RANGE[@]}" -- . "${EXCLUDES[@]}"
+print_untracked_name_status
 echo
 
 echo "## Stat"
 git diff --stat "${RANGE[@]}" -- . "${EXCLUDES[@]}"
+if [ "$MODE" = "working" ]; then
+  untracked_files | while IFS= read -r file; do
+    git diff --no-index --stat -- /dev/null "$file"
+    status=$?
+    [ "$status" -le 1 ] || exit "$status"
+  done
+fi
 echo
 
 echo "## Full diff (per-file capped)"
-git diff --find-renames --find-copies "${RANGE[@]}" -- . "${EXCLUDES[@]}" | cap_per_file
+{
+  git diff --find-renames --find-copies "${RANGE[@]}" -- . "${EXCLUDES[@]}"
+  print_untracked_diff
+} | cap_per_file

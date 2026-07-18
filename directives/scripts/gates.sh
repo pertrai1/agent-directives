@@ -23,6 +23,10 @@ MAX_LINES="${MAX_LINES:-150}"
 WANT=("$@")               # optional subset of gates to run
 FAILED=0
 RAN=0
+RAN_LINT=0
+RAN_TYPECHECK=0
+RAN_TEST=0
+RAN_BUILD=0
 
 # want <gate> → true if the user requested this gate (or requested nothing).
 want() {
@@ -59,36 +63,69 @@ echo "# Quality Gates"
 echo
 
 if [ -f package.json ] && command -v npm >/dev/null 2>&1; then
-  # Map conventional gate names to whatever the project actually defines.
-  want lint     && { npm_script lint     && run_check "lint"     npm run lint --silent; }
-  want typecheck && {
-    if   npm_script typecheck  ; then run_check "typecheck" npm run typecheck --silent
-    elif npm_script type-check ; then run_check "typecheck" npm run type-check --silent
+  NPM_AGGREGATE=0
+  if [ "${#WANT[@]}" -eq 0 ]; then
+    if npm_script verify; then
+      run_check "verify" npm run verify --silent
+      NPM_AGGREGATE=1
+    elif npm_script check; then
+      run_check "check" npm run check --silent
+      NPM_AGGREGATE=1
     fi
-  }
-  want test  && { npm_script test  && run_check "test"  npm test --silent; }
-  want build && { npm_script build && run_check "build" npm run build --silent; }
+  fi
+
+  if [ "$NPM_AGGREGATE" -eq 0 ]; then
+    # Map conventional gate names to whatever the project actually defines.
+    want lint     && { npm_script lint     && { run_check "lint" npm run lint --silent; RAN_LINT=1; }; }
+    want typecheck && {
+      if   npm_script typecheck  ; then run_check "typecheck" npm run typecheck --silent; RAN_TYPECHECK=1
+      elif npm_script type-check ; then run_check "typecheck" npm run type-check --silent; RAN_TYPECHECK=1
+      fi
+    }
+    want test  && { npm_script test  && { run_check "test" npm test --silent; RAN_TEST=1; }; }
+    want build && { npm_script build && { run_check "build" npm run build --silent; RAN_BUILD=1; }; }
+  fi
 fi
 
 if [ -f pyproject.toml ] || [ -f requirements.txt ]; then
-  want lint      && command -v ruff   >/dev/null 2>&1 && run_check "ruff"  ruff check .
-  want typecheck && command -v mypy   >/dev/null 2>&1 && run_check "mypy"  mypy .
-  want test      && command -v pytest >/dev/null 2>&1 && run_check "pytest" pytest -q
+  want lint      && command -v ruff   >/dev/null 2>&1 && { run_check "ruff" ruff check .; RAN_LINT=1; }
+  want typecheck && command -v mypy   >/dev/null 2>&1 && { run_check "mypy" mypy .; RAN_TYPECHECK=1; }
+  want test      && command -v pytest >/dev/null 2>&1 && { run_check "pytest" pytest -q; RAN_TEST=1; }
 fi
 
 if [ -f go.mod ] && command -v go >/dev/null 2>&1; then
-  want lint  && run_check "go vet"   go vet ./...
-  want build && run_check "go build" go build ./...
-  want test  && run_check "go test"  go test ./...
+  want lint  && { run_check "go vet" go vet ./...; RAN_LINT=1; }
+  want build && { run_check "go build" go build ./...; RAN_BUILD=1; }
+  want test  && { run_check "go test" go test ./...; RAN_TEST=1; }
 fi
 
 if [ -f Cargo.toml ] && command -v cargo >/dev/null 2>&1; then
-  want lint  && run_check "clippy" cargo clippy -- -D warnings
-  want test  && run_check "cargo test" cargo test
-  want build && run_check "cargo build" cargo build
+  want lint  && { run_check "clippy" cargo clippy -- -D warnings; RAN_LINT=1; }
+  want test  && { run_check "cargo test" cargo test; RAN_TEST=1; }
+  want build && { run_check "cargo build" cargo build; RAN_BUILD=1; }
+fi
+
+if [ "${#WANT[@]}" -gt 0 ]; then
+  for requested in "${WANT[@]}"; do
+    case "$requested" in
+      lint)      ran="$RAN_LINT" ;;
+      typecheck) ran="$RAN_TYPECHECK" ;;
+      test)      ran="$RAN_TEST" ;;
+      build)     ran="$RAN_BUILD" ;;
+      *)         ran=0 ;;
+    esac
+    if [ "$ran" -eq 0 ]; then
+      echo "Unavailable requested gate: $requested" >&2
+      FAILED=1
+    fi
+  done
 fi
 
 if [ "$RAN" -eq 0 ]; then
+  if [ "$FAILED" -ne 0 ]; then
+    echo "SUMMARY: no requested gates could be run."
+    exit 1
+  fi
   echo "No gates detected (no recognized package.json/pyproject/go.mod/Cargo.toml gate)."
   echo "Run your project's test/lint/build commands directly."
   exit 0
