@@ -1,0 +1,8 @@
+{
+  "name": "benchmark-related-low-risk-batch",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test/display-labels.test.mjs"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "benchmark-light-edit",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test/fixture.test.mjs"
+  }
+}

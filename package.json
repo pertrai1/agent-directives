@@ -34,13 +34,15 @@
     "url": "https://github.com/pertrai1/agent-directives/issues"
   },
   "scripts": {
-    "check": "npm run typecheck && npm run lint && npm run validate && npm run version:check && npm run manifest:check && npm run test:cli && npm run test:version-bumps && npm run test:package-release && npm run pack:check",
+    "check": "npm run typecheck && npm run lint && npm run test:eval-benchmarks && npm run validate && npm run version:check && npm run manifest:check && npm run test:cli && npm run test:version-bumps && npm run test:package-release && npm run pack:check",
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "validate": "tsx scripts/validate-directives.ts",
     "version:check": "tsx scripts/validate-version-bumps.ts",
     "eval:scenario": "tsx scripts/eval-scenario.ts",
     "eval:report": "tsx evals/report-results.ts",
+    "test:eval-measurements": "tsx evals/test-token-measurements.ts",
+    "test:eval-benchmarks": "tsx evals/test-benchmark-runner.ts && tsx evals/test-benchmark-corpus.ts && tsx evals/test-benchmark-hardening.ts",
     "context:audit": "tsx src/cli.ts context-audit",
     "manifest": "tsx scripts/generate-manifest.ts",
     "manifest:check": "npm run manifest && git diff --exit-code manifest.json",
