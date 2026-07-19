@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
@@ -15,6 +15,9 @@ type LoadedFile = {
 };
 
 type Manifest = {
+  attempt_id: string;
+  registration: AttemptRegistration;
+  attempt_status: 'started' | 'completed' | 'failed' | 'abandoned';
   scenario: string;
   date: string;
   commit: string;
@@ -30,6 +33,12 @@ type Manifest = {
   completed_at?: string;
   exit_status?: number | null;
   error_message?: string;
+};
+
+type AttemptRegistration = {
+  attempt_id: string;
+  registered_at: string;
+  status: 'started';
 };
 
 function usage(): never {
@@ -112,11 +121,21 @@ if (commit === 'unknown') {
 const safeDate = new Date().toISOString().replace(/[:.]/g, '-');
 const runDir = join(repoRoot, 'evals', 'results', 'runs', `${safeDate}-${scenario}`);
 mkdirSync(runDir, { recursive: true });
+const attemptRegistration: AttemptRegistration = {
+  attempt_id: randomUUID(),
+  registered_at: new Date().toISOString(),
+  status: 'started',
+};
+// This append-only entry is written before client execution so interrupted work remains observable.
+writeFileSync(join(runDir, 'attempt-registration.json'), `${JSON.stringify(attemptRegistration, null, 2)}\n`);
 const assembledCopy = join(runDir, 'assembled-prompt.md');
 writeFileSync(assembledCopy, assembled);
 
 const manifestPath = join(runDir, 'manifest.json');
 const manifest: Manifest = {
+  attempt_id: attemptRegistration.attempt_id,
+  registration: attemptRegistration,
+  attempt_status: 'started',
   scenario,
   date: new Date().toISOString(),
   commit,
@@ -148,6 +167,8 @@ if (printOnly) {
   console.log('----- CLAUDE.md preview -----');
   console.log(assembled);
   console.log('----- end CLAUDE.md preview -----');
+  manifest.attempt_status = 'abandoned';
+  writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   process.exit(0);
 }
 
@@ -163,9 +184,11 @@ if (result.error) {
   console.error(`Failed to launch claude: ${result.error.message}`);
   manifest.exit_status = exitStatus;
   manifest.error_message = result.error.message;
+  manifest.attempt_status = 'failed';
   writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   process.exit(exitStatus);
 }
 manifest.exit_status = result.status;
+manifest.attempt_status = result.status === 0 ? 'completed' : 'failed';
 writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 process.exit(result.status ?? 1);

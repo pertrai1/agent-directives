@@ -3,6 +3,7 @@ import { basename, dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import type { Counts, EvalRun, RoutingEvent } from './report-types.js';
+import { measurementFields } from './measurement-fields.js';
 
 export const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 export const resultsDir = join(repoRoot, 'evals', 'results');
@@ -160,6 +161,7 @@ function parseJson(path: string): EvalRun {
     routing: routeEvents.map(parseRouteEvent),
     routing_trace: data.routing_trace,
     failure_tags: array(data.failure_tags),
+    ...measurementFields(data),
   } as EvalRun;
 }
 
@@ -192,7 +194,8 @@ function parseManifest(path: string): EvalRun {
       unexpected_claims: claimed.filter((target) => !expected.includes(target))
     },
     failure_tags: [],
-    judge_summary: 'Harness manifest only; no judge verdict recorded.'
+    judge_summary: 'Harness manifest only; no judge verdict recorded.',
+    ...measurementFields(data)
   };
 }
 
