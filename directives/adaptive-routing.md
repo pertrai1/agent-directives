@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 2.0.0
+version: 2.1.0
 required: true
 category: workflow
 tools:
@@ -36,6 +36,7 @@ that proves safety; load only the directives, skills, and rules the route needs.
 | --- | --- | --- |
 | Non-behavioral typo, wording, comment, formatting | Light | Minimal orientation, diff, relevant gate |
 | Feature, behavior/API change, meaningful refactor | Full | Written spec before RED/edits; RED/GREEN; verification |
+| Eligible 2–5 related low-risk behavioral fixes | Small Batch + Debugging + Full | Load detail; reproduce/root-cause/failing proof; one batch matrix and final gates |
 | Bug, regression, failed check | Debugging + Full | Reproduce and record expected behavior before test/fix |
 | Import/export/package/shared-code/path change | Boundary + base route | Classify edges, then complete the base-route spec gate |
 | Directive, skill, workflow, repo-policy change | Policy + Full | Frame, Propose/Design/Specify, decision/version evidence |
@@ -81,6 +82,13 @@ when available, are authoritative over self-report.
 6. Prefer the smallest safe change, evidence over ritual, and compact handoff
    at phase/session boundaries. Do not bulk-load unrelated directives or rules.
 
+**Small Batch modifier:** It modifies, but never replaces, Full. Select it only
+after the lazy detail confirms every eligibility condition for exactly two to
+five closely related low-risk behavioral fixes. It always adds Debugging and
+preserves reproduce → root-cause analysis → failing proof → fix → rerun order.
+Add Workspace Isolation only when checkout state triggers it. Every other task
+keeps the default no-batching workflow.
+
 ## Safety escalation
 
 Add Full + production-readiness review for auth, permissions, security, privacy,
@@ -95,8 +103,8 @@ agent-authored changes. Treat failed CI/test/build/lint/type checks as Debugging
 ## Lazy routing reference
 
 Obvious Light, Review, and Exploration tasks stop at this bootstrap. For
-ambiguous, composite, high-risk, or any Full, Debugging, Boundary, Policy, or
-Workspace-Isolation route, load the detailed companion before implementation or
+ambiguous, composite, high-risk, or any Full, Debugging, Boundary, Policy,
+Workspace-Isolation, or Small Batch route, load the detailed companion before implementation or
 merge readiness:
 
 - Source tree: the relative companion reference is

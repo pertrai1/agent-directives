@@ -6,7 +6,7 @@
       "type": "directive",
       "path": "directives/adaptive-routing.md",
       "description": "Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "required": true,
       "category": "workflow",
       "tools": [
@@ -215,7 +215,7 @@
       "type": "directive",
       "path": "directives/specification-driven-development.md",
       "description": "Requires a durable written specification before every implementation or behavior-changing task, with depth proportional to risk and complexity.",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "required": false,
       "category": "workflow",
       "tools": [
@@ -264,7 +264,7 @@
       "type": "directive",
       "path": "directives/test-driven-development.md",
       "description": "Defines RED/GREEN/REFACTOR expectations for behavior-changing implementation work and bug fixes.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "required": false,
       "category": "testing",
       "tools": [
@@ -310,7 +310,7 @@
       "type": "directive",
       "path": "directives/verification.md",
       "description": "Requires structured evidence of correctness before quality gates and pull requests.",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "required": true,
       "category": "workflow",
       "tools": [
@@ -633,7 +633,7 @@
       "type": "skill",
       "path": "skills/self-audit/SKILL.md",
       "description": "Load when implementation is past GREEN/REFACTOR and the user asks for pre-PR verification, self-audit, scope check, weakest-assumption review, anomaly triage, or a confidence check.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "required": false,
       "category": "review",
       "tools": [

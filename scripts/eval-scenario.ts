@@ -108,7 +108,7 @@ if (benchmark && benchmarkRequest) {
     process.exit(1);
   }
 }
-const pathPattern = /(?:AGENTS\.md|directives\/[a-zA-Z0-9_-]+\.md|skills\/[a-zA-Z0-9_-]+\/SKILL\.md)/g;
+const pathPattern = /(?:AGENTS\.md|directives\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.md|skills\/[a-zA-Z0-9_-]+\/SKILL\.md)/g;
 const refs = unique(setup.match(pathPattern) ?? []);
 const expectedLoads = unique([...refs, ...(directiveUnderTest.match(pathPattern) ?? [])]);
 if (refs.length === 0) {

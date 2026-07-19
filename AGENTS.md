@@ -66,9 +66,11 @@ phase sequence, no skipping steps:
 | 4.75 | **VERIFY**     | **Produce verification summary**                          | See `directives/verification.md` for command output and evidence                                                 |
 | 5    | GATES          | Run quality gates                                         | `git diff --check`, plus `bash -n evals/run-scenario.sh` if touched, plus metadata/path validation when relevant |
 | 5.5  | **HANDOFF**    | **Compact current task state when routed**                | See `directives/context-handoff.md` for phase/session handoff                                                    |
-| 6    | COMMIT         | Atomic commit                                             | One behavior or documentation scope per commit                                                                   |
+| 6    | COMMIT         | Atomic commit                                             | One behavior or document scope; one inseparable eligible batch is allowed                                       |
 
-Steps 2–6 repeat for each behavior. Do not batch unrelated directive or skill changes.
+Steps 2–6 repeat for each behavior. Do not batch unrelated directive or skill
+changes; only an explicitly eligible Small Batch may amortize the outer cycle
+while retaining its batch spec, matrix, and per-row proof.
 
 ## Directives (Routed)
 

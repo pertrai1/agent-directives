@@ -41,15 +41,19 @@ Follow the RED/GREEN/REFACTOR cycle for behavior-changing code:
 1. Write ONE failing test → confirm it fails
 2. Write minimum code to pass → confirm ALL tests pass
 3. Clean up if needed → confirm all tests still pass
-4. Repeat for each behavior — do not batch
+4. Repeat for each behavior — do not batch unless the router explicitly selects
+   an eligible Small Batch with one durable batch spec/matrix and per-row proof
 
 **Never** write behavior-changing implementation before a durable specification
 and a failing test exist.
 
 ### No Skipping Steps
 
-Do not skip REFACTOR or VERIFY phases. Do not batch multiple behaviors into
-one commit. Each behavior gets its own test-commit + implementation-commit pair.
+Do not skip REFACTOR or VERIFY phases. Do not batch multiple behaviors into one
+commit unless the router explicitly selects an eligible Small Batch; preserve
+the batch matrix, per-row proof, one self-audit, and one final gate run. Keep
+atomic commits where rows are independently meaningful; do not force artificial
+commits for inseparable rows.
 
 ## Commands
 
@@ -81,7 +85,8 @@ After routing, report:
 - Fake assertions (`expect(true).toBe(true)`)
 - Writing behavior-changing implementation before a durable specification exists
 - Writing behavior-changing implementation before a failing test exists
-- Batching multiple behaviors into one commit
+- Batching multiple behaviors without explicit Small Batch eligibility and its
+  durable matrix/per-row proof
 
 ## Directives
 

@@ -65,9 +65,11 @@ phase sequence, no skipping steps:
 | 4.75 | **VERIFY**   | **Produce verification summary**         | See `.agents/directives/verification.md` for protocol — target 📋 documented Jenga entries |
 | 5    | GATES        | Run quality gates                        | <!-- FILL IN: gates commands -->                                             |
 | 5.5  | **HANDOFF**  | **Compact current task state when routed** | See `.agents/directives/context-handoff.md` for phase/session handoff |
-| 6    | COMMIT       | Atomic commit                            | One behavior per commit                                                      |
+| 6    | COMMIT       | Atomic commit                            | One behavior, or one inseparable eligible batch                            |
 
-Steps 0.5-6 repeat for each behavior-changing slice. Do not batch.
+Steps 0.5-6 repeat for each behavior-changing slice. Do not batch unless the
+router explicitly selects an eligible Small Batch; it still requires one durable
+batch spec/matrix and focused proof for every row.
 
 ## Directives (Routed)
 
