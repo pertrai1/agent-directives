@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "minimum_attempts_per_variant": 3,
+  "cases": [
+    {
+      "case_id": "light-edit",
+      "category": "non-behavioral-light-edit",
+      "scenario": "benchmark-light-edit",
+      "cohort": {
+        "provider": "PENDING-RECORDED-PROVIDER",
+        "model": "PENDING-EXACT-MODEL",
+        "tokenizer": "PENDING-EXACT-TOKENIZER",
+        "client_version": "PENDING-CLIENT-VERSION",
+        "harness_version": "PENDING-PINNED-HARNESS",
+        "tool_configuration_hash": "PENDING-TOOL-CONFIGURATION-HASH",
+        "cache_policy": "PENDING-CACHE-POLICY",
+        "global_instruction_hash": "PENDING-GLOBAL-INSTRUCTION-HASH",
+        "inference_settings_hash": "PENDING-INFERENCE-SETTINGS-HASH"
+      },
+      "variants": {
+        "baseline": {
+          "outcome": { "prompt_file": "evals/benchmarks/prompts/light-edit.md", "fixture": "benchmark-light-edit", "acceptance_checklist": "evals/benchmarks/checks/light-edit.md", "project_gates": [{ "executable": "node", "args": ["test/fixture.test.mjs"], "protected_paths": ["package.json", "test"] }] },
+          "instruction_surface": { "kind": "package-artifact", "ref": "evals/benchmarks/PENDING-baseline-artifact", "expected_sha256": "0000000000000000000000000000000000000000000000000000000000000000", "paths": ["AGENTS.md", "directives", "skills"] },
+          "diagnostics": { "expected_route": "Light" }
+        },
+        "candidate": {
+          "outcome": { "prompt_file": "evals/benchmarks/prompts/light-edit.md", "fixture": "benchmark-light-edit", "acceptance_checklist": "evals/benchmarks/checks/light-edit.md", "project_gates": [{ "executable": "node", "args": ["test/fixture.test.mjs"], "protected_paths": ["package.json", "test"] }] },
+          "instruction_surface": { "kind": "package-artifact", "ref": "evals/benchmarks/PENDING-candidate-artifact", "expected_sha256": "1111111111111111111111111111111111111111111111111111111111111111", "paths": ["AGENTS.md", "directives", "skills"] },
+          "diagnostics": { "expected_route": "Light" }
+        }
+      }
+    },
+    {
+      "case_id": "one-function-fix",
+      "category": "one-function-behavioral-fix",
+      "scenario": "benchmark-one-function-fix",
+      "cohort": {
+        "provider": "PENDING-RECORDED-PROVIDER", "model": "PENDING-EXACT-MODEL", "tokenizer": "PENDING-EXACT-TOKENIZER", "client_version": "PENDING-CLIENT-VERSION", "harness_version": "PENDING-PINNED-HARNESS", "tool_configuration_hash": "PENDING-TOOL-CONFIGURATION-HASH", "cache_policy": "PENDING-CACHE-POLICY", "global_instruction_hash": "PENDING-GLOBAL-INSTRUCTION-HASH", "inference_settings_hash": "PENDING-INFERENCE-SETTINGS-HASH"
+      },
+      "variants": {
+        "baseline": {
+          "outcome": { "prompt_file": "evals/benchmarks/prompts/one-function-fix.md", "fixture": "benchmark-one-function-fix", "acceptance_checklist": "evals/benchmarks/checks/one-function-fix.md", "project_gates": [{ "executable": "node", "args": ["test/format-greeting.test.mjs"], "protected_paths": ["package.json", "test"] }] },
+          "instruction_surface": { "kind": "package-artifact", "ref": "evals/benchmarks/PENDING-baseline-artifact", "expected_sha256": "0000000000000000000000000000000000000000000000000000000000000000", "paths": ["AGENTS.md", "directives", "skills"] },
+          "diagnostics": { "expected_route": "Debugging + Full" }
+        },
+        "candidate": {
+          "outcome": { "prompt_file": "evals/benchmarks/prompts/one-function-fix.md", "fixture": "benchmark-one-function-fix", "acceptance_checklist": "evals/benchmarks/checks/one-function-fix.md", "project_gates": [{ "executable": "node", "args": ["test/format-greeting.test.mjs"], "protected_paths": ["package.json", "test"] }] },
+          "instruction_surface": { "kind": "package-artifact", "ref": "evals/benchmarks/PENDING-candidate-artifact", "expected_sha256": "1111111111111111111111111111111111111111111111111111111111111111", "paths": ["AGENTS.md", "directives", "skills"] },
+          "diagnostics": { "expected_route": "Debugging + Full" }
+        }
+      }
+    },
+    {
+      "case_id": "related-low-risk-batch",
+      "category": "related-low-risk-batch",
+      "scenario": "benchmark-related-low-risk-batch",
+      "cohort": {
+        "provider": "PENDING-RECORDED-PROVIDER", "model": "PENDING-EXACT-MODEL", "tokenizer": "PENDING-EXACT-TOKENIZER", "client_version": "PENDING-CLIENT-VERSION", "harness_version": "PENDING-PINNED-HARNESS", "tool_configuration_hash": "PENDING-TOOL-CONFIGURATION-HASH", "cache_policy": "PENDING-CACHE-POLICY", "global_instruction_hash": "PENDING-GLOBAL-INSTRUCTION-HASH", "inference_settings_hash": "PENDING-INFERENCE-SETTINGS-HASH"
+      },
+      "variants": {
+        "baseline": {
+          "outcome": { "prompt_file": "evals/benchmarks/prompts/related-low-risk-batch.md", "fixture": "benchmark-related-low-risk-batch", "acceptance_checklist": "evals/benchmarks/checks/related-low-risk-batch.md", "project_gates": [{ "executable": "node", "args": ["test/display-labels.test.mjs"], "protected_paths": ["package.json", "test"] }] },
+          "instruction_surface": { "kind": "package-artifact", "ref": "evals/benchmarks/PENDING-baseline-artifact", "expected_sha256": "0000000000000000000000000000000000000000000000000000000000000000", "paths": ["AGENTS.md", "directives", "skills"] },
+          "diagnostics": { "expected_route": "Full" }
+        },
+        "candidate": {
+          "outcome": { "prompt_file": "evals/benchmarks/prompts/related-low-risk-batch.md", "fixture": "benchmark-related-low-risk-batch", "acceptance_checklist": "evals/benchmarks/checks/related-low-risk-batch.md", "project_gates": [{ "executable": "node", "args": ["test/display-labels.test.mjs"], "protected_paths": ["package.json", "test"] }] },
+          "instruction_surface": { "kind": "package-artifact", "ref": "evals/benchmarks/PENDING-candidate-artifact", "expected_sha256": "1111111111111111111111111111111111111111111111111111111111111111", "paths": ["AGENTS.md", "directives", "skills"] },
+          "diagnostics": { "expected_route": "Full" }
+        }
+      }
+    },
+    {
+      "case_id": "cross-cutting-policy",
+      "category": "cross-cutting-policy-change",
+      "scenario": "benchmark-cross-cutting-policy",
+      "cohort": {
+        "provider": "PENDING-RECORDED-PROVIDER", "model": "PENDING-EXACT-MODEL", "tokenizer": "PENDING-EXACT-TOKENIZER", "client_version": "PENDING-CLIENT-VERSION", "harness_version": "PENDING-PINNED-HARNESS", "tool_configuration_hash": "PENDING-TOOL-CONFIGURATION-HASH", "cache_policy": "PENDING-CACHE-POLICY", "global_instruction_hash": "PENDING-GLOBAL-INSTRUCTION-HASH", "inference_settings_hash": "PENDING-INFERENCE-SETTINGS-HASH"
+      },
+      "variants": {
+        "baseline": {
+          "outcome": { "prompt_file": "evals/benchmarks/prompts/cross-cutting-policy.md", "fixture": "benchmark-cross-cutting-policy", "acceptance_checklist": "evals/benchmarks/checks/cross-cutting-policy.md", "project_gates": [{ "executable": "node", "args": ["test/policy.test.mjs"], "protected_paths": ["package.json", "test"] }] },
+          "instruction_surface": { "kind": "package-artifact", "ref": "evals/benchmarks/PENDING-baseline-artifact", "expected_sha256": "0000000000000000000000000000000000000000000000000000000000000000", "paths": ["AGENTS.md", "directives", "skills"] },
+          "diagnostics": { "expected_route": "Policy + Full" }
+        },
+        "candidate": {
+          "outcome": { "prompt_file": "evals/benchmarks/prompts/cross-cutting-policy.md", "fixture": "benchmark-cross-cutting-policy", "acceptance_checklist": "evals/benchmarks/checks/cross-cutting-policy.md", "project_gates": [{ "executable": "node", "args": ["test/policy.test.mjs"], "protected_paths": ["package.json", "test"] }] },
+          "instruction_surface": { "kind": "package-artifact", "ref": "evals/benchmarks/PENDING-candidate-artifact", "expected_sha256": "1111111111111111111111111111111111111111111111111111111111111111", "paths": ["AGENTS.md", "directives", "skills"] },
+          "diagnostics": { "expected_route": "Policy + Full" }
+        }
+      }
+    }
+  ]
+}

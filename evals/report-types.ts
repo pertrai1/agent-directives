@@ -87,6 +87,7 @@ export type EvalRun = {
   gates?: GateStatus;
   calls?: AttemptCall[];
   benchmark?: BenchmarkIdentity;
+  benchmark_protocol?: Record<string, unknown>;
   cohort?: ComparableCohort;
   estimated_instruction_tokens?: number;
   measurement_errors?: string[];
