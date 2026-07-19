@@ -25,6 +25,8 @@ export type AttemptRegistration = {
   registered_at: string;
   status: 'started';
   sequence?: number;
+  schedule_sequence?: number;
+  retry_of?: string;
 };
 export type BenchmarkIdentity = { category?: string; variant?: string; repetition?: number };
 export type ComparableCohort = {
