@@ -9,6 +9,7 @@ import {
   pct,
 } from './report-parsers.js';
 import type { EvalRun, RoutingEvent, RoutingTrace } from './report-types.js';
+import { measurementText } from './measurement-text.js';
 
 function isStale(commit: string, head: string): boolean {
   return Boolean(commit) && Boolean(head) && commit !== head;
@@ -67,12 +68,14 @@ function render(runs: EvalRun[]): string {
     ? '<tr><td colspan="2">No failure tags recorded.</td></tr>'
     : tagEntries.map(([tag, count]) => `<tr><td>${esc(tag)}</td><td>${count}</td></tr>`).join('\n');
   const runRows = runs.map((run) => renderRunRow(run, head)).join('\n');
+  const measurement = measurementText(runs);
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>Agent Directives Eval Health</title><style>
 body{font-family:system-ui,sans-serif;max-width:1200px;margin:2rem auto;padding:0 1rem;line-height:1.4}table{border-collapse:collapse;width:100%;margin:1rem 0}th,td{border:1px solid #ddd;padding:.45rem;text-align:left;vertical-align:top}th{background:#f5f5f5}.stale{background:#fff7e6}.metric{display:inline-block;margin-right:1rem;padding:.5rem .75rem;background:#f5f5f5;border-radius:.4rem}code{background:#f5f5f5;padding:.1rem .25rem}</style></head><body>
 <h1>Agent Directives Eval Health</h1>
 <p>Generated at ${esc(new Date().toISOString())}. Percentages are covered-scenario telemetry, not global directive accuracy. Current commit: <code>${esc(head)}</code>.</p>
 <p><span class="metric">Runs: ${runs.length}</span><span class="metric">Pass: ${verdictCounts.get('pass') ?? 0}</span><span class="metric">Partial: ${verdictCounts.get('partial') ?? 0}</span><span class="metric">Fail: ${verdictCounts.get('fail') ?? 0}</span><span class="metric">Stale commit: ${stale}</span><span class="metric">Routing recall: ${routeActual}/${routeExpected} ${pct(routeActual, routeExpected)}</span><span class="metric">Routing precision: ${routeActual}/${routeClaimed} ${pct(routeActual, routeClaimed)}</span></p>
+<h2>Token Evidence</h2><p>${esc(measurement)}</p>
 <h2>Target Health</h2><table><thead><tr><th>Target</th><th>Pass / Runs</th><th>Pass rate</th></tr></thead><tbody>${targetRows}</tbody></table>
 <h2>Failure Tags</h2><table><thead><tr><th>Tag</th><th>Count</th></tr></thead><tbody>${tagRows}</tbody></table>
 <h2>Runs</h2><table><thead><tr><th>Scenario</th><th>Verdict</th><th>Client / model</th><th>Instruction surface</th><th>Commit</th><th>Routing trace</th><th>Summary</th></tr></thead><tbody>${runRows}</tbody></table>
@@ -94,6 +97,8 @@ const routing = runs.flatMap((run) => run.routing);
 const expectedLoads = routing.filter((event) => event.expected_load).length;
 const actualExpectedLoads = routing.filter((event) => event.expected_load && event.actual_load).length;
 const actualLoads = routing.filter((event) => event.actual_load).length;
+const measurement = measurementText(runs);
 console.log(`Wrote ${output} with ${runs.length} runs.`);
 console.log(`Verdicts: pass=${verdictSummary.pass ?? 0}, partial=${verdictSummary.partial ?? 0}, fail=${verdictSummary.fail ?? 0}, invalid=${verdictSummary.invalid ?? 0}, unknown=${verdictSummary.unknown ?? 0}`);
 console.log(`Routing recall: ${actualExpectedLoads}/${expectedLoads} ${pct(actualExpectedLoads, expectedLoads)}; precision: ${actualExpectedLoads}/${actualLoads} ${pct(actualExpectedLoads, actualLoads)}`);
+console.log(measurement);
