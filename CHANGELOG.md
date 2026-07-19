@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.13.0
+
+### Minor Changes
+
+- [#92](https://github.com/pertrai1/agent-directives/pull/92) [`2fdfb43`](https://github.com/pertrai1/agent-directives/commit/2fdfb4323bce9491d6d6acd875651c795fd277e9) Thanks [@pertrai1](https://github.com/pertrai1)! - Add compact adaptive routing with validated companion assets, canonical verification handoffs, and a bounded Small Batch workflow for related low-risk fixes.
+
 ## 0.12.0
 
 ### Minor Changes
