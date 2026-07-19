@@ -3,10 +3,10 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseFrontmatterBlock } from './frontmatter.js';
+import { validateAssetSource } from './validate-asset-source.js';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
-const errors: string[] = [];
-const warnings: string[] = [];
+const errors: string[] = [], warnings: string[] = [];
 
 function read(path: string): string {
   return readFileSync(join(repoRoot, path), 'utf8');
@@ -101,6 +101,21 @@ function validateScriptPaths(path: string, fm: string): void {
   }
 }
 
+function validateAssetPaths(path: string, fm: string): void {
+  const parsed = parseFrontmatterBlock(fm);
+  const assets = parsed.assets;
+  if (assets === undefined) return;
+  const ok = Array.isArray(assets) && assets.length > 0 && assets.every((item) => typeof item === 'string' && item.length > 0);
+  if (!ok) {
+    fail(`${path}: optional 'assets' must be a non-empty string array`);
+    return;
+  }
+  for (const asset of assets as string[]) {
+    const error = validateAssetSource({ repoRoot, entryPath: path, asset });
+    if (error) fail(error);
+  }
+}
+
 function validateRequiredKeys(path: string, fm: string): void {
   const requiredKeys = ['name', 'description', 'category'];
   if (path.startsWith('rules/')) requiredKeys.push('version');
@@ -175,6 +190,7 @@ function validateFrontmatter(path: string): void {
   validateNameMatches(path, fm);
   validateRoutingMetadata(path, fm);
   validateScriptPaths(path, fm);
+  validateAssetPaths(path, fm);
 }
 
 function validateReferencedPaths(path: string): void {
@@ -228,8 +244,19 @@ if (exists('directives/adaptive-routing.md')) {
 } else {
   fail('directives/adaptive-routing.md: missing required routing directive');
 }
+const adaptiveCompanions = parseFrontmatterBlock(adaptive).assets;
+const adaptiveRoutingText = [
+  adaptive,
+  ...(Array.isArray(adaptiveCompanions)
+    ? adaptiveCompanions
+      .filter((asset): asset is string => typeof asset === 'string' && asset.length > 0)
+      .map((asset) => `directives/${asset}`)
+      .filter(exists)
+      .map(read)
+    : []),
+].join('\n');
 for (const skill of skills) {
-  if (!adaptive.includes(skill)) warn(`directives/adaptive-routing.md does not mention ${skill}`);
+  if (!adaptiveRoutingText.includes(skill)) warn(`directives/adaptive-routing.md or its companion assets do not mention ${skill}`);
 }
 
 if (warnings.length) {

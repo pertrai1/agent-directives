@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdirSync, readFileSync, statSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
+import { lstatSync, mkdirSync, readFileSync, statSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import {
   assertContains,
@@ -47,6 +47,76 @@ test("installs helper scripts under .agents even for cursor", () => {
     runCli("sync --tool cursor --yes", { cwd });
     assertFileExists(join(cwd, ".cursor/rules/code-reviewer.mdc"));
     assertFileExists(join(cwd, ".agents/skills/code-reviewer/scripts/diff.sh"));
+  });
+});
+
+console.log("companion assets");
+test("sync installs the adaptive-routing companion asset with identical content for every target", () => {
+  const source = join(repoRoot, "directives/references/adaptive-routing-detail.md");
+  const expected = readFileSync(source, "utf8");
+
+  for (const tool of ["claude", "codex", "copilot", "cursor"]) {
+    withTempProject((cwd) => {
+      runCli(`sync --tool ${tool} --yes`, { cwd });
+      const installed = join(cwd, ".agents/directives/references/adaptive-routing-detail.md");
+      assertFileExists(installed);
+      if (readFileSync(installed, "utf8") !== expected) {
+        throw new Error(`expected ${tool} companion asset content to match its source`);
+      }
+      runCli(`check --tool ${tool}`, { cwd });
+    });
+  }
+});
+
+test("check rejects missing or tampered companion assets by content identity", () => {
+  withTempProject((cwd) => {
+    runCli("sync --tool claude --yes", { cwd });
+    const asset = join(cwd, ".agents/directives/references/adaptive-routing-detail.md");
+
+    unlinkSync(asset);
+    const missing = runCli("check --tool claude", { cwd, allowFail: true });
+    if (missing.code === 0) throw new Error("expected check to fail for a missing companion asset");
+    assertContains(missing.stderr, { needle: "adaptive-routing", context: "missing companion asset owner" });
+
+    runCli("sync --tool claude --yes", { cwd });
+    writeFileSync(asset, "tampered companion asset");
+    const tampered = runCli("check --tool claude", { cwd, allowFail: true });
+    if (tampered.code === 0) throw new Error("expected check to fail for a tampered companion asset");
+    assertContains(tampered.stderr, { needle: "adaptive-routing", context: "tampered companion asset owner" });
+
+    runCli("sync --tool claude --yes --force", { cwd });
+    const sentinel = join(cwd, "outside-sentinel.txt");
+    writeFileSync(sentinel, "outside sentinel");
+    unlinkSync(asset);
+    symlinkSync(sentinel, asset);
+    const escaping = runCli("check --tool claude", { cwd, allowFail: true });
+    if (escaping.code === 0) throw new Error("expected check to reject a companion asset symlink");
+    assertContains(escaping.stderr, { needle: "adaptive-routing", context: "escaping companion asset owner" });
+
+    const unforced = runCli("sync --tool claude --yes", { cwd, allowFail: true });
+    if (unforced.code === 0) throw new Error("expected unforced sync to reject a companion asset symlink");
+    if (!lstatSync(asset).isSymbolicLink()) throw new Error("unforced sync replaced a companion asset symlink");
+    if (readFileSync(sentinel, "utf8") !== "outside sentinel") throw new Error("unforced sync modified the external sentinel");
+
+    runCli("sync --tool claude --yes --force", { cwd });
+    if (lstatSync(asset).isSymbolicLink()) throw new Error("forced sync did not replace the companion asset symlink");
+    if (readFileSync(sentinel, "utf8") !== "outside sentinel") throw new Error("forced sync modified the external sentinel");
+    runCli("check --tool claude", { cwd });
+  });
+});
+
+test("companion asset conflicts block the bootstrap atomically without force", () => {
+  withTempProject((cwd) => {
+    const asset = join(cwd, ".agents/directives/references/adaptive-routing-detail.md");
+    const bootstrap = join(cwd, ".agents/directives/adaptive-routing.md");
+    mkdirSync(dirname(asset), { recursive: true });
+    writeFileSync(asset, "custom companion asset");
+
+    const result = runCli("add adaptive-routing --tool claude", { cwd, allowFail: true });
+    if (result.code === 0) throw new Error("expected unforced companion conflict to fail");
+    assertContains(result.stderr, { needle: "asset conflict", context: "companion asset conflict report" });
+    if (readFileSync(asset, "utf8") !== "custom companion asset") throw new Error("companion asset overwritten without --force");
+    assertFileMissing(bootstrap);
   });
 });
 

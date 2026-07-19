@@ -80,7 +80,12 @@ the files.
 `manifest.json` also exposes compact optional `routing` metadata, such as
 triggers, common paths, and capability tags, so external tools or agents can use
 the manifest as a lightweight routing index without loading full instruction
-bodies up front.
+bodies up front. Required entries can additionally declare verified,
+non-executable companion `assets`; sync places those files under stable
+`.agents/<repo-path>` locations and `check` verifies content identity. Install
+roots and their descendants must be real directories: `add`, `sync`, and
+`check` reject symlinked ancestors such as `.agents`, nested `.agents` paths,
+or `.cursor` instead of following them.
 
 ### Commands
 
@@ -192,7 +197,10 @@ The package is published to npm. Future releases require npm trusted publishing 
 Runs first and selects the lightest safe workflow based on task intent, risk,
 and touched surfaces. Prevents loading every directive by default while still
 escalating to Full, Debugging, Boundary, Review, Exploration, or Policy paths
-when the task requires stronger evidence.
+when the task requires stronger evidence. Its compact bootstrap installs the
+lazy detailed reference at
+`.agents/directives/references/adaptive-routing-detail.md`; obvious Light,
+Review, and Exploration work does not load that companion.
 
 ### Workspace Isolation (`directives/workspace-isolation.md`)
 
