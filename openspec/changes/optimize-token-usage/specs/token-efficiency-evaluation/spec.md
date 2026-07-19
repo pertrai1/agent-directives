@@ -153,3 +153,14 @@ The evaluation system SHALL record usage metadata without requiring raw prompts,
 #### Scenario: Usage can be recorded without prompt content
 - **WHEN** an operator records provider-reported token usage for a run
 - **THEN** the structured record contains counts and provenance while prompt content and credentials remain outside the token-evidence fields
+
+### Requirement: Framework delivery does not imply an empirical result
+The benchmark framework SHALL be independently deliverable without configured provider credentials or a completed live cohort, SHALL reject placeholder or incomplete evidence for hard efficiency claims, and SHALL preserve the full accounting, compatibility, sample, cost, and reliability requirements for any later provider-attested execution.
+
+#### Scenario: Unconfigured provider cohort remains an invalid result
+- **WHEN** the benchmark framework is released with placeholder provider, model, cohort, surface, or usage evidence
+- **THEN** deterministic validation and comparison reject that evidence while the framework implementation remains usable for a separately configured live run
+
+#### Scenario: Deferred execution preserves the efficiency threshold
+- **WHEN** a later follow-up configures a provider/model cohort and executes the corpus
+- **THEN** it must satisfy the same complete evidence, minimum sample, 20% default reduction, aggregate-cost, and reliability gates rather than treating framework delivery as a prior pass

@@ -8,7 +8,7 @@ This change spans TypeScript eval/reporting code, portable Markdown instructions
 
 **Goals:**
 
-- Measure actual provider-reported token cost across successful, failed, and retried attempts.
+- Enable measurement of actual provider-reported token cost across successful, failed, and retried attempts.
 - Compare identical baseline and candidate tasks with explicit reliability guardrails.
 - Reduce repeated orchestration work for related low-risk fixes without creating a spec-free or test-free path.
 - Reduce the always-loaded routing payload and duplicate gate guidance while preserving behavior and installability.
@@ -21,6 +21,7 @@ This change spans TypeScript eval/reporting code, portable Markdown instructions
 - Add a hosted telemetry service, credentials, network reporting, or prompt-content collection.
 - Weaken security, boundary, persistence, production-readiness, specification, or review triggers.
 - Redesign the entire eval framework, directive taxonomy, installer, or repository release process.
+- Select or configure a live provider/model cohort or execute the first provider-attested corpus; that operational follow-up is tracked in #91.
 
 ## Decisions
 
@@ -92,6 +93,14 @@ Alternative considered: create a new quality-gates directive. Rejected because v
 
 Issue #77 begins independently, and #81 may run in parallel because it owns a disjoint instruction surface. #78 follows #77 because both must touch the scenario runner to establish attempt identity and deterministic fixture/instruction materialization. #82 follows #81, #80 follows #82, and #79 runs after both the eval and instruction lanes are joined. Every stacked base is pushed before a dependent PR opens and retained until dependents are retargeted or the final composed PR closes. After any base merge or retarget, the coordinator verifies the dependent diff and reruns its focused checks. Stacked branches avoid concurrent edits to the same files, and each slice includes its own focused tests/evals without opportunistically implementing sibling issues.
 
+### 9. Separate framework delivery from live provider execution
+
+This change is complete when the provider-neutral accounting, corpus materialization, comparator, reliability guards, routing changes, documentation, and deterministic tests are implemented and validated. It does not require a configured live provider/model cohort or a completed 24-attempt run. Follow-up issue #91 owns provider/model selection, secure usage ingestion, immutable cohort setup, live execution, and publication of the first empirical result.
+
+Placeholder or incomplete corpus evidence must continue to fail the hard comparator and must never be described as a passing efficiency result. Deferring execution therefore changes the delivery boundary, not the evidence standard or the 20% target.
+
+Alternative considered: keep the implementation PRs blocked until a provider environment is selected. Rejected because provider setup is independently deliverable operational work and the completed framework can merge without weakening its rejection of invalid evidence. Alternative considered: use synthetic token counts to close the gate. Rejected because it would create the efficiency claim that the accounting design explicitly forbids.
+
 ## Risks / Trade-offs
 
 - **[Provider totals may include cache tokens differently]** → Preserve the provider total and component fields with provenance; never synthesize a total that double-counts cache components.
@@ -103,6 +112,7 @@ Issue #77 begins independently, and #81 may run in parallel because it owns a di
 - **[Variant refs or ambient configuration can invalidate pairing]** → Pin one harness, materialize and hash both immutable instruction surfaces, match the full execution cohort, and interleave repetitions deterministically.
 - **[Deduplication can remove unique phase behavior]** → Canonicalize only generic final-gate prose and retain phase-specific RED, type-contract, failure, and scope requirements.
 - **[Stacked PRs can obscure combined regressions]** → State PR bases/dependencies explicitly and run parent-owned integration verification on the composed branch before declaring the epic ready.
+- **[Deferred provider execution can be mistaken for a measured win]** → Keep placeholders visibly invalid, make no reduction claim in this change, and track the live provider/model run with explicit acceptance criteria in #91.
 
 ## Migration Plan
 
@@ -111,7 +121,7 @@ Issue #77 begins independently, and #81 may run in parallel because it owns a di
 3. Canonicalize gate guidance, then compact the routing surface and verify installation.
 4. Add Small Batch policy on top of the canonical/compact instruction baseline.
 5. Regenerate manifest metadata, apply required instruction version bumps, update decisions/docs, and run focused evals plus `npm run check`.
-6. Run the paired benchmark comparison on the exact final composed commit with immutable dataset and installed-surface hashes. Issue #76 is complete only if the comparison exits successfully with complete accounting, at least a 20% corpus reduction, non-increasing aggregate TPAC, and all reliability gates passing. Otherwise keep the epic and final PR draft/open, scope results as preliminary, and revise or revert rather than lowering the guardrail silently.
+6. Validate that placeholder, incomplete, or contradictory benchmark evidence fails deterministically, then defer live provider/model selection and the first provider-attested 24-attempt comparison to #91. Close this change without an empirical reduction claim; #91 must still require complete accounting, the configured 20% corpus target, non-increasing aggregate TPAC, and all reliability gates when the live run occurs.
 
 Each issue-sized change is independently revertible. No data or hosted-system migration is required.
 
