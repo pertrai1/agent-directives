@@ -1,7 +1,7 @@
 ---
 name: test-driven-development
 description: Defines RED/GREEN/REFACTOR expectations for behavior-changing implementation work and bug fixes.
-version: 1.1.0
+version: 1.2.0
 required: false
 category: testing
 tools:
@@ -95,6 +95,14 @@ Before writing behavior-changing implementation code:
 - Never write multiple tests before implementing
 - Never write tests for multiple methods at once
 - One test = one behavior = one implementation cycle
+
+**Narrow Small Batch exception:** When adaptive routing has explicitly selected
+Small Batch, a durable batch spec and complete binary acceptance matrix exist,
+and every row is in scope, one multi-row RED may cover the complete matrix.
+Confirm each row fails for its expected reason before implementation. GREEN and
+REFACTOR then stay minimal and proceed one row at a time, with focused proof per
+row. This exception does not permit extra rows, unrelated tests, or skipping
+RED; all other work follows the one-test cycle.
 
 ### Rule 3: Write the MINIMUM Code to Pass
 
@@ -206,6 +214,22 @@ failure.
 7. Return to step 1 for next behavior
 ```
 
+### Eligible Small Batch Workflow
+
+For an explicitly eligible Small Batch, replace only the repeated outer cycle:
+
+1. Write one durable batch spec with the complete binary acceptance matrix.
+2. Write and run the complete scoped matrix as one controlled RED; every row
+   MUST fail for its expected reason.
+3. Apply minimum GREEN and REFACTOR one matrix row at a time; record focused
+   passing proof for each row before moving to the next.
+4. After every row is proven, perform one batch self-audit and follow
+   `.agents/directives/verification.md` for one final canonical gate run.
+
+If a row exposes unexpected coupling or an ineligible trigger, stop rather than
+adding a workaround. Preserve valid evidence, re-specify and re-baseline the
+remaining work, then reroute before continuing.
+
 ---
 
 ## Examples
@@ -289,7 +313,7 @@ Can't check all boxes for behavior-changing work? You skipped TDD. Start over.
 | GREEN    | Write code                                    | Minimum to pass, no regressions |
 | REFACTOR | Clean up                                      | All tests still pass            |
 | VERIFY   | Follow `verification.md` canonical final gates | All pass                       |
-| COMMIT   | Atomic commit                                 | One behavior per commit         |
+| COMMIT   | Atomic commit                                 | One behavior, or one inseparable eligible batch |
 
 ---
 

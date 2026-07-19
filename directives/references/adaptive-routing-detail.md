@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing-detail
 description: Lazy companion detail for ambiguous, composite, and high-risk adaptive routing.
-version: 1.0.0
+version: 1.1.0
 required: false
 category: workflow
 tools:
@@ -14,8 +14,9 @@ tools:
 # Adaptive Routing — Detailed Reference
 
 Load this companion only when the bootstrap selects an ambiguous, composite,
-high-risk, Full, Debugging, Boundary, Policy, or Workspace-Isolation route. It
-expands the required bootstrap; it is not a separately required directive.
+high-risk, Full, Debugging, Boundary, Policy, Workspace-Isolation, or Small
+Batch route. It expands the required bootstrap; it is not a separately required
+directive.
 
 ## Full Path
 
@@ -34,6 +35,50 @@ tests, and type/public-contract changes.
 
 Load `skills/test-reviewer/SKILL.md` for changed tests/eval scenarios and
 `skills/spec-reviewer/SKILL.md` before merge against a written contract.
+
+## Small Batch Modifier
+
+Small Batch is an orchestration-amortization modifier for Full, never a
+specification-free, test-free, or lower-safety path. It is eligible only when
+**every** proposed fix is a low-risk behavioral fix and all of these hold:
+
+- The batch has **two through five** fixes, inclusive; one or six-or-more fixes
+  are ineligible.
+- The fixes are closely related, in one subsystem, and share one coherent
+  outcome or root cause.
+- One durable batch specification can enumerate every fix and non-goal with a
+  binary acceptance-matrix row for each fix.
+- The work fits one focused, reversible change and can be reviewed as one unit.
+
+Small Batch is categorically ineligible for unrelated fixes and for every
+Boundary, Policy, or Production trigger. This includes internal imports or
+exports; shared utilities or modules; dependency-direction changes; public API
+or package boundaries; auth, security, or privacy; persistence, data, or schema
+migration; external services or async work; infrastructure or deployment; and
+performance or critical paths. Route the affected work through the applicable
+existing Full, Boundary, Policy, production-readiness, or other safety path.
+
+Every eligible Small Batch fix unconditionally composes with Debugging, even
+when the request does not call it a regression. Reproduce current behavior,
+establish and document the coherent root cause and expected behavior, create the
+complete failing proof, then implement the root-cause fix and rerun it.
+Workspace Isolation is separate and conditional on checkout state: when the
+checkout is shared, dirty, default/protected, or explicitly protected, establish
+isolation and its baseline before mutation; otherwise reuse the verified safe
+workspace. Small Batch never bypasses a triggered isolation obligation.
+
+An eligible batch routes once. Before RED, write the one durable batch spec and
+complete acceptance matrix.
+One controlled multi-row RED is allowed only when it covers the complete scoped
+matrix and every row fails for its expected reason. GREEN and REFACTOR remain
+minimal and proceed one matrix row at a time, with focused proof for every row.
+After all rows are proven, perform one batch self-audit, one verification
+summary, and one canonical final project-gate run.
+
+If eligibility fails, scope drifts, or unexpected coupling appears, stop the
+batch non-destructively. Preserve valid evidence and isolate partial state;
+update the specification for the remaining work, establish a new baseline, and
+reroute before continuing. Never continue a batch by inertia.
 
 ## Debugging and Boundary
 

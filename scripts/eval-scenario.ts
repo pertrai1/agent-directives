@@ -71,7 +71,7 @@ function unique<T>(items: T[]): T[] {
 const setup = section('Setup');
 const prompt = section('Prompt');
 const directiveUnderTest = section('Directive Under Test');
-const pathPattern = /(?:AGENTS\.md|directives\/[a-zA-Z0-9_-]+\.md|skills\/[a-zA-Z0-9_-]+\/SKILL\.md)/g;
+const pathPattern = /(?:AGENTS\.md|directives\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.md|skills\/[a-zA-Z0-9_-]+\/SKILL\.md)/g;
 const refs = unique(setup.match(pathPattern) ?? []);
 const expectedLoads = unique([...refs, ...(directiveUnderTest.match(pathPattern) ?? [])]);
 

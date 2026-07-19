@@ -1,7 +1,7 @@
 ---
 name: verification
 description: Requires structured evidence of correctness before quality gates and pull requests.
-version: 1.4.0
+version: 1.5.0
 scripts:
   - scripts/gates.sh
 required: true
@@ -91,6 +91,15 @@ _Example (adapt to your project's structure):_
 [x] Public types match call sites
 [x] Error messages follow project conventions
 ```
+
+#### Small Batch Acceptance Proof (when explicitly routed)
+
+For an eligible Small Batch, include the durable batch-spec location and a
+binary acceptance matrix with one focused proof result per row. Confirm the
+complete scoped matrix was RED before implementation, then show the minimum
+GREEN/REFACTOR proof for each row. Run this protocol and the canonical final
+project gates **once after every row is proven**, not once per row. Do not use
+this section unless the router explicitly selected Small Batch.
 
 #### 4. Architecture Boundary Proof (if applicable)
 

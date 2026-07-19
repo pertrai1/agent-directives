@@ -1,6 +1,7 @@
 #!/usr/bin/env tsx
-import { execSync } from "node:child_process";
-import { cpSync, mkdirSync, readFileSync, renameSync, symlinkSync, writeFileSync } from "node:fs";
+import { deepStrictEqual } from "node:assert";
+import { execFileSync, execSync } from "node:child_process";
+import { cpSync, mkdirSync, readFileSync, renameSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import {
   assertContains,
@@ -83,6 +84,39 @@ test("enforces the adaptive-routing bootstrap token budget", () => {
     const result = runCli("context-audit --tool codex --entries adaptive-routing --max-tokens 3000", { cwd });
     assertContains(result.stdout, { needle: "Budget: 3,000 tokens — PASS", context: "adaptive-routing budget" });
   });
+});
+
+test("eval scenario assembly loads nested routing detail and every claimed policy file", () => {
+  let workspace = "";
+  let runLog = "";
+
+  try {
+    const stdout = execFileSync("tsx", ["scripts/eval-scenario.ts", "--print-only", "small-batch-workflow"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    workspace = stdout.match(/^Workspace: (.+)$/m)?.[1] ?? "";
+    runLog = stdout.match(/^Run log: (.+)$/m)?.[1] ?? "";
+    if (!workspace || !runLog) throw new Error("eval scenario output omitted workspace or run-log evidence");
+
+    const manifest = JSON.parse(readFileSync(join(repoRoot, runLog, "manifest.json"), "utf8")) as {
+      loaded_files: Array<{ path: string }>;
+    };
+    deepStrictEqual(manifest.loaded_files.map(({ path }) => path), [
+      "directives/adaptive-routing.md",
+      "directives/references/adaptive-routing-detail.md",
+      "skills/systematic-debugging/SKILL.md",
+      "directives/workspace-isolation.md",
+      "directives/specification-driven-development.md",
+      "directives/test-driven-development.md",
+      "directives/verification.md",
+      "skills/self-audit/SKILL.md",
+    ]);
+  } finally {
+    if (workspace) rmSync(workspace, { recursive: true, force: true });
+    if (runLog) rmSync(join(repoRoot, runLog), { recursive: true, force: true });
+  }
 });
 
 reportResults();

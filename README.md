@@ -9,7 +9,7 @@ dependencies between files.
 
 | Category | Files | What they do |
 |----------|-------|--------------|
-| **Workflow** | 10 directives | Govern how the agent works: adaptive routing, workspace isolation, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
+| **Workflow** | 10 directives | Govern how the agent works: adaptive routing (including its bounded Small Batch modifier), workspace isolation, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
 | **Skills** | 14 skills | Code reviewer, adversarial reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, subagent-driven development, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, production readiness reviewer, harness hooks reviewer, and MCP integration reviewer |
@@ -231,8 +231,11 @@ authoritative.
 
 Strict RED/GREEN/REFACTOR cycle for behavior-changing code. Defines TDD rules, a
 forbidden-patterns table, and makes TDD the default for fixes and review changes
-that affect runtime behavior — while allowing adaptive routing to choose a lighter
-path for purely mechanical or non-behavioral edits.
+that affect runtime behavior. Only an explicitly eligible Small Batch may
+amortize the outer cycle; it still requires a durable matrix, per-row proof, and
+the applicable safety routes. All other behavior changes remain unbatched.
+Adaptive routing may still choose a lighter path for purely mechanical or
+non-behavioral edits.
 
 ### Type-First Development (`directives/type-driven-development.md`)
 
