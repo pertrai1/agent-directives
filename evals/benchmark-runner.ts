@@ -140,7 +140,7 @@ function placeholderHash(value: string): boolean {
   return /^([a-f0-9])\1{63}$/i.test(value);
 }
 
-function executionPlaceholderErrors(corpus: BenchmarkCorpus): string[] {
+export function executionPlaceholderErrors(corpus: BenchmarkCorpus): string[] {
   const errors = containsPending(corpus) ? ['benchmark corpus contains PENDING execution placeholders'] : [];
   for (const benchmark of corpus.cases) {
     for (const field of EXECUTION_COHORT_HASH_FIELDS) if (placeholderHash(benchmark.cohort[field])) errors.push(`${benchmark.case_id} uses a placeholder ${field}`);

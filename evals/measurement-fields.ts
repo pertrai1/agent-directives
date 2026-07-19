@@ -29,10 +29,20 @@ function attemptCalls(value: any): { calls?: AttemptCall[]; errors: string[] } {
   const valid = calls.filter((call) => Boolean(call.call_id) && ['primary', 'subagent', 'required-reviewer', 'evaluator'].includes(call.role));
   return { calls: valid, errors: valid.length === calls.length ? [] : ['malformed call ledger entry'] };
 }
-function registration(value: any, attempt_id: unknown): AttemptRegistration | undefined {
+function startedRegistration(value: any, attempt_id: unknown): AttemptRegistration | undefined {
   const id = String(value?.attempt_id ?? attempt_id ?? '');
   if (!id || value?.status !== 'started' || !value?.registered_at) return undefined;
-  return { attempt_id: id, registered_at: String(value.registered_at), status: 'started', ...(Number.isInteger(value.sequence) ? { sequence: value.sequence } : {}) };
+  return { attempt_id: id, registered_at: String(value.registered_at), status: 'started' };
+}
+function registration(value: any, attempt_id: unknown): AttemptRegistration | undefined {
+  const result = startedRegistration(value, attempt_id);
+  if (!result) return undefined;
+  const fields = {
+    sequence: Number.isInteger(value.sequence) ? value.sequence : undefined,
+    schedule_sequence: Number.isInteger(value.schedule_sequence) ? value.schedule_sequence : undefined,
+    retry_of: typeof value.retry_of === 'string' && value.retry_of ? value.retry_of : undefined,
+  };
+  return { ...result, ...Object.fromEntries(Object.entries(fields).filter(([, field]) => field !== undefined)) };
 }
 
 function benchmarkIdentity(value: any): BenchmarkIdentity | undefined {

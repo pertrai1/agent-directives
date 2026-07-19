@@ -22,6 +22,7 @@ const CACHE_WRITE = 40;
 const SUBAGENT_INPUT = 2;
 const SUBAGENT_OUTPUT = 3;
 const REVIEW_INPUT = 4;
+const RETRY_SEQUENCE = 4;
 const REVIEW_OUTPUT = 5;
 const EVALUATOR_INPUT = 6;
 const EVALUATOR_OUTPUT = 7;
@@ -149,6 +150,11 @@ assert.equal(manifestFields.benchmark_protocol?.case_id, 'light-edit', 'expanded
 const protocolManifest = attempt('protocol', { benchmark: manifestFields.benchmark, cohort: manifestFields.cohort });
 const protocolJudge = attempt('protocol', { benchmark: { category: 'light', variant: 'candidate', repetition: DUPLICATE_TOKEN_COUNT }, cohort: protocolCohort });
 assert.equal(reconcileAttemptRecords([{ attempt_id: 'protocol', registered_at: '2026-07-19T00:00:00.000Z', status: 'started' }], [protocolManifest, protocolJudge]).valid, true, 'a normalized harness manifest reconciles with the normal three-field judged benchmark record');
+const retryFields = measurementFields({
+  attempt_id: 'retry',
+  registration: { attempt_id: 'retry', registered_at: '2026-07-19T00:00:00.000Z', status: 'started', sequence: RETRY_SEQUENCE, schedule_sequence: 2, retry_of: 'original' },
+});
+assert.deepEqual(retryFields.registration, { attempt_id: 'retry', registered_at: '2026-07-19T00:00:00.000Z', status: 'started', sequence: RETRY_SEQUENCE, schedule_sequence: 2, retry_of: 'original' }, 'normalized measurement fields retain benchmark retry scheduling identity');
 
 const acceptedText = measurementText([reportRun(attempt('accepted-text'))]);
 assert.equal(acceptedText.includes('tokens per accepted change: 30'), true, 'complete measured evidence renders numeric TPAC');

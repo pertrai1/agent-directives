@@ -118,6 +118,37 @@ Token evidence stores only provider usage counts and provenance. Do not put raw
 prompts, credentials, secrets, or billing data into attempt manifests or
 datasets.
 
+## Comparing paired benchmark efficiency
+
+After a benchmark has complete provider-attested evidence, compare explicit
+baseline and candidate JSON manifests with:
+
+```bash
+npm run eval:efficiency -- --baseline baseline.json --candidate candidate.json
+```
+
+Each manifest contains the existing complete `dataset`, immutable `plan`, and
+normalized #77 `records` call ledger. The comparison validates the persisted
+plan/registry/dataset before it considers token policy. It requires matched
+corpus, cases, surfaces, schedules, and complete cohort attestation; at least
+three measured attempts for every category and selected variant; provider usage
+for every workflow call; and at least one accepted change per category.
+
+The default required corpus reduction is exactly `0.20`. To change only that
+budget, pass a decimal or exact fraction:
+
+```bash
+npm run eval:efficiency -- --baseline baseline.json --candidate candidate.json --minimum-reduction 1/6
+```
+
+The command uses exact rational arithmetic for policy decisions and reports
+compact per-category plus aggregate TPAC and acceptance rates. Its exits are
+`0` for pass, `1` for a policy failure, and `2` for invalid evidence. Lowering
+the threshold never bypasses registry, cohort, actual-usage, zero-acceptance,
+aggregate-cost, or reliability checks. Failed and retried attempts, plus
+primary, delegated, and required-reviewer calls, remain in workflow cost;
+evaluator-only calls remain excluded.
+
 The script:
 
 1. Extracts every `AGENTS.md`, `directives/*.md`, and `skills/*/SKILL.md` path mentioned in the
