@@ -194,7 +194,10 @@ program
     const result = installEntry(entry, { cwd: process.cwd(), tool, force: opts.force });
     reportInstall(entry, result);
     if (hasConflict(result)) {
-      console.error(`Use --force to overwrite.`);
+      const message = opts.force
+        ? 'The conflict could not be repaired with --force.'
+        : 'Use --force to overwrite.';
+      console.error(message);
       process.exit(1);
     }
   });
@@ -251,8 +254,11 @@ program
     }
 
     console.log(`\nSummary: ${summary.installed} installed, ${summary.identical} already up-to-date, ${summary.conflict} conflicts`);
-    if (summary.conflict > 0 && !opts.force) {
-      console.error(`Re-run with --force to overwrite conflicting files.`);
+    if (summary.conflict > 0) {
+      const message = opts.force
+        ? 'Some conflicts could not be repaired with --force.'
+        : 'Re-run with --force to overwrite conflicting files.';
+      console.error(message);
       process.exit(1);
     }
   });
