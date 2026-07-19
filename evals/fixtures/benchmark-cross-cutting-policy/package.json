@@ -1,0 +1,8 @@
+{
+  "name": "benchmark-cross-cutting-policy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test/policy.test.mjs"
+  }
+}

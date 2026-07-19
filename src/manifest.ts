@@ -25,6 +25,8 @@ export interface ManifestEntry {
   routing?: ManifestRouting;
   /** Repo-relative paths to helper scripts installed alongside this entry (under `.agents/`). */
   scripts?: string[];
+  /** Repo-relative non-executable companion files installed alongside this entry (under `.agents/`). */
+  assets?: string[];
 }
 
 export interface Manifest {

@@ -1,7 +1,7 @@
 ---
 name: specification-driven-development
 description: Requires a durable written specification before every implementation or behavior-changing task, with depth proportional to risk and complexity.
-version: 2.0.0
+version: 2.1.0
 required: false
 category: workflow
 tools:
@@ -207,9 +207,25 @@ presence to zero:
 | Medium (feature)  | Yes      | Yes    | Yes           | 1-5    |
 | Large (cross-cut) | Yes      | Yes    | Yes           | 1-5    |
 | Fix (bug)         | Brief    | If cross-cutting | Brief regression contract | 1, 3-5; include 2 when cross-cutting |
+| Eligible Small Batch | One batch proposal | If needed | One batch spec + binary per-fix matrix | 1, 3-5; preserve each row's proof |
 
 **Rule of thumb:** If you can hold the full change in your head, a brief
 proposal is sufficient. If you can't, write the design and spec.
+
+## Small Batch Contract
+
+Only when adaptive routing has explicitly selected the Small Batch modifier,
+write one durable batch specification before RED or implementation. It MUST
+name the shared subsystem and outcome/root cause, enumerate every included fix
+and explicit non-goal, and contain a binary acceptance-matrix row for each fix.
+The matrix is the batch's durable contract; no row may be implied by prose or
+collapsed into a combined assertion.
+
+Small Batch amortizes the surrounding ceremony, not the specification or
+acceptance contract. If an acceptance row reveals unexpected coupling, scope
+drift, or an ineligible trigger, stop and follow the router's non-destructive
+re-specification, re-baseline, and rerouting process before continuing any
+remaining work.
 
 ---
 

@@ -7,6 +7,63 @@ export type RoutingTrace = {
   missing_expected?: string[];
   unexpected_claims?: string[];
 };
+
+export type GateStatus = 'pass' | 'fail' | 'unknown';
+export type AttemptStatus = 'started' | 'completed' | 'failed' | 'abandoned';
+export type CallRole = 'primary' | 'subagent' | 'required-reviewer' | 'evaluator';
+export type ProviderUsage = {
+  input_tokens?: number;
+  output_tokens?: number;
+  cache_read_tokens?: number;
+  cache_write_tokens?: number;
+  provider_total_tokens?: number;
+  provenance: string;
+};
+export type AttemptCall = { call_id: string; role: CallRole; usage?: ProviderUsage };
+export type AttemptRegistration = {
+  attempt_id: string;
+  registered_at: string;
+  status: 'started';
+  sequence?: number;
+  schedule_sequence?: number;
+  retry_of?: string;
+};
+export type BenchmarkIdentity = { category?: string; variant?: string; repetition?: number };
+export type ComparableCohort = {
+  provider?: string;
+  model?: string;
+  tokenizer?: string;
+  client_version?: string;
+  harness_version?: string;
+  tool_configuration_hash?: string;
+  cache_policy?: string;
+  global_instruction_hash?: string;
+  inference_settings_hash?: string;
+};
+export type AttemptRecord = {
+  attempt_id: string;
+  registration: AttemptRegistration;
+  status?: AttemptStatus;
+  scenario: string;
+  verdict: string;
+  gates: GateStatus;
+  calls: AttemptCall[];
+  benchmark?: BenchmarkIdentity;
+  cohort?: ComparableCohort;
+  estimated_instruction_tokens?: number;
+  measurement_errors?: string[];
+};
+export type OutcomeAcceptance = 'accepted' | 'rejected' | 'unknown';
+export type TokenEvidence = {
+  attempts: number;
+  accepted_changes: number;
+  actual_usage_attempts: number;
+  actual_usage_coverage_complete: boolean;
+  workflow_actual_tokens: number;
+  evaluator_actual_tokens: number;
+  tokens_per_accepted_change?: number;
+  hard_gate_eligible: boolean;
+};
 export type EvalRun = {
   source: string;
   scenario: string;
@@ -26,4 +83,14 @@ export type EvalRun = {
   routing_trace?: RoutingTrace;
   failure_tags: string[];
   judge_summary: string;
+  attempt_id?: string;
+  registration?: AttemptRegistration;
+  status?: AttemptStatus;
+  gates?: GateStatus;
+  calls?: AttemptCall[];
+  benchmark?: BenchmarkIdentity;
+  benchmark_protocol?: Record<string, unknown>;
+  cohort?: ComparableCohort;
+  estimated_instruction_tokens?: number;
+  measurement_errors?: string[];
 };

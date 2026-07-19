@@ -1,7 +1,9 @@
 #!/usr/bin/env tsx
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isSafeRepoRelativePath } from '../src/is-safe-repo-relative-path.js';
+import { resolveSafePathWithinRoot } from '../src/resolve-safe-path-within-root.js';
 import { parseFrontmatter } from './frontmatter.js';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
@@ -28,6 +30,7 @@ interface ManifestEntry {
   applies_to?: string[];
   routing?: ManifestRouting;
   scripts?: string[];
+  assets?: string[];
 }
 
 interface Manifest {
@@ -137,6 +140,8 @@ function readEntry(path: string, type: ManifestEntryType): ManifestEntry {
   if (routing) entry.routing = routing;
   const scripts = buildScripts(fm, path);
   if (scripts) entry.scripts = scripts;
+  const assets = buildAssets(fm, path);
+  if (assets) entry.assets = assets;
   return entry;
 }
 
@@ -155,6 +160,29 @@ function buildScripts(fm: Record<string, unknown>, path: string): string[] | und
     const relative = `${dir}/${script}`;
     if (!existsSync(join(repoRoot, relative))) {
       throw new Error(`Script not found for ${path}: ${relative}`);
+    }
+    return relative;
+  });
+}
+
+// buildAssets follows the script resolution contract but intentionally leaves
+// companion files non-executable. Assets let a required bootstrap name lazy
+// detail without promoting that detail to a separately required manifest entry.
+function buildAssets(fm: Record<string, unknown>, path: string): string[] | undefined {
+  const assets = optionalStringArray(fm.assets, { key: 'assets', path });
+  if (!assets) return undefined;
+  const dir = path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : '.';
+  return assets.map((asset) => {
+    if (!isSafeRepoRelativePath(asset)) {
+      throw new Error(`Invalid asset path '${asset}' in ${path}; expected a repo-relative path without '..'`);
+    }
+    const relative = `${dir}/${asset}`;
+    const source = join(repoRoot, relative);
+    const safeSource = resolveSafePathWithinRoot({ root: repoRoot, candidate: source, requireParents: true });
+    if (!safeSource) throw new Error(`Unsafe asset source path for ${path}: ${relative}`);
+    const stat = existsSync(safeSource) ? lstatSync(safeSource) : undefined;
+    if (!stat?.isFile() || stat.size === 0) {
+      throw new Error(`Asset must be a non-empty regular file for ${path}: ${relative}`);
     }
     return relative;
   });

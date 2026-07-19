@@ -41,6 +41,9 @@ Delete this comment block when done.
 The root file provides project-specific context plus compact routing pointers: commands, repo layout, local constraints, and any client-specific workflow reminders.
 
 Workflow path selection, directive loading, skill loading, rule selection, and evidence requirements live in `.agents/directives/adaptive-routing.md`.
+For ambiguous, composite, or high-risk routes, load its synced lazy companion at
+`.agents/directives/references/adaptive-routing-detail.md`; obvious Light,
+Review, and Exploration tasks do not preload it.
 
 After routing, report:
 `Route: <path>; using <directive/skill files>; rules: <rule files or none>; evidence: <checks>.`
@@ -62,9 +65,11 @@ phase sequence, no skipping steps:
 | 4.75 | **VERIFY**   | **Produce verification summary**         | See verification directive — target 📋 documented Jenga entries               |
 | 5    | GATES        | Run quality gates                        | <!-- FILL IN: gates commands -->                                             |
 | 5.5  | **HANDOFF**  | **Compact current task state when routed** | See `.agents/directives/context-handoff.md` for phase/session handoff |
-| 6    | COMMIT       | Atomic commit                            | One behavior per commit                                                      |
+| 6    | COMMIT       | Atomic commit                            | One behavior, or one inseparable eligible batch                            |
 
-Steps 0.5-6 repeat for each behavior-changing slice. Do not batch.
+Steps 0.5-6 repeat for each behavior-changing slice. Do not batch unless the
+router explicitly selects an eligible Small Batch; it still requires one durable
+batch spec/matrix and focused proof for every row.
 
 ## Directives
 

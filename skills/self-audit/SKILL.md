@@ -1,7 +1,7 @@
 ---
 name: "self-audit"
 description: "Load when implementation is past GREEN/REFACTOR and the user asks for pre-PR verification, self-audit, scope check, weakest-assumption review, anomaly triage, or a confidence check."
-version: 1.0.0
+version: 1.1.0
 required: false
 category: review
 tools:
@@ -23,6 +23,16 @@ routing:
 
 After GREEN/REFACTOR, before verification. This is a triage point — some
 findings loop back to TDD, others flow forward into the PR body.
+
+## Small Batch Checkpoint
+
+When adaptive routing explicitly selected Small Batch, conduct one self-audit
+only after every acceptance-matrix row has focused proof. Confirm the original
+two-to-five eligibility, one subsystem/outcome, per-row evidence, and absence
+of Boundary, Policy, and Production triggers. Treat unexpected coupling or
+eligibility drift as a routed finding: stop non-destructively, preserve valid
+evidence, re-specify and re-baseline remaining work, then reroute. Do not keep
+the batch moving because earlier rows were valid.
 
 ```
 TDD (RED → GREEN → REFACTOR)
