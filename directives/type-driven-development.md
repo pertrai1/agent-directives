@@ -1,7 +1,7 @@
 ---
 name: type-driven-development
 description: Requires type and contract definition before implementation in typed projects or public API work.
-version: 1.0.0
+version: 1.1.0
 required: false
 category: testing
 tools:
@@ -137,13 +137,8 @@ Before types are considered complete:
 npx tsc --noEmit
 ```
 
-After implementation (via TDD), all gates must pass:
-
-```text
-Run the project's full quality-gate command suite (test, lint, build/type-check)
-```
-
-If any fail, the implementation is incomplete.
+After TDD, follow `.agents/directives/verification.md` for final gates and
+bounded output. This directive owns only the focused type-contract check.
 
 ### When Types Are Complex
 

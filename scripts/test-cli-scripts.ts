@@ -103,16 +103,63 @@ test("working diff covers the complete working tree", () => {
   });
 });
 
-test("requested unavailable gate fails visibly", () => {
+test("requested unavailable static-analysis gate fails visibly", () => {
   withTempProject((cwd) => {
     writeFileSync(join(cwd, "package.json"), JSON.stringify({ scripts: { check: "node -e \"process.exit(0)\"" } }));
     const result = spawnSync(
       "/bin/bash",
-      [join(repoRoot, "directives/scripts/gates.sh"), "test"],
+      [join(repoRoot, "directives/scripts/gates.sh"), "static-analysis"],
       { cwd, encoding: "utf8" },
     );
     if (result.status === 0) throw new Error("expected unavailable requested gate to fail");
-    assertContains(`${result.stdout}${result.stderr}`, { needle: "Unavailable requested gate: test", context: "missing gate error" });
+    assertContains(`${result.stdout}${result.stderr}`, {
+      needle: "Unavailable requested gate: static-analysis",
+      context: "missing static-analysis gate error",
+    });
+  });
+});
+
+test("requested conventional static-analysis gate runs and reports success", () => {
+  withTempProject((cwd) => {
+    const staticAnalysis = "node -e \"require('fs').writeFileSync('static-analysis-ran.txt','yes')\"";
+    writeFileSync(join(cwd, "package.json"), JSON.stringify({ scripts: { "static-analysis": staticAnalysis } }));
+
+    const result = spawnSync(
+      "/bin/bash",
+      [join(repoRoot, "directives/scripts/gates.sh"), "static-analysis"],
+      { cwd, encoding: "utf8" },
+    );
+    if (result.status !== 0) throw new Error(`expected static-analysis gate to pass: ${result.stderr}`);
+    assertContains(result.stdout, { needle: "## static-analysis", context: "static-analysis label" });
+    assertContains(result.stdout, { needle: "STATUS: PASS", context: "static-analysis success" });
+    assertContains(readFileSync(join(cwd, "static-analysis-ran.txt"), "utf8"), {
+      needle: "yes",
+      context: "static-analysis command effect",
+    });
+  });
+});
+
+test("invalid MAX_LINES exits 2 with an actionable diagnostic", () => {
+  withTempProject((cwd) => {
+    const result = spawnSync(
+      "/bin/bash",
+      [join(repoRoot, "directives/scripts/gates.sh"), "static-analysis"],
+      { cwd, encoding: "utf8", env: { ...process.env, MAX_LINES: "many" } },
+    );
+    if (result.status !== 2) throw new Error(`expected invalid MAX_LINES to exit 2, got ${result.status}`);
+    assertContains(result.stderr, { needle: "MAX_LINES must be a positive integer", context: "invalid MAX_LINES diagnostic" });
+  });
+});
+
+test("zero MAX_LINES exits 2 with an actionable diagnostic", () => {
+  withTempProject((cwd) => {
+    const result = spawnSync(
+      "/bin/bash",
+      [join(repoRoot, "directives/scripts/gates.sh"), "static-analysis"],
+      { cwd, encoding: "utf8", env: { ...process.env, MAX_LINES: "0" } },
+    );
+    if (result.status !== 2) throw new Error(`expected zero MAX_LINES to exit 2, got ${result.status}`);
+    assertContains(result.stderr, { needle: "MAX_LINES must be a positive integer", context: "zero MAX_LINES diagnostic" });
   });
 });
 

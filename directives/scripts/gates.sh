@@ -2,10 +2,9 @@
 #
 # gates.sh — detect and run this project's quality gates, failures-only.
 #
-# Referenced by: verification.md, test-driven-development.md,
-#                type-driven-development.md (the "run the project's quality-gate
-#                command suite" step). Replaces re-deriving the commands and
-#                pasting full logs with one capped, deterministic report.
+# Referenced by: verification.md as the canonical final quality-gate helper.
+# Replaces re-deriving the commands and pasting full logs with one capped,
+# deterministic report.
 #
 # Why a script: the gate commands are re-discovered every session and the raw
 # output is unbounded. This detects the stack once, runs each gate, collapses a
@@ -13,7 +12,7 @@
 # (where the actual error usually is) so a 3000-line suite can't flood context.
 #
 # Usage:
-#   bash gates.sh [gate ...]     # gate in: lint typecheck test build (default: all detected)
+#   bash gates.sh [gate ...]     # gate in: lint typecheck test build static-analysis (default: all detected)
 #   MAX_LINES=200 bash gates.sh  # override the per-failure line cap (default 150)
 #
 # Exit code: 0 if every run gate passed, 1 if any failed (usable in CI/hooks).
@@ -27,6 +26,18 @@ RAN_LINT=0
 RAN_TYPECHECK=0
 RAN_TEST=0
 RAN_BUILD=0
+RAN_STATIC_ANALYSIS=0
+
+case "$MAX_LINES" in
+  ''|*[!0-9]*)
+    echo "MAX_LINES must be a positive integer" >&2
+    exit 2
+    ;;
+esac
+if [ "$MAX_LINES" -lt 1 ]; then
+  echo "MAX_LINES must be a positive integer" >&2
+  exit 2
+fi
 
 # want <gate> → true if the user requested this gate (or requested nothing).
 want() {
@@ -77,6 +88,12 @@ if [ -f package.json ] && command -v npm >/dev/null 2>&1; then
   if [ "$NPM_AGGREGATE" -eq 0 ]; then
     # Map conventional gate names to whatever the project actually defines.
     want lint     && { npm_script lint     && { run_check "lint" npm run lint --silent; RAN_LINT=1; }; }
+    want static-analysis && {
+      if   npm_script static-analysis; then run_check "static-analysis" npm run static-analysis --silent; RAN_STATIC_ANALYSIS=1
+      elif npm_script static:analysis; then run_check "static-analysis" npm run static:analysis --silent; RAN_STATIC_ANALYSIS=1
+      elif npm_script analyze        ; then run_check "static-analysis" npm run analyze --silent; RAN_STATIC_ANALYSIS=1
+      fi
+    }
     want typecheck && {
       if   npm_script typecheck  ; then run_check "typecheck" npm run typecheck --silent; RAN_TYPECHECK=1
       elif npm_script type-check ; then run_check "typecheck" npm run type-check --silent; RAN_TYPECHECK=1
@@ -112,6 +129,7 @@ if [ "${#WANT[@]}" -gt 0 ]; then
       typecheck) ran="$RAN_TYPECHECK" ;;
       test)      ran="$RAN_TEST" ;;
       build)     ran="$RAN_BUILD" ;;
+      static-analysis) ran="$RAN_STATIC_ANALYSIS" ;;
       *)         ran=0 ;;
     esac
     if [ "$ran" -eq 0 ]; then
