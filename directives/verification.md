@@ -1,7 +1,7 @@
 ---
 name: verification
 description: Requires structured evidence of correctness before quality gates and pull requests.
-version: 1.3.0
+version: 1.4.0
 scripts:
   - scripts/gates.sh
 required: true
@@ -173,11 +173,9 @@ Run the project's test suite with verbose output to confirm.
 
 ### For Docs / Chore Changes
 
-Show the relevant quality gate still passes:
-
-Run the project's full quality-gate command suite (test, lint, build/type-check).
-
-Paste the output. That IS the verification for non-code changes.
+Show the relevant canonical final gates still pass. Follow
+**Canonical Final Quality Gates** below; its bounded report is the verification
+evidence for non-code changes.
 
 ---
 
@@ -292,18 +290,20 @@ address.
 
 ---
 
-## Quality Gate Feedback
+## Canonical Final Quality Gates
 
-Run the project-native gates selected by `.agents/directives/adaptive-routing.md`.
-Treat test, lint, type-check, build, static-analysis, and review-bot output as
-implementation feedback, not ceremony.
+This directive and its helper own the generic final-gate procedure. After
+phase-specific proof, run project-native test, lint, type-check, build,
+static-analysis, and review-bot gates selected by
+`.agents/directives/adaptive-routing.md`.
 
-If `.agents/directives/scripts/gates.sh` is present, run it to execute the
-detected gates with passing checks collapsed to one line and failures capped to
-their last lines — this keeps unbounded test/build logs out of context. Pass a
-subset (e.g. `bash .agents/directives/scripts/gates.sh lint typecheck`) to scope
-the run. If the script is absent, run your project's test/lint/build commands
-directly. Invoke it on demand; do not read a cached copy of its output.
+If `.agents/directives/scripts/gates.sh` is present, run it. It discovers those
+gates, collapses passing checks to one line, and caps failed output at
+`MAX_LINES` (150 by default). Pass a subset such as
+`bash .agents/directives/scripts/gates.sh lint typecheck static-analysis` when
+needed. An unavailable requested gate fails; report an unrequested undetected
+gate rather than inventing a command. Without the helper, run documented
+commands directly and cap failure excerpts to their actionable tail.
 
 When a linter or static-analysis rule explains an issue, fix the underlying
 pattern. Do not suppress the rule, weaken configuration, or make superficial
