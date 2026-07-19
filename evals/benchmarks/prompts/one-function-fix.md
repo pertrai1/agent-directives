@@ -1,0 +1,1 @@
+Fix `src/format-greeting.mjs` so an empty name returns `Hello, friend!`; preserve the current greeting for non-empty names. Ensure the existing focused test coverage passes without changing the fixture-owned tests.

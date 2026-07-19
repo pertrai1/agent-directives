@@ -31,6 +31,8 @@ const WORKFLOW_TOTAL = 59;
 const EVALUATOR_TOTAL = 13;
 const ATTEMPT_COUNT = 3;
 const DUPLICATE_TOKEN_COUNT = 1;
+const BENCHMARK_SEED = 781;
+const COMMIT_HASH_LENGTH = 40;
 
 const attempt = (id: string, overrides: Partial<AttemptRecord> = {}): AttemptRecord => ({
   attempt_id: id,
@@ -134,6 +136,19 @@ assert.equal(contradictoryEnrichments.valid, false, 'placeholder-first records c
 assert.equal(reconcileAttemptRecords(enrichmentRegistry, [judgedRecord, attempt('enriched', { benchmark: { category: 'other', variant: 'candidate', repetition: DUPLICATE_TOKEN_COUNT } })]).valid, false, 'different populated benchmark evidence invalidates the dataset');
 assert.equal(reconcileAttemptRecords(enrichmentRegistry, [judgedRecord, attempt('enriched', { calls: [{ call_id: 'enriched:primary', role: 'subagent', usage: usage(INPUT, OUTPUT) }] })]).valid, false, 'different evidence under one call ID invalidates the dataset');
 assert.equal(reconcileAttemptRecords(enrichmentRegistry, [{ ...judgedRecord, registration: { ...judgedRecord.registration, attempt_id: 'wrong' } }]).valid, false, 'registration identity must match its attempt ID');
+
+const protocolCohort = { provider: 'provider', model: 'model', tokenizer: 'tokenizer', harness_version: 'a'.repeat(COMMIT_HASH_LENGTH) };
+const manifestFields = measurementFields({
+  attempt_id: 'protocol',
+  registration: { attempt_id: 'protocol', registered_at: '2026-07-19T00:00:00.000Z', status: 'started' },
+  benchmark: { case_id: 'light-edit', category: 'light', variant: 'candidate', repetition: DUPLICATE_TOKEN_COUNT, seed: BENCHMARK_SEED, cohort: protocolCohort, instruction_surface: { ref: 'candidate', sha256: 'hash' } },
+});
+assert.deepEqual(manifestFields.benchmark, { category: 'light', variant: 'candidate', repetition: DUPLICATE_TOKEN_COUNT }, 'expanded benchmark protocol normalizes to the three identity fields only');
+assert.deepEqual(manifestFields.cohort, protocolCohort, 'legacy nested protocol cohort is retained as a compatibility fallback');
+assert.equal(manifestFields.benchmark_protocol?.case_id, 'light-edit', 'expanded benchmark integrity evidence remains separate from normalized identity');
+const protocolManifest = attempt('protocol', { benchmark: manifestFields.benchmark, cohort: manifestFields.cohort });
+const protocolJudge = attempt('protocol', { benchmark: { category: 'light', variant: 'candidate', repetition: DUPLICATE_TOKEN_COUNT }, cohort: protocolCohort });
+assert.equal(reconcileAttemptRecords([{ attempt_id: 'protocol', registered_at: '2026-07-19T00:00:00.000Z', status: 'started' }], [protocolManifest, protocolJudge]).valid, true, 'a normalized harness manifest reconciles with the normal three-field judged benchmark record');
 
 const acceptedText = measurementText([reportRun(attempt('accepted-text'))]);
 assert.equal(acceptedText.includes('tokens per accepted change: 30'), true, 'complete measured evidence renders numeric TPAC');
