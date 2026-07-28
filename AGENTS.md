@@ -84,6 +84,7 @@ They govern **how** you work. Do not load unrelated directives just to satisfy c
 | Workspace Isolation              | Protect mutable work with an isolated workspace; prefer native tools, then git fallback | `directives/workspace-isolation.md`              |
 | Codebase Navigation              | SAFE exploration before implementation, review, or unfamiliar work                      | `directives/codebase-navigation.md`              |
 | Architecture Boundaries          | Preserve dependency DAG, public APIs, imports/exports, and file reference integrity     | `directives/architecture-boundaries.md`          |
+| Accessibility                    | Apply UI accessibility requirements for markup, forms, focus, keyboard, ARIA, and tests | `directives/accessibility.md`                    |
 | Exploration Mode                 | Pre-implementation investigation stance                                                 | `directives/exploration-mode.md`                 |
 | Task Framing                     | Intake checklist for non-trivial, ambiguous, high-risk, or cross-cutting work           | `directives/task-framing.md`                     |
 | Specification-Driven Development | Write specs before larger changes where build-and-see would risk rework                 | `directives/specification-driven-development.md` |
