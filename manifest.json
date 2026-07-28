@@ -2,11 +2,51 @@
   "version": "1.0.0",
   "entries": [
     {
+      "id": "accessibility",
+      "type": "directive",
+      "path": "directives/accessibility.md",
+      "description": "Applies accessibility requirements to user-facing HTML, templates, UI components, forms, custom widgets, focus behavior, and frontend interaction tests or reviews.",
+      "version": "1.1.0",
+      "required": false,
+      "category": "workflow",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ],
+      "routing": {
+        "triggers": [
+          "accessibility",
+          "a11y",
+          "html-template",
+          "ui-component",
+          "form",
+          "aria",
+          "keyboard-navigation",
+          "focus-management",
+          "screen-reader"
+        ],
+        "commonPaths": [
+          "full-path",
+          "review-path"
+        ],
+        "capabilityTags": [
+          "implementation",
+          "review",
+          "testing"
+        ]
+      },
+      "assets": [
+        "directives/references/accessibility-detail.md"
+      ]
+    },
+    {
       "id": "adaptive-routing",
       "type": "directive",
       "path": "directives/adaptive-routing.md",
       "description": "Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.",
-      "version": "2.1.0",
+      "version": "2.2.0",
       "required": true,
       "category": "workflow",
       "tools": [

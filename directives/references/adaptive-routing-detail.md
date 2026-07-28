@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing-detail
 description: Lazy companion detail for ambiguous, composite, and high-risk adaptive routing.
-version: 1.1.0
+version: 1.2.0
 required: false
 category: workflow
 tools:
@@ -115,6 +115,21 @@ Do not edit unless asked. Exploration uses `directives/exploration-mode.md` and
 codebase navigation for repository evidence; add product-requirements writer or
 implementation-task planner only for those artifacts. Do not implement until
 the user switches modes.
+
+## Surface-scoped directives
+
+Load `directives/accessibility.md` when the touched surface is user-facing UI:
+HTML templates, JSX/TSX, Vue, Svelte, Angular templates, forms, dialogs, modals,
+popovers, menus, tabs, toasts, validation messages, focus behavior, keyboard
+shortcuts, ARIA, images/icons, motion, or frontend interaction tests and reviews.
+It composes with Full, Review, and test-review work. It does not apply to
+backend-only logic, data migrations, CLI code, internal scripts, or docs-only
+prose unless those changes alter UI accessibility requirements.
+
+Use this as a directive rather than a specialist reviewer by default: it supplies
+the accessibility floor for implementation, testing, and review. Add a specialist
+reviewer only when a task explicitly requests a standalone accessibility audit or
+the project defines one locally.
 
 ## Specialist selection
 

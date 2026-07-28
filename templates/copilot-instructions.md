@@ -98,6 +98,7 @@ then load only the selected directive:
 - `.agents/directives/workspace-isolation.md` — Protect mutable work with an isolated workspace; prefer native tools, then git fallback
 - `.agents/directives/codebase-navigation.md` — SAFE exploration pattern
 - `.agents/directives/architecture-boundaries.md` — Preserve dependency DAG and import rules
+- `.agents/directives/accessibility.md` — UI accessibility for markup, forms, focus, keyboard, ARIA, and tests
 - `.agents/directives/exploration-mode.md` — Pre-implementation investigation stance
 - `.agents/directives/task-framing.md` — Intake checklist that hands off to specification-driven development
 - `.agents/directives/specification-driven-development.md` — Create or identify durable specs before implementation, verify after

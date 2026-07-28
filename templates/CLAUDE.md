@@ -80,6 +80,7 @@ Load `.agents/directives/adaptive-routing.md` first, then load only the directiv
 - **Workspace Isolation** — Protect mutable work with an isolated workspace; prefer native tools, then git fallback (`.agents/directives/workspace-isolation.md`)
 - **Codebase Navigation** — SAFE exploration pattern before implementation (`.agents/directives/codebase-navigation.md`)
 - **Architecture Boundaries** — Preserve dependency DAG and import rules (`.agents/directives/architecture-boundaries.md`)
+- **Accessibility** — UI accessibility for markup, forms, focus, keyboard, ARIA, and tests (`.agents/directives/accessibility.md`)
 - **Exploration Mode** — Pre-implementation investigation and thinking stance (`.agents/directives/exploration-mode.md`)
 - **Task Framing** — Intake checklist that hands off to specification-driven development (`.agents/directives/task-framing.md`)
 - **Specification-Driven Development** — Create or identify durable specs before implementation, verify after (`.agents/directives/specification-driven-development.md`)

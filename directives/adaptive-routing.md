@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing
 description: Selects the lightest safe workflow path, relevant directives/skills, and handoff requirements based on task intent, risk, and touched surfaces.
-version: 2.1.0
+version: 2.2.0
 required: true
 category: workflow
 tools:
@@ -76,10 +76,14 @@ when available, are authoritative over self-report.
    eval work loads test reviewer. Spec-governed merge work loads spec reviewer.
    TypeScript/JavaScript refactors or shared utilities load codebase-health
    reviewer. Match production, hooks, and MCP reviewers to their surfaces.
-5. Select stack/file-scoped rules only after detecting project evidence and
+5. Load `directives/accessibility.md` for user-facing HTML, templates, UI
+   components, forms, custom widgets, focus/keyboard behavior, ARIA, or frontend
+   interaction tests/reviews. Do not load it for backend-only, CLI, migration, or
+   docs-only work without a UI accessibility surface.
+6. Select stack/file-scoped rules only after detecting project evidence and
    matching their `applies_to` scope and description. Use `manifest.json` as a
    compact discovery index when present; source frontmatter is authoritative.
-6. Prefer the smallest safe change, evidence over ritual, and compact handoff
+7. Prefer the smallest safe change, evidence over ritual, and compact handoff
    at phase/session boundaries. Do not bulk-load unrelated directives or rules.
 
 **Small Batch modifier:** It modifies, but never replaces, Full. Select it only

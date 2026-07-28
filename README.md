@@ -9,7 +9,7 @@ dependencies between files.
 
 | Category | Files | What they do |
 |----------|-------|--------------|
-| **Workflow** | 10 directives | Govern how the agent works: adaptive routing (including its bounded Small Batch modifier), workspace isolation, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries |
+| **Workflow** | 11 directives | Govern how the agent works: adaptive routing (including its bounded Small Batch modifier), workspace isolation, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries, and UI accessibility |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
 | **Skills** | 14 skills | Code reviewer, adversarial reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, subagent-driven development, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, production readiness reviewer, harness hooks reviewer, and MCP integration reviewer |
@@ -262,6 +262,13 @@ exports, folders, packages, services, or shared code. Requires agents to classif
 touched files into zones, identify changed dependency edges, and verify no upward,
 sideways, cyclic, or public-API-bypassing dependency was introduced. Includes
 optional Fallow and GitNexus checks for tool-assisted boundary evidence.
+
+### Accessibility (`directives/accessibility.md`)
+
+Applies when work creates, edits, tests, or reviews user-facing UI markup or
+interaction behavior. Defines the accessibility floor for native elements,
+accessible names, labels, focus, keyboard support, form errors, dynamic updates,
+reduced motion, and review/test evidence without loading for backend-only work.
 
 ### Exploration Mode (`directives/exploration-mode.md`)
 
