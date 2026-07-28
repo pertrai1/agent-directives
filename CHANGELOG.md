@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.14.0
+
+### Minor Changes
+
+- [#95](https://github.com/pertrai1/agent-directives/pull/95) [`58cbb5c`](https://github.com/pertrai1/agent-directives/commit/58cbb5c97d73e87ff8c8939538956b4847ae7a53) Thanks [@pertrai1](https://github.com/pertrai1)! - Add an accessibility directive with a lazy-loaded detail companion covering screen-reader test procedures (JAWS/NVDA/VoiceOver) and complex ARIA widget patterns, wired into adaptive routing.
+
 ## 0.13.0
 
 ### Minor Changes
