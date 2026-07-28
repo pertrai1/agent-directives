@@ -9,6 +9,8 @@ tools:
   - copilot
   - codex
   - cursor
+assets:
+  - references/accessibility-detail.md
 triggers:
   - accessibility
   - a11y
