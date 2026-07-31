@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.14.1
+
+### Patch Changes
+
+- [#97](https://github.com/pertrai1/agent-directives/pull/97) [`f6f6fd1`](https://github.com/pertrai1/agent-directives/commit/f6f6fd181b16cbd2761fd98f0face1fb3ba5fdc7) Thanks [@pertrai1](https://github.com/pertrai1)! - Add the `a11y-expert` skill, frontend routing guidance, accessibility routing eval coverage, and related documentation updates.
+
 ## 0.14.0
 
 ### Minor Changes
