@@ -195,9 +195,11 @@ function validateFrontmatter(path: string): void {
 
 function validateReferencedPaths(path: string): void {
   const text = read(path);
+  const directory = path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : '';
   for (const ref of extractPaths(text)) {
     if (ref.includes('/foo/') || ref.endsWith('/foo.md')) continue;
-    if (!exists(ref)) fail(`${path}: references missing path ${ref}`);
+    const localRef = directory ? `${directory}/${ref}` : ref;
+    if (!exists(ref) && !exists(localRef)) fail(`${path}: references missing path ${ref}`);
   }
 }
 

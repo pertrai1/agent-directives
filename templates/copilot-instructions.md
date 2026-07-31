@@ -114,6 +114,7 @@ then load only the selected directive:
 Load the relevant skill selected by adaptive routing for the task type.
 
 - `.agents/skills/code-reviewer/SKILL.md` — Before reviewing PRs, branches, diffs, or local changes
+- `.agents/skills/a11y-expert/SKILL.md` — When implementing or reviewing frontend files, user-facing UI, or accessibility-sensitive interaction behavior
 - `.agents/skills/adversarial-reviewer/SKILL.md` — Before explicit adversarial/red-team/failure-mode review or high-risk, broad, or agent-authored changes needing a separate skeptical reviewer
 - `.agents/skills/test-reviewer/SKILL.md` — Before writing or reviewing any test
 - `.agents/skills/spec-reviewer/SKILL.md` — Before merging when a written spec exists
