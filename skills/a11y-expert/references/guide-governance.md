@@ -24,9 +24,11 @@ To prepare subsystems for external certification and audit:
 3. **Standard Audit:** In case of final delivery, the checklist in [**`templates/REPORT.md`**](../templates/REPORT.md) *must* be operated as "Definition of Done".
 
 ## 5. Reporting & Liability (VPAT Strategy)
-Projects targeting the US market must be Section 508 compliant:
-- **VPAT Creation:** Maintain a technical document that records which WCAG criteria are fully or partially supported.
-- **Traceability:** Each major feature must have a comment in the code citing which WCAG criterion is being respected.
+Projects delivering to US federal agencies or participating in covered federal
+procurement must address Section 508 requirements. Other US-market projects may
+have different legal, contractual, or voluntary accessibility obligations.
+- **VPAT Creation:** When Section 508 procurement evidence is required, maintain a technical document that records which WCAG criteria are fully or partially supported.
+- **Traceability:** For covered work, record the relevant WCAG or Section 508 criteria in the project's chosen compliance evidence; code comments are optional and should not replace user-facing or test evidence.
 
 ## 6. European Compliance (EN 301 549)
 For EAA compliance:

@@ -51,13 +51,13 @@ assets:
 
 # A11y Expert: Accessibility as a Baseline
 
-**Target standard:** WCAG 2.2 AA  
+**Target standard:** WCAG 2.2 AA
 **Last updated:** 2026-07-20
 
 This document establishes the persistent context required so that the software **can be certified** under the **WCAG 2.2 AA**, **ISO 9241-171**, **ADA**, and **EAA** standards, depending on rigorous implementation and **mandatory human validation**.
 
 ## 0. Principle Zero: Accessibility as Pre-condition
-- Accessibility is not a feature or an incremental improvement; it is a **pre-condition for use**. 
+- Accessibility is not a feature or an incremental improvement; it is a **pre-condition for use**.
 - If a user cannot complete a task due to an accessibility barrier, the feature is considered **technically broken**.
 - **Task Completion** success is our primary quality metric.
 
@@ -77,8 +77,8 @@ When generating or reviewing interface code, the AI should ask the user which co
 
 *Launchpad additionally requires explicit `EXCEPTIONS.md` documentation for each criterion relaxed below AA.*
 
-> ⚠️ The **Launchpad (A)** profile does NOT relax CRITICAL rules (Section 1). 
-> Keyboard operability, focus management, and semantic HTML remain mandatory 
+> ⚠️ The **Launchpad (A)** profile does NOT relax CRITICAL rules (Section 1).
+> Keyboard operability, focus management, and semantic HTML remain mandatory
 > at ALL levels — these are Level A requirements.
 
 ## 1. Severity & Impact Model

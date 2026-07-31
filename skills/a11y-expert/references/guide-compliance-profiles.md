@@ -57,7 +57,7 @@ This guide details the three compliance profiles supported by the `A11Y.md` rule
 **When to use:** Rapid prototyping, internal admin panels with controlled audiences, or initial MVP builds.
 **AI Instruction:** `"Apply Launchpad Profile (A)"`
 
-> [!WARNING]  
+> [!WARNING]
 > The Launchpad profile does **NOT** mean "no accessibility". It still requires semantic HTML, keyboard operability, and screen reader support. It only relaxes strict visual criteria.
 
 ### Relaxed Criteria (Compared to AA)
