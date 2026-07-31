@@ -1,7 +1,7 @@
 ---
 name: adaptive-routing-detail
 description: Lazy companion detail for ambiguous, composite, and high-risk adaptive routing.
-version: 1.2.0
+version: 1.3.0
 required: false
 category: workflow
 tools:
@@ -126,10 +126,12 @@ It composes with Full, Review, and test-review work. It does not apply to
 backend-only logic, data migrations, CLI code, internal scripts, or docs-only
 prose unless those changes alter UI accessibility requirements.
 
-Use this as a directive rather than a specialist reviewer by default: it supplies
-the accessibility floor for implementation, testing, and review. Add a specialist
-reviewer only when a task explicitly requests a standalone accessibility audit or
-the project defines one locally.
+Use this as a directive for the accessibility floor on implementation, testing,
+and review. For frontend files or user-facing UI, also load
+`skills/a11y-expert/SKILL.md` for the specialist accessibility pass. The
+specialist composes with the directive; it does not replace it. Do not load the
+specialist for backend-only, CLI, migration, or docs-only work without a UI
+surface.
 
 ## Specialist selection
 
@@ -140,6 +142,7 @@ the project defines one locally.
 | Existing plan executed by delegated workers | `skills/subagent-driven-development/SKILL.md` |
 | Bug/regression/failing gate | `skills/systematic-debugging/SKILL.md` |
 | PR/branch/diff/local review | `skills/code-reviewer/SKILL.md` |
+| Frontend files or user-facing UI | `skills/a11y-expert/SKILL.md` |
 | Explicit adversarial or broad/high-risk agent change | `skills/adversarial-reviewer/SKILL.md` |
 | Tests or eval scenarios | `skills/test-reviewer/SKILL.md` |
 | Spec-governed implementation/merge | `skills/spec-reviewer/SKILL.md` |

@@ -397,6 +397,63 @@
       }
     },
     {
+      "id": "a11y-expert",
+      "type": "skill",
+      "path": "skills/a11y-expert/SKILL.md",
+      "description": "Load when implementing or reviewing frontend files, user-facing UI, or accessibility-sensitive interaction behavior and a specialist accessibility pass is useful.",
+      "version": "1.1.0",
+      "required": false,
+      "category": "review",
+      "tools": [
+        "claude",
+        "copilot",
+        "codex",
+        "cursor"
+      ],
+      "routing": {
+        "triggers": [
+          "frontend",
+          "accessibility-audit",
+          "a11y-review",
+          "jsx",
+          "tsx",
+          "vue",
+          "svelte",
+          "angular-template"
+        ],
+        "commonPaths": [
+          "full-path",
+          "review-path"
+        ]
+      },
+      "assets": [
+        "skills/a11y-expert/references/guide-autocomplete.md",
+        "skills/a11y-expert/references/guide-buttons.md",
+        "skills/a11y-expert/references/guide-carousels-sliders.md",
+        "skills/a11y-expert/references/guide-compliance-profiles.md",
+        "skills/a11y-expert/references/guide-content-interaction.md",
+        "skills/a11y-expert/references/guide-drag-drop.md",
+        "skills/a11y-expert/references/guide-forms.md",
+        "skills/a11y-expert/references/guide-framework-mapping.md",
+        "skills/a11y-expert/references/guide-governance.md",
+        "skills/a11y-expert/references/guide-images.md",
+        "skills/a11y-expert/references/guide-infinite-scroll.md",
+        "skills/a11y-expert/references/guide-loading-skeleton.md",
+        "skills/a11y-expert/references/guide-modals.md",
+        "skills/a11y-expert/references/guide-navigation.md",
+        "skills/a11y-expert/references/guide-platform-native.md",
+        "skills/a11y-expert/references/guide-responsive-mobile.md",
+        "skills/a11y-expert/references/guide-tables.md",
+        "skills/a11y-expert/references/guide-tabs-accordion.md",
+        "skills/a11y-expert/references/guide-toasts-notifications.md",
+        "skills/a11y-expert/references/guide-tooltips-popovers.md",
+        "skills/a11y-expert/references/guide-visual-perception.md",
+        "skills/a11y-expert/templates/A11Y-DECISIONS.md",
+        "skills/a11y-expert/templates/EXCEPTIONS.md",
+        "skills/a11y-expert/templates/REPORT.md"
+      ]
+    },
+    {
       "id": "adversarial-reviewer",
       "type": "skill",
       "path": "skills/adversarial-reviewer/SKILL.md",

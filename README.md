@@ -12,7 +12,7 @@ dependencies between files.
 | **Workflow** | 11 directives | Govern how the agent works: adaptive routing (including its bounded Small Batch modifier), workspace isolation, context handoff, TDD, type-first, spec-driven, verification, task framing, exploration, architecture boundaries, and UI accessibility |
 | **Navigation** | 1 directive | SAFE pattern for exploring codebases before implementation |
 | **Memory** | 2 directives | Error memory and session decisions for persistent learning |
-| **Skills** | 14 skills | Code reviewer, adversarial reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, subagent-driven development, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, production readiness reviewer, harness hooks reviewer, and MCP integration reviewer |
+| **Skills** | 15 skills | Code reviewer, accessibility expert, adversarial reviewer, test reviewer, spec reviewer, product requirements writer, implementation task planner, subagent-driven development, self-audit, systematic debugging, architecture boundary reviewer, codebase health reviewer, production readiness reviewer, harness hooks reviewer, and MCP integration reviewer |
 | **Rules** | 11 rules (Angular & Python) | Lazy-loaded workspace, coding style, architectural patterns, security, and testing standards for Angular or Python projects — selected by stack or explicit category |
 | **Templates** | 4 templates | Drop-in instruction files for AGENTS.md, CLAUDE.md, Copilot, and decision logs |
 | **Tooling** | TypeScript scripts | Validate directive wiring, assemble eval scenarios, record loaded-file manifests, and generate eval health reports |
@@ -337,6 +337,12 @@ Do not load every rule by default. The root instructions and adaptive router sho
 Baseline review skill for pull requests, branches, diffs, and local changes.
 Checks correctness, security, performance, maintainability, tests, and merge risk
 without inventing findings when the change is clean.
+
+### A11y Expert (`skills/a11y-expert/SKILL.md`)
+
+Specialist accessibility guidance for frontend files, user-facing UI, and
+accessibility-sensitive interaction behavior. Composes with the accessibility
+directive and lazy-loads its detailed references and templates as assets.
 
 ### Adversarial Reviewer (`skills/adversarial-reviewer/SKILL.md`)
 

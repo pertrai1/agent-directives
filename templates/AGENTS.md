@@ -101,6 +101,7 @@ Load the relevant skill selected by adaptive routing before performing any task 
 | Skill         | When                                          | File                       |
 | ------------- | --------------------------------------------- | -------------------------- |
 | Code Reviewer | Before reviewing PRs, branches, diffs, or local changes | `.agents/skills/code-reviewer/SKILL.md` |
+| A11y Expert | When implementing or reviewing frontend files, user-facing UI, or accessibility-sensitive interaction behavior | `.agents/skills/a11y-expert/SKILL.md` |
 | Adversarial Reviewer | Before explicit adversarial/red-team/failure-mode review or high-risk, broad, or agent-authored changes needing a separate skeptical reviewer | `.agents/skills/adversarial-reviewer/SKILL.md` |
 | Test Reviewer | Before writing or reviewing any test           | `.agents/skills/test-reviewer/SKILL.md`  |
 | Spec Reviewer | Before merging when a written spec exists      | `.agents/skills/spec-reviewer/SKILL.md`  |
