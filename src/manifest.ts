@@ -12,6 +12,12 @@ export interface ManifestRouting {
   oftenComposesWith?: string[];
 }
 
+export interface VerificationCommand {
+  name: string;
+  run: string;
+  files?: string[];
+}
+
 export interface ManifestEntry {
   id: string;
   type: ManifestEntryType;
@@ -27,6 +33,9 @@ export interface ManifestEntry {
   scripts?: string[];
   /** Repo-relative non-executable companion files installed alongside this entry (under `.agents/`). */
   assets?: string[];
+  verification?: {
+    commands: VerificationCommand[];
+  };
 }
 
 export interface Manifest {

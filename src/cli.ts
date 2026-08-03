@@ -10,6 +10,7 @@ import { renderEntryList } from './renderEntryList.js';
 import { selectMultiple } from './prompt.js';
 import { parseRuleCategories } from './rules.js';
 import { KNOWN_TOOLS, detectTool, isTool, type Tool } from './targets.js';
+import { runVerify } from './verify.js';
 
 const pkg = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8')) as { version: string };
 
@@ -261,6 +262,13 @@ program
       console.error(message);
       process.exit(1);
     }
+  });
+
+program
+  .command('verify')
+  .description('Programmatically run verification gates associated with installed directives/rulesets on modified files')
+  .action(() => {
+    runVerify();
   });
 
 await program.parseAsync(process.argv);

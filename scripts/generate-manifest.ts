@@ -18,6 +18,12 @@ interface ManifestRouting {
   oftenComposesWith?: string[];
 }
 
+interface VerificationCommand {
+  name: string;
+  run: string;
+  files?: string[];
+}
+
 interface ManifestEntry {
   id: string;
   type: ManifestEntryType;
@@ -31,6 +37,9 @@ interface ManifestEntry {
   routing?: ManifestRouting;
   scripts?: string[];
   assets?: string[];
+  verification?: {
+    commands: VerificationCommand[];
+  };
 }
 
 interface Manifest {
@@ -142,7 +151,50 @@ function readEntry(path: string, type: ManifestEntryType): ManifestEntry {
   if (scripts) entry.scripts = scripts;
   const assets = buildAssets(fm, path);
   if (assets) entry.assets = assets;
+  const verification = buildVerification(fm, path);
+  if (verification) entry.verification = verification;
   return entry;
+}
+
+function parseVerificationSource(verificationSource: unknown, path: string): Record<string, unknown> {
+  if (typeof verificationSource === 'string') {
+    try {
+      return JSON.parse(verificationSource) as Record<string, unknown>;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Invalid JSON string in 'verification' field in ${path}: ${message}`, { cause: error });
+    }
+  }
+  if (verificationSource && typeof verificationSource === 'object' && !Array.isArray(verificationSource)) {
+    return verificationSource as Record<string, unknown>;
+  }
+  throw new Error(`Invalid 'verification' field in ${path}; expected a mapping`);
+}
+
+function parseVerificationCommand(cmd: unknown, path: string): VerificationCommand {
+  if (!cmd || typeof cmd !== 'object' || Array.isArray(cmd)) {
+    throw new Error(`Invalid command in 'verification.commands' list in ${path}; expected a mapping`);
+  }
+  const c = cmd as Record<string, unknown>;
+  const name = requireString(c.name, { key: 'verification.commands.name', path });
+  const run = requireString(c.run, { key: 'verification.commands.run', path });
+  const files = optionalStringArray(c.files, { key: 'verification.commands.files', path });
+  return { name, run, ...(files ? { files } : {}) };
+}
+
+function buildVerification(fm: Record<string, unknown>, path: string): { commands: VerificationCommand[] } | undefined {
+  const verificationSource = fm.verification;
+  if (verificationSource === undefined) return undefined;
+
+  const parsed = parseVerificationSource(verificationSource, path);
+  const commandsRaw = parsed.commands;
+  if (commandsRaw === undefined) return undefined;
+  if (!Array.isArray(commandsRaw) || commandsRaw.length === 0) {
+    throw new Error(`Invalid 'verification.commands' field in ${path}; expected a non-empty array of commands`);
+  }
+
+  const commands = commandsRaw.map((cmd) => parseVerificationCommand(cmd, path));
+  return { commands };
 }
 
 // buildScripts resolves the optional frontmatter `scripts:` list (paths relative
