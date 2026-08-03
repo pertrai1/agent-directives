@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.15.0
+
+### Minor Changes
+
+- [#99](https://github.com/pertrai1/agent-directives/pull/99) [`6b81557`](https://github.com/pertrai1/agent-directives/commit/6b8155798c60e7a3d598979f744092a93a4732e7) Thanks [@pertrai1-bot](https://github.com/pertrai1-bot)! - Add executable verification gates support to rules and directives. This introduces the `agent-directives verify` command to run matched gates on modified files, and auto-generates `.agents/bin/verify` on install or sync.
+
 ## 0.14.1
 
 ### Patch Changes
