@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseFrontmatterBlock } from './frontmatter.js';
 import { validateAssetSource } from './validate-asset-source.js';
+import { validateVerificationMetadata } from './validate-verification.js';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const errors: string[] = [], warnings: string[] = [];
@@ -189,6 +190,7 @@ function validateFrontmatter(path: string): void {
   validateToolsValues(path, fm);
   validateNameMatches(path, fm);
   validateRoutingMetadata(path, fm);
+  validateVerificationMetadata({ path, fm, ctx: { fail, validateStringArrayShape } });
   validateScriptPaths(path, fm);
   validateAssetPaths(path, fm);
 }

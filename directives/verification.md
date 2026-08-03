@@ -1,7 +1,7 @@
 ---
 name: verification
 description: Requires structured evidence of correctness before quality gates and pull requests.
-version: 1.5.0
+version: 1.6.0
 scripts:
   - scripts/gates.sh
 required: true
@@ -18,6 +18,7 @@ triggers:
   - implementation-complete
 routing:
   load: conditional
+verification: '{"commands":[{"name":"Git Short Status","run":"git status --short"},{"name":"Git Diff Check","run":"git diff --check"},{"name":"Typecheck","run":"npm run typecheck","files":["src/**/*.ts","tsconfig.json","tsconfig.build.json"]},{"name":"ESLint Linting","run":"npm run lint","files":["src/**/*.ts","*.js"]}]}'
 ---
 
 # Verification Protocol

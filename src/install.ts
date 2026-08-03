@@ -152,7 +152,39 @@ export function installEntry(entry: ManifestEntry, opts: InstallOptions): Instal
 
   copies.forEach((copy, index) => copyFile(copy, plans[index]));
 
+  generateVerifyScript(opts, entry);
+
   return result;
+}
+
+/**
+ * Safely generates an executable local verification script shim at `.agents/bin/verify`.
+ * Performs strict preflight checks to prevent symbolic link directory redirection attacks.
+ *
+ * @param opts Configuration options for installation.
+ * @param entry The ManifestEntry defining the rule/directive.
+ */
+function generateVerifyScript(opts: InstallOptions, entry: ManifestEntry): void {
+  if (!entry.verification?.commands) return;
+  const verifyScriptPath = join(opts.cwd, '.agents', 'bin', 'verify');
+  const safeVerifyTarget = resolveSafePathWithinRoot({ root: opts.cwd, candidate: verifyScriptPath, createParents: true });
+  if (!safeVerifyTarget) return;
+
+  const target = lstatOrUndefined(safeVerifyTarget);
+  if (target) {
+    if (target.isSymbolicLink()) {
+      if (!opts.force) {
+        throw new Error(`Refusing to write verification script to a symbolic link. Use --force to overwrite: ${verifyScriptPath}`);
+      }
+      unlinkSync(safeVerifyTarget);
+    } else if (!target.isFile()) {
+      throw new Error(`Refusing to replace non-regular file at verification script target: ${verifyScriptPath}`);
+    }
+  }
+
+  const scriptContent = '#!/bin/sh\n# Run verification gates\nnpx --no-install agent-directives verify "$@"\n';
+  writeFileSync(safeVerifyTarget, scriptContent, 'utf8');
+  chmodSync(safeVerifyTarget, SCRIPT_MODE);
 }
 
 /** True if the entry or any companion is a blocking (unforced) conflict. */
