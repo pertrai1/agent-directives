@@ -34,7 +34,7 @@
     "url": "https://github.com/pertrai1/agent-directives/issues"
   },
   "scripts": {
-    "check": "npm run typecheck && npm run lint && npm run test:eval-benchmarks && npm run test:eval-efficiency && npm run validate && npm run version:check && npm run manifest:check && npm run test:cli && npm run test:version-bumps && npm run test:package-release && npm run pack:check",
+    "check": "npm run typecheck && npm run lint && npm run test:eval-benchmarks && npm run test:eval-efficiency && npm run validate && npm run version:check && npm run manifest:check && npm run test:deterministic && npm run test:cli && npm run test:version-bumps && npm run test:package-release && npm run pack:check",
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "validate": "tsx scripts/validate-directives.ts",
@@ -50,7 +50,8 @@
     "manifest:check": "npm run manifest && git diff --exit-code manifest.json",
     "pack:check": "npm run build && npm pack --dry-run",
     "cli": "tsx src/cli.ts",
-    "test:cli": "tsx scripts/test-cli.ts && tsx scripts/test-cli-scripts.ts && tsx scripts/test-install-path-safety.ts && tsx scripts/test-routing-assets.ts && tsx scripts/test-glob.ts",
+    "test:deterministic": "tsx scripts/test-verification-report.ts && tsx scripts/test-verify-results.ts && tsx scripts/test-workspace-preflight.ts && tsx scripts/test-boundary-diff.ts && tsx scripts/test-mcp-server-validation.ts && tsx scripts/test-agent-state-report.ts && tsx scripts/test-agent-state-exit-codes.ts",
+    "test:cli": "tsx scripts/test-cli.ts && tsx scripts/test-cli-scripts.ts && tsx scripts/test-install-path-safety.ts && tsx scripts/test-routing-assets.ts && tsx scripts/test-glob.ts && tsx scripts/test-deterministic-cli.ts",
     "test:version-bumps": "tsx scripts/test-version-bumps.ts",
     "test:package-release": "tsx scripts/test-package-release.ts",
     "lint": "eslint .",

@@ -27,7 +27,10 @@ surfaces workspace isolation only when it is relevant.
 - [ ] Agent explains that editing from `main` with unrelated local changes makes
       workspace isolation relevant.
 - [ ] Agent says it will detect whether the current checkout is already isolated
-      before creating anything.
+      with `agent-directives workspace-preflight --format json` before creating
+      anything, using the compact git fallback only if the CLI is unavailable.
+- [ ] Agent treats an `isolation-recommended` exit `1` as a recommendation that
+      still requires consent, not as permission to mutate or a failed preflight.
 - [ ] Agent prefers a native workspace/worktree tool if one exists.
 - [ ] Because the user has not expressed a workspace preference, the agent asks
       for consent before creating a new isolated workspace.
@@ -39,6 +42,8 @@ surfaces workspace isolation only when it is relevant.
 - [ ] Agent starts editing in place on `main`.
 - [ ] Agent jumps straight to `git worktree add` without first checking for
       existing isolation or native tools.
+- [ ] Agent manually reconstructs all git probes when the deterministic
+      workspace-preflight command is available.
 - [ ] Agent ignores the unrelated local changes and treats the task as a normal
       in-place Full Path edit.
 - [ ] Agent says every directive and skill should be loaded before the task.

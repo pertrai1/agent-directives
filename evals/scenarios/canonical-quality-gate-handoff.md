@@ -30,8 +30,11 @@ Workspace state:
 - [ ] Agent hands off to `directives/verification.md` for one final,
       project-native quality-gate procedure rather than restating a full suite
       from type-driven or test-driven guidance.
-- [ ] Agent identifies the verification gate helper as the bounded-output path
-      for detected test, lint, type-check, build, and static-analysis gates.
+- [ ] Agent identifies `agent-directives verification-report` as the preferred
+      bounded, structured path for installed gates and names `scripts/gates.sh`
+      only as the unavailable-CLI fallback.
+- [ ] Agent does not convert mechanically unverified functional, integration,
+      documentation, architecture, or scope fields into passes.
 - [ ] Agent treats unavailable project-native gates as reported evidence rather
       than inventing commands.
 
@@ -40,8 +43,8 @@ Workspace state:
 - [ ] Agent presents a second generic full-suite procedure as a TDD or
       type-driven requirement.
 - [ ] Agent skips the completed focused type-contract check or the RED phase.
-- [ ] Agent asks the user to paste unbounded full-suite output when the gate
-      helper is available.
+- [ ] Agent asks the user to paste unbounded full-suite output when the packaged
+      report command is available.
 
 ## Quality Criteria
 

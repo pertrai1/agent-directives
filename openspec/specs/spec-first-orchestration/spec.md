@@ -113,15 +113,19 @@ The Small Batch workflow SHALL use one durable specification with an acceptance 
 - **THEN** the durable batch specification and complete acceptance matrix exist before RED/GREEN or implementation edits begin
 
 ### Requirement: Final quality-gate guidance has one canonical source
-The workflow SHALL define generic final test, lint, type-check, build, static-analysis, and bounded-output behavior in `directives/verification.md` and its gate helper, while type-driven and test-driven directives retain only their phase-specific checks plus concise handoffs to verification.
+The workflow SHALL define generic final test, lint, type-check, build, static-analysis, bounded-output behavior, and deterministic verification-report generation in `directives/verification.md` and its installed CLI/helper surface, while type-driven and test-driven directives retain only their phase-specific checks plus concise handoffs to verification. Once a referenced deterministic command is proven and packaged, the owning directive SHALL state when to run it and how to interpret it instead of duplicating its mechanical procedure.
 
 #### Scenario: TDD hands off to canonical final gates
 - **WHEN** an agent completes RED, GREEN, and REFACTOR under test-driven development
-- **THEN** it follows the verification directive for the final project-native gate suite without loading a duplicate generic gate procedure from the TDD directive
+- **THEN** it follows the verification directive and deterministic report command for the final project-native gate suite without loading a duplicate generic gate procedure from the TDD directive
 
 #### Scenario: Type-first work retains focused type checks
 - **WHEN** an agent defines or changes a type contract
-- **THEN** it runs the phase-specific type check and later follows verification for the canonical final gate suite
+- **THEN** it runs the phase-specific type check and later follows verification for the canonical final gate suite and report
+
+#### Scenario: Packaged command replaces mechanical prose
+- **WHEN** a directive or skill references one of the new packaged deterministic commands
+- **THEN** it retains policy, interpretation, blocking consequences, and a concise unavailable-command fallback while omitting the command's detailed discovery and normalization recipe
 
 ### Requirement: Lazy routing detail is installed for supported tools
 The installation system SHALL support validated non-executable companion assets, SHALL resolve named references from both the source-tree and installed bootstrap locations, and SHALL make every detailed routing reference named by the required bootstrap available after deterministic sync for Claude, Codex, Copilot, and Cursor without classifying the lazy reference as always-loaded prompt content. Validation and installation checks SHALL verify content identity rather than existence alone.

@@ -11,6 +11,7 @@ import { selectMultiple } from './prompt.js';
 import { parseRuleCategories } from './rules.js';
 import { KNOWN_TOOLS, detectTool, isTool, type Tool } from './targets.js';
 import { runVerify } from './verify.js';
+import { registerDeterministicCommands } from './deterministic-cli.js';
 
 const pkg = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8')) as { version: string };
 
@@ -60,6 +61,8 @@ const program = new Command()
   .name('agent-directives')
   .description('Install agent directives, skills, and rules into your project')
   .version(pkg.version);
+
+registerDeterministicCommands(program);
 
 function isManifestEntryType(value: string): value is ManifestEntryType {
   return value === 'directive' || value === 'skill' || value === 'rule' || value === 'template';
