@@ -1,5 +1,11 @@
 # agent-directives
 
+## 0.16.0
+
+### Minor Changes
+
+- [#106](https://github.com/pertrai1/agent-directives/pull/106) [`d8dd630`](https://github.com/pertrai1/agent-directives/commit/d8dd630ad3f48a95be3551ad8b9bb0f696a42061) Thanks [@pertrai1](https://github.com/pertrai1)! - Add deterministic command-first automation for verification reports, workspace preflight, architecture boundary diffs, MCP server validation, handoff state, and decision records. Update the related directives and reviewer skills to prefer these bounded local reports while retaining concise policy and fallback guidance.
+
 ## 0.15.0
 
 ### Minor Changes
