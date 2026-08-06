@@ -17,22 +17,22 @@ The system MUST support a structured `verification` mapping inside the YAML fron
 - **THEN** the system reports a validation error and exits with a non-zero code
 
 ### Requirement: `agent-directives verify` CLI Command
-The CLI SHALL provide a `verify` command that discovers all installed/active verification gates, matches their file-glob filters against the modified or staged files in the current repository, and programmatically executes the associated commands in sequence.
+The CLI SHALL provide a `verify` command that discovers all installed/active verification gates, matches their file-glob filters against the modified or staged files in the current repository, programmatically executes the associated commands in sequence, and exposes structured results that the verification-report capability can consume without parsing console text.
 
 #### Scenario: Running verify command with all passing checks
 - **GIVEN** active directives containing verification gates whose file filters match currently modified files
 - **WHEN** running `agent-directives verify`
-- **THEN** the CLI runs the matched commands, displays a successful pass report for each executed check, and exits with code 0
+- **THEN** the CLI runs the matched commands, displays a successful pass report for each executed check, exposes equivalent structured results, and exits with code 0
 
 #### Scenario: Running verify command with a failing check
 - **GIVEN** active directives containing verification gates where at least one matching check fails its execution
 - **WHEN** running `agent-directives verify`
-- **THEN** the CLI stops execution on failure (or logs the failure), displays a failed status report, and exits with a non-zero code
+- **THEN** the CLI displays a failed status report, exposes the failed structured result, and exits with a non-zero code
 
 #### Scenario: Running verify with no matching modified files
 - **GIVEN** active directives with verification gates, but none of their file filters match the modified file list in git
 - **WHEN** running `agent-directives verify`
-- **THEN** the CLI reports that 0 verification gates matched, skips execution, and exits with code 0
+- **THEN** the CLI reports that 0 verification gates matched, skips execution, exposes an empty successful structured result, and exits with code 0
 
 ### Requirement: Active Verification Script Generation
 When installing or synchronizing directives (via `sync` or `add` commands), the system SHALL compile all active verification gates and write a standalone, executable helper script under `.agents/bin/verify`. Running this script SHALL invoke `agent-directives verify` to validate the workspace.
@@ -41,4 +41,3 @@ When installing or synchronizing directives (via `sync` or `add` commands), the 
 - **GIVEN** a clean project workspace syncing its required directives
 - **WHEN** the sync command finishes installing the required directives
 - **THEN** a standalone executable script is written to `.agents/bin/verify` with appropriate execution permissions set
-

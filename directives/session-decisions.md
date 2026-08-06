@@ -1,7 +1,7 @@
 ---
 name: session-decisions
 description: Captures durable decisions for repo policy, architecture, workflow, and cross-cutting conventions.
-version: 1.2.0
+version: 1.3.0
 scripts:
   - scripts/decisions-index.sh
 required: false
@@ -20,181 +20,98 @@ routing:
 
 # Session Decisions Directive
 
-**When to load:** Load this directive when making changes that affect repo policy, architecture, contributor workflow, or cross-cutting conventions.
+**When to load:** When changing repository policy, architecture, contributor
+workflow, or a cross-cutting convention.
 
-## MANDATORY: Capture Durable Decisions at Task Completion
+## Decision Threshold
 
-Before closing out any task where you set or changed a durable repo/process
-policy, architectural constraint, or cross-cutting code/documentation
-convention, you MUST write a decision log entry if the reasoning would not be
-obvious later. This is non-negotiable.
+Write a decision record at task completion only when all are true:
 
----
+1. the choice establishes or confirms a durable cross-file/repo rule;
+2. at least two plausible alternatives existed;
+3. the reason is not obvious from the diff;
+4. a future agent would likely re-decide or reverse it without context.
 
-## When to Write a Decision Log
+Do not log routine fixes, directive-mandated behavior, local naming, obvious
+standard-library choices, one-off refactors, or implementation detail already
+clear in code/comments.
 
-Write a decision log when ALL of the following are true:
+## Command-First Retrieval
 
-1. You set, changed, or explicitly confirmed a durable decision that affects repo policy, contributor workflow, architecture, or a cross-cutting convention
-2. You made a choice between two or more real alternatives
-3. The rejected alternatives were plausible (a reasonable agent might have chosen them)
-4. The reason for your choice is not obvious from the code, config, or document diff alone, and a future agent would likely spend real time re-deciding or accidentally reversing it without a log
+Before cross-cutting work, list only matching active metadata:
 
-**The test:** Ask yourself:
-
-- "Will this decision still matter outside the file I changed?"
-- "Would another reasonable agent revisit this tradeoff without extra context?"
-
-If both are yes, write the log. If any of the criteria above are false, no log
-is needed.
-
----
-
-## When NOT to Write a Decision Log
-
-Do NOT write a decision log for:
-
-- Choices mandated by a directive (e.g., using TDD, defining types first, following naming conventions)
-- Naming choices where no alternatives were explicitly considered
-- Standard library usage over custom code (always prefer standard — not a decision)
-- Bug fixes (the decision is obvious: fix it correctly)
-- Routine implementation details where the code clearly explains itself
-- Single-file or one-off refactors that do not establish an ongoing convention
-- Local code-level choices that do not affect future work elsewhere in the repo
-
-Most code-level decisions do **not** need a log. Code decisions qualify only
-when they create a reusable rule for later work, such as an architectural
-boundary, an authoring convention, or a cross-cutting policy.
-
----
-
-## When to Read Existing Decision Logs
-
-Before changing repo policy, contributor workflow, architecture, or any
-cross-cutting code or documentation convention:
-
-1. Scan the frontmatter in `docs/decisions/*.md`
-2. Filter for entries with `status: active`
-3. Match on `domain`, `triggers`, and `applies_to`
-4. Open only the matching logs unless you need a superseded record for history
-
-If `.agents/directives/scripts/decisions-index.sh` is present, run it (add
-`--active` to filter) to get a one-table `date | kind | scope | status | domain
-| triggers` index instead of reading each file — then open only the matching
-record. If the script is absent, grep the frontmatter directly.
-
-Decision logs are for progressive disclosure. Do not load every file in
-`docs/decisions/` by default.
-
----
-
-## File Naming
-
-```
-docs/decisions/YYYY-MM-DD-<topic>.md
+```bash
+agent-directives agent-state decisions list \
+  --domain <domain> \
+  --trigger <trigger> \
+  --path <affected-path> \
+  --format json
 ```
 
-Use today's date with zero-padded month and day. Use a short kebab-case topic
-that names the **decision domain**, not the outcome.
+Use only relevant filters; then open the bodies of matching records. The command
+orders records newest-first and does not emit decision bodies in the index.
+Missing directories and malformed active metadata remain visible diagnostics.
 
-```
-docs/decisions/2026-04-05-error-reporting-format.md     ✅ names the domain
-docs/decisions/2026-04-05-chose-discriminated-unions.md ✗ names the outcome
-docs/decisions/2026-04-05-refactor.md                   ✗ too vague
-```
+If the CLI is unavailable, use
+`.agents/directives/scripts/decisions-index.sh --active`, then filter the index.
+As a final fallback, scan only frontmatter under `docs/decisions/`. Never bulk
+load every body.
 
----
+## Create Without Guessing the Schema
 
-## Frontmatter
+The preferred source template remains `.agents/templates/decision-log.md` (or a
+project-owned `docs/decisions/TEMPLATE.md`). The CLI can render an in-memory
+proposal without writing:
 
-Every decision log MUST begin with YAML frontmatter so agents can classify and
-retrieve the right records before reading the full body.
-
-```yaml
----
-date: YYYY-MM-DD
-task: one-line task description
-domain: short-kebab-case-decision-domain
-kind: repo-policy | process | architecture | code-convention
-scope: repo | cross-cutting | subtree
-status: active | superseded | retired
-triggers:
-  - when this record should be read
-applies_to:
-  - path/or/glob
-supersedes: []
----
+```bash
+agent-directives agent-state decisions template \
+  --date YYYY-MM-DD \
+  --task "<task>" \
+  --domain <domain> \
+  --kind <repo-policy|process|architecture|code-convention> \
+  --scope <repo|cross-cutting|subtree> \
+  --trigger "<retrieval trigger>" \
+  --applies-to "<path-or-glob>"
 ```
 
-### Required Fields
+Choose the target explicitly:
 
-| Field        | Purpose                                                                  |
-| ------------ | ------------------------------------------------------------------------ |
-| `date`       | The date the decision was recorded                                       |
-| `task`       | The task this decision arose from                                        |
-| `domain`     | Stable retrieval key for the decision area                               |
-| `kind`       | Broad class of decision                                                  |
-| `scope`      | Whether the decision applies repo-wide, cross-cuttingly, or to a subtree |
-| `status`     | Whether the decision is current                                          |
-| `triggers`   | Short phrases describing when agents should read this log                |
-| `applies_to` | Paths or globs affected by the decision                                  |
-| `supersedes` | Older decision records replaced by this one                              |
+```text
+docs/decisions/YYYY-MM-DD-<decision-domain>.md
+```
 
-Keep frontmatter short and operational. If a field does not help an agent decide
-whether to read the file, it does not belong here.
+The topic names the domain, not the chosen outcome. Fill the title and the
+required sections: Context, Decision, Rejected Alternatives, and Consequences.
+Consequences should cover easier, harder, watch-for, and any context-dependent
+assumption future work must unlearn.
 
-This directive is the canonical source for the retrieval workflow and
-frontmatter schema. Other docs should link here instead of duplicating the full
-rules.
+Required frontmatter fields are `date`, `task`, `domain`, `kind`, `scope`,
+`status`, `triggers`, `applies_to`, and `supersedes`. Keep them operational and
+short.
 
----
+## Validate Before Delivery
 
-## Template
+```bash
+agent-directives agent-state decisions validate \
+  docs/decisions/YYYY-MM-DD-<decision-domain>.md \
+  --format json
+```
 
-Copy the decision log template from `.agents/templates/decision-log.md` (or
-`docs/decisions/TEMPLATE.md` in projects that maintain a local copy), fill in
-every section. Delete placeholder text. Do not leave `[brackets]` in the output.
+Exit `1` means malformed date/name/frontmatter, missing sections, placeholders,
+invalid enum values, or a broken supersession reference. Fix findings before
+commit. The command never decides whether the underlying choice was wise; review
+the reasoning and rejected alternatives manually.
 
-### Required Sections
+## Required Reasoning Quality
 
-Every decision log MUST contain all five sections:
+- **Context:** why this was a real choice and which constraints mattered.
+- **Decision:** specific properties that made the option preferable.
+- **Rejected Alternatives:** at least one plausible option and why it lost.
+- **Consequences:** trade-offs and assumptions future work must recheck.
 
-| Section                   | What it contains                                                                          |
-| ------------------------- | ----------------------------------------------------------------------------------------- |
-| **Title**                 | One sentence starting with a verb. Names the domain, not the outcome.                     |
-| **Context**               | 2–4 sentences on the problem, constraints, and why this was a real choice.                |
-| **Decision**              | One paragraph. Specific reasoning — name the properties that made this option preferable. |
-| **Rejected Alternatives** | At least one entry. Name the alternative and the specific reason it was disqualified.     |
-| **Consequences**          | Easier / Harder / Watch for / **Unlearn** — what this decision makes true going forward.  |
+Do not write “we chose the best approach,” leave placeholders, duplicate code
+comments, or write the record before consequences are known.
 
-**The Unlearn entry in Consequences:** After writing Easier / Harder / Watch for,
-ask: *"What assumption worked for this task that should NOT be carried forward
-as a default?"* If the answer is "none," skip it. If an assumption was valid
-here but context-dependent (e.g., "we denormalized because reads dominate — but
-that won't hold if writes increase"), name it. Future sessions encountering
-this decision log should verify the Unlearn entry still holds before inheriting
-the approach.
-
----
-
-## Forbidden Patterns
-
-| Pattern                                           | Why it's forbidden                            |
-| ------------------------------------------------- | --------------------------------------------- |
-| "We decided to use the best approach"             | Not a decision — no alternative named         |
-| Leaving `[placeholder]` text in the output        | Decision log is incomplete — do not commit it |
-| Logging choices already captured in code comments | Duplication — code comments are sufficient    |
-| Writing the log before finishing the task         | You don't know the consequences yet           |
-
----
-
-## Quick Reference
-
-| Question                                                                                      | Answer                                                              |
-| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Does this set repo policy, workflow, architecture, or a cross-cutting convention?             | If no → skip the log                                                |
-| Did I choose between plausible alternatives?                                                  | If no → skip the log                                                |
-| Is the reasoning obvious from the diff, and would a future agent avoid re-deciding it anyway? | If yes → skip the log                                               |
-| Before making a cross-cutting change, what do I do first?                                     | Scan decision-log frontmatter and read only matching active entries |
-| Where does the file go?                                                                       | `docs/decisions/YYYY-MM-DD-<topic>.md`                              |
-| What template?                                                                                | Use the decision log template from `.agents/templates/decision-log.md` |
+The command replaces indexing, filtering, scaffolding, and schema validation.
+This directive still owns whether a record is warranted and whether its reasoning
+is durable and honest.

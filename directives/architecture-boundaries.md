@@ -1,7 +1,7 @@
 ---
 name: architecture-boundaries
 description: Preserves architecture DAG boundaries for imports, exports, packages, services, shared code, and dependency direction.
-version: 1.0.1
+version: 1.1.0
 required: false
 category: architecture
 tools:
@@ -22,204 +22,108 @@ routing:
 
 # Architecture Boundaries Directive
 
-**When to load:** Load this directive before modifying imports, exports, module
-structure, feature folders, shared utilities, service/package boundaries, or any
-code whose correctness depends on dependency direction.
+**When to load:** Before changing imports, exports, module structure, feature
+folders, shared utilities, packages, services, or dependency direction.
 
-Passing tests is not enough if the change introduces an illegal dependency edge.
-The agent must preserve the project's directed architecture graph.
+Tests prove behavior, not architectural fit. Preserve the project's directed
+dependency graph.
 
----
+## Command-First Edge Discovery
 
-## Core Rule: Preserve the DAG
-
-Before implementation, identify the boundary context for every touched file:
-
-1. **Zone** — Which architectural layer, package, feature, service, or module owns it?
-2. **Allowed dependencies** — Which zones may this file import from?
-3. **New edges** — What imports, exports, call paths, or package references will change?
-4. **Forbidden edges** — Would any edge point upward, sideways, or across an internal boundary?
-
-Forbidden by default unless the project explicitly allows it:
-
-- Domain/core code importing UI, framework, infrastructure, or application code
-- Shared/common utilities importing feature-specific or application-specific code
-- Feature modules importing another feature's internals instead of its public API
-- Presentation/UI importing database, filesystem, network, or infrastructure directly
-- Tests or test helpers becoming production dependencies
-- New circular dependencies between files, packages, layers, or services
-- Cross-package imports that bypass the package's declared public entry point
-
-If the project has explicit boundary rules, those override these defaults. If the
-project has no explicit rules, infer the likely DAG from directory names,
-package boundaries, and existing import patterns; document the inference before
-changing code. If the inferred boundary materially changes the implementation
-approach, ask the human or propose the inferred rule before coding.
-
----
-
-## Boundary Discovery
-
-Use progressive disclosure. Do not bulk-read the repository.
-
-### 1. Find explicit rules first
-
-Look for project-owned boundary definitions before inferring your own:
-
-- `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`
-- architecture docs, ADRs, decision logs, or contribution docs
-- `package.json` workspaces and package `exports`
-- `tsconfig.json` path aliases / project references
-- lint rules such as `import/no-restricted-paths`, `boundaries`, `dependency-cruiser`, `nx`, or monorepo constraints
-- Fallow config (`.fallowrc.json`, `.fallowrc.toml`, `fallow` config)
-
-### 2. Classify touched files
-
-For each file you expect to modify, record:
-
-```md
-- `path/to/file.ts`
-  - Zone: `domain` / `application` / `ui` / `shared` / feature/package name
-  - Public API: yes/no; entry point if yes
-  - Allowed imports: list or inferred rule
-  - Existing dependents: known callers/importers
-```
-
-### 3. Identify changed edges
-
-Treat these as boundary-relevant changes:
-
-- adding or changing an `import` / `require` / dynamic import
-- moving a file between directories/packages
-- exporting a symbol from a public entry point
-- importing from a deep internal path such as `feature-x/internal/*`
-- adding a package dependency or workspace reference
-- introducing callbacks, dependency injection, or runtime registration across layers
-
----
-
-## Tool-Assisted Boundary Checks
-
-Tools accelerate discovery, but the rule is portable: if a tool is unavailable,
-fall back to inspecting config, imports, and dependents manually.
-
-### Fallow for TypeScript/JavaScript enforcement
-
-If Fallow is available in a TypeScript/JavaScript project, prefer it for boundary
-evidence:
+After the intended base ref is known, collect changed JavaScript/TypeScript and
+package edges locally:
 
 ```bash
-npx fallow list --boundaries
+agent-directives boundary-diff --base <base-ref> --format json
+```
+
+Use `--head <ref>` for a committed comparison and `--max-edges <n>` to keep
+evidence bounded. The report lists changed static imports, dynamic imports,
+re-exports, package dependency entries, and production-to-test candidates in
+stable order.
+
+Interpret exit classes:
+
+- `0`: edge evidence was collected; this is not architectural approval.
+- `1`: a deterministic candidate such as production-to-test leakage needs review.
+- `2`: the ref, limit, repository, or git evidence is invalid; do not verify from it.
+
+The command reports syntax-level facts. Only an explicit project rule can prove
+an edge allowed or forbidden. Unconfigured edges remain `observed` or `unclear`.
+
+If the command is unavailable, inspect added/changed imports, exports,
+`package.json` dependency sections, file moves, and public entry points directly
+from the diff. Preserve unusual paths and state that manual extraction was used.
+
+## Load the Boundary Contract
+
+Use progressive disclosure in this order:
+
+1. Project instructions and active architecture decisions
+2. Architecture docs and contribution rules
+3. Package/workspace structure and package `exports`
+4. TypeScript paths/project references and boundary lint configuration
+5. Existing patterns near the changed files
+
+For each touched production file, record its zone/package/service, public entry
+point, allowed dependencies, and whether the rule is explicit or inferred. If an
+inference would materially change implementation, surface it before coding.
+
+## Review Every Changed Edge
+
+Forbidden unless an explicit project rule permits it:
+
+- domain/core importing UI, application, framework, or infrastructure;
+- shared/common importing feature-specific or application-specific code;
+- sibling features importing each other's internals;
+- UI importing database, filesystem, network, or infrastructure directly;
+- production importing tests, fixtures, mocks, or test helpers;
+- deep imports that bypass a package/feature public API;
+- new cycles between files, packages, layers, or services.
+
+When an edge would violate the DAG, prefer dependency inversion, a public API,
+an injected callback/port, or moving genuinely stable behavior downward. Do not
+move code to `shared` merely to make an import compile.
+
+## Optional Enforcement Evidence
+
+Run project-configured lint, dependency, monorepo, Fallow, or graph checks after
+the local edge report. Examples when already available:
+
+```bash
 npx fallow dead-code --boundary-violations
 npx fallow dead-code --circular-deps
-```
-
-Useful presets include:
-
-```jsonc
-{ "boundaries": { "preset": "layered" } }        // presentation → application → domain
-{ "boundaries": { "preset": "hexagonal" } }     // adapters → ports → domain
-{ "boundaries": { "preset": "feature-sliced" } } // app > pages > widgets > features > entities > shared
-{ "boundaries": { "preset": "bulletproof" } }   // app → features → shared/server
-```
-
-If the project has no Fallow boundary config, do not silently add one during an
-unrelated task. Either infer boundaries for the current change only, or propose a
-separate issue/PR to introduce explicit enforcement.
-
-### GitNexus for graph-backed orientation
-
-If GitNexus is available, use the existing local CLI/MCP tools to understand
-dependency and call-chain impact before cross-cutting changes. Run GitNexus
-directly; do not install GitNexus skills, run setup, or update agent instruction
-files just to use it.
-
-```bash
-npx gitnexus status
-npx gitnexus query "boundary impact"
 npx gitnexus impact SymbolName --direction upstream
 ```
 
-Use GitNexus graph/MCP context to answer:
+Do not install or configure a new enforcement system during unrelated work.
+GitNexus is impact evidence unless the project defines enforcing graph queries.
 
-- What imports or calls this file/symbol?
-- Which functional cluster or service owns it?
-- Which execution flows are affected?
-- Does the proposed change cross a service/package/feature boundary?
+## Verification Output
 
-GitNexus is best treated as boundary intelligence. Use project rules or a
-checker such as Fallow/lint/CI for enforcement unless the project has explicit
-GitNexus graph queries for boundary violations.
-
----
-
-## Boundary Design Patterns
-
-When a needed dependency would violate the DAG, do not punch through the boundary.
-Use one of these instead:
-
-| Problem | Prefer |
-| --- | --- |
-| Domain needs infrastructure behavior | Define a domain/application port; implement it in infrastructure |
-| UI needs data access | Call application/use-case layer; do not import database/client directly |
-| Feature A needs Feature B behavior | Depend on Feature B's public API or move shared behavior to shared/domain |
-| Shared utility needs feature config | Pass config as data; do not import feature code |
-| Lower layer needs upper-layer callback | Invert dependency with an interface, event, or injected function |
-| Cross-package import reaches internals | Export through the package entry point or add an explicit public module |
-
----
-
-## Boundary Verification Output
-
-Before final gates, include a boundary section in the verification summary for
-any Full Path task that touches imports, exports, folders, packages, or shared
-code:
+Include:
 
 ```md
 ### Architecture Boundaries
-
-- Modified zones:
-  - `src/features/auth/**` → `feature/auth`
-  - `src/shared/validation.ts` → `shared`
-- Changed dependency edges:
-  - `feature/auth` imports `shared/validation`
-- Checks:
-  - [x] No upward imports
-  - [x] No sibling feature internal imports
-  - [x] No production imports from tests
-  - [x] No new circular dependency
-  - [x] Boundary tool/lint check passed, or unavailable with reason
-- Tool evidence:
-  - `npx fallow dead-code --boundary-violations` → 0 violations
+- Contract sources: <explicit/inferred sources>
+- Modified zones: <zones/packages/services>
+- Changed edges: <from → to, observed/candidate>
+- Judgment: <allowed/violation/unclear with rule>
+- Cycles/public API/test leakage: <evidence>
+- Tool evidence: <commands/results or unavailable fallback>
+- Verdict: Pass / Pass with uncertainty / Block
 ```
 
-If a violation is found, the implementation is not ready. Either fix the design
-or ask the human before proceeding.
-
----
+Block on a proven violation. Name uncertainty rather than inventing a confident
+architecture rule.
 
 ## Forbidden Patterns
 
-| Pattern | Why Forbidden |
+| Pattern | Why forbidden |
 | --- | --- |
-| "Tests pass, so the import is fine" | Tests do not prove architectural validity |
-| Importing across a forbidden layer to save time | Creates coupling that future changes pay for |
-| Deep-importing another feature's internals | Bypasses the public contract and breaks encapsulation |
-| Adding boundary config as a drive-by change | Boundary policy is cross-cutting and needs explicit review |
-| Ignoring cycles because runtime still works | Cycles degrade build, test, and refactor reliability |
-| Moving code to `shared` without checking dependents | `shared` can become a dumping ground and reverse the DAG |
-
----
-
-## Quick Reference
-
-| Phase | Action | Evidence |
-| --- | --- | --- |
-| ORIENT | Load project rules and classify touched files | Zone + allowed imports |
-| PLAN | Identify changed dependency edges | Edge list |
-| IMPLEMENT | Use ports/public APIs instead of forbidden imports | No illegal import added |
-| SELF-AUDIT | Ask what boundary assumption could collapse | Jenga entry if uncertain |
-| VERIFY | Run boundary checks or document manual proof | Boundary section in PR |
-
-_This directive complements type-first development, TDD, and verification: types
-prove shapes, tests prove behavior, and boundary checks prove architectural fit._
+| Treating exit `0` as architecture approval | The report extracts facts, not policy |
+| Approving an edge because tests pass | Tests do not validate dependency direction |
+| Deep-importing internals for convenience | Bypasses the public contract |
+| Adding boundary policy as drive-by cleanup | Cross-cutting policy requires explicit review |
+| Ignoring cycles because runtime works | Cycles degrade build and refactor reliability |
+| Calling code `shared` without checking dependents | Can reverse the DAG |

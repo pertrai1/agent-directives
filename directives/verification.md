@@ -1,7 +1,7 @@
 ---
 name: verification
 description: Requires structured evidence of correctness before quality gates and pull requests.
-version: 1.6.0
+version: 1.7.0
 scripts:
   - scripts/gates.sh
 required: true
@@ -23,322 +23,135 @@ verification: '{"commands":[{"name":"Git Short Status","run":"git status --short
 
 # Verification Protocol
 
-**When to load:** Load this directive after completing the REFACTOR phase and before running final quality gates (GATES).
+**When to load:** After REFACTOR and before final GATES.
 
-**Do not run GATES until verification output is produced.** Verification
-catches issues that passing tests alone cannot: false positives, missing
-edge cases, wrong configuration, and incomplete documentation.
+Do not claim completion or open a PR until the verification report and the
+remaining human/agent judgment fields are complete.
 
----
+## Command-First Evidence
 
-## The Protocol
-
-After REFACTOR and before GATES, the agent MUST produce a verification
-summary. The summary is structured evidence that a reviewer can scan in
-30 seconds instead of reading the full implementation.
-
-### For New Features or Changes
-
-Output all applicable sections. The protocol defines three sections that apply
-to every new feature or change, plus conditional sections for architecture
-boundaries, codebase health, and documentation when relevant.
-
-#### 1. Functional Proof
-
-Demonstrate the change does what it claims. Show:
-
-- **Hit** — one input or scenario that produces the expected new behavior
-- **Clean pass** — one input or scenario that should NOT be affected, proving
-  no false positive
-
-_Example (adapt to your project):_
-
-```
-✅ Hit: calling createUser({ name: "Alice" }) returns { id: "usr_1", name: "Alice" }
-✅ Clean: calling createUser({}) returns validation error, no user created
-```
-
-#### 2. Test Coverage Proof
-
-List passing test cases grouped by:
-
-- **Happy path** — expected inputs with expected outputs
-- **Error cases** — invalid inputs, failure conditions
-- **Edge cases** — null, undefined, empty, boundary values
-- **Suggestion/fix cases** — autofix or suggestion output (if applicable)
-
-_Example command (adapt to your project's test runner):_
+When the installed CLI is available, run:
 
 ```bash
-# For example, with vitest:
-npx vitest run --reporter=verbose
+agent-directives verification-report --format text --max-output-lines 150
 ```
 
-#### 3. Integration Proof
+Use `--format json` for machine consumption. The command discovers installed
+verification gates, matches file filters to current changes, executes applicable
+gates, sorts changed paths/results, bounds excerpts, and leaves mechanically
+unavailable fields explicitly `unverified`.
 
-Confirm the change is wired into the project correctly. Output `[x]` for
-confirmed, `[ ]` for missing:
+Exit classes are stable:
 
-- [ ] Exported/registered in the appropriate entry point
-- [ ] Included in the relevant configuration or module
-- [ ] Public API (types, function signatures) matches usage
-- [ ] Error messages are clear and actionable
+- `0`: executed gates passed and no blocking finding was supplied;
+- `1`: an executed gate failed or a blocking verification finding exists;
+- `2`: options, repository evidence, or required execution evidence is invalid
+  or incomplete.
 
-_Example (adapt to your project's structure):_
+Exit `0` does not turn `unverified` functional, integration, documentation, or
+scope claims into passes. Complete those fields from direct evidence.
 
-```
-[x] Exported from the appropriate entry point
-[x] Registered in config module
-[x] Public types match call sites
-[x] Error messages follow project conventions
-```
+### Compact Fallback
 
-#### Small Batch Acceptance Proof (when explicitly routed)
+If the CLI is unavailable, run `.agents/directives/scripts/gates.sh` when
+installed. Otherwise use only project-documented test, lint, type-check, build,
+and static-analysis commands. Keep successful output to one line per command and
+retain only the actionable tail of failures. Never invent a missing gate.
 
-For an eligible Small Batch, include the durable batch-spec location and a
-binary acceptance matrix with one focused proof result per row. Confirm the
-complete scoped matrix was RED before implementation, then show the minimum
-GREEN/REFACTOR proof for each row. Run this protocol and the canonical final
-project gates **once after every row is proven**, not once per row. Do not use
-this section unless the router explicitly selected Small Batch.
+## Required Judgment After the Report
 
-#### 4. Architecture Boundary Proof (if applicable)
-
-Required when the change touches imports, exports, package boundaries, shared
-code, service boundaries, or folder/layer structure. Show:
-
-- Modified zones/layers/packages
-- Changed dependency edges
-- Evidence that no upward, sideways, cyclic, or public-API-bypassing import was introduced
-- Tool evidence when available, e.g. `npx fallow dead-code --boundary-violations`
-
-_Example:_
-
-```md
-[x] `feature/auth` imports only `shared` and public `domain` APIs
-[x] No sibling feature internal imports
-[x] `npx fallow dead-code --boundary-violations` reports 0 violations
-```
-
-#### 5. Codebase Health Proof (if applicable)
-
-For TypeScript/JavaScript refactors, cleanup, shared utilities, or AI-generated
-changes where Fallow is available, include concise health evidence:
-
-```bash
-npx fallow --summary
-npx fallow dupes
-npx fallow health
-```
-
-Summarize only relevant findings: new dead code, duplication, complexity, cycles,
-or boundary regressions. Separate pre-existing debt from issues introduced by
-the change.
-
-#### 6. Documentation Proof (if applicable)
-
-- [ ] API documentation updated
-- [ ] README or usage docs updated (if public-facing change)
-
-_Example:_
-
-```
-[x] JSDoc updated on changed functions
-[x] README usage section updated
-```
-
-#### 7. Scope Control Proof
-
-Confirm the final diff stayed within the planned scope budget:
-
-- Planned scope budget: paste or quote the exact scope budget line used for
-  comparison.
-- Changed files match the stated scope, or scope expansion is explained with
-  evidence.
-- No unrelated cleanup, opportunistic refactor, or drive-by formatting was
-  included.
-- No new abstraction, helper layer, dependency, or configuration surface was
-  added unless required by current evidence.
-
-For small tasks, one sentence is enough:
-
-```md
-Planned scope budget: touch only `src/foo.ts` with a targeted guard-clause edit.
-Scope control: changed only `src/foo.ts`; no unrelated cleanup or new abstraction added.
-```
-
----
-
-### For Bug Fixes
-
-After the fix, show:
-
-1. **The previously-failing test now passing** — paste the test name and result
-2. **The fix** — a one-paragraph summary of what changed in the logic
-3. **No regression** — all existing tests still pass
-
-Run the project's test suite with verbose output to confirm.
-
----
-
-### For Docs / Chore Changes
-
-Show the relevant canonical final gates still pass. Follow
-**Canonical Final Quality Gates** below; its bounded report is the verification
-evidence for non-code changes.
-
----
-
-## Output Location: Pull Request Body
-
-The verification summary MUST be included in the PR description when the
-agent opens a pull request. This keeps the evidence next to the code it
-verifies, and the reviewer can scan it in 30 seconds without leaving the PR.
-
-When opening a PR, include a `## Verification` section in the PR body.
-The summary should follow this structure:
-
-```markdown
-## Verification
+For each applicable area, add concise evidence:
 
 ### Functional
 
-✅ Hit: calling createUser({ name: "Alice" }) → returns user with id
-✅ Clean: calling createUser({}) → validation error, no side effects
+- **Hit:** an input/scenario that produces the intended behavior.
+- **Clean pass:** an input/scenario that must remain unaffected.
 
-### Tests (12 passing)
+For a bug fix, name the previously failing test, summarize the logic change, and
+show the relevant regression suite passing.
 
-- Happy path (4): valid input, optional fields, default values, nested objects
-- Error cases (5): missing required field, invalid type, duplicate key, null input, empty string
-- Edge cases (2): max-length name, unicode characters
-- Suggestions (1): suggests trim on whitespace-padded name
+### Tests
+
+Name the passing cases that matter: happy path, failure path, edge/boundary
+values, and suggestion/fix output when applicable. A command exit alone is not a
+test-case inventory.
 
 ### Integration
 
-[x] Exported from src/users/create.ts
-[x] Registered in user module
-[x] Public types match call sites
-[x] Error messages follow project conventions
+Confirm registration/export, configuration/module wiring, public API shape, and
+actionable errors. Use `[x]` only for facts you inspected.
 
 ### Architecture Boundaries
 
-[x] Modified files stay within allowed dependency direction
-[x] No new circular dependencies or public API bypasses
+When imports, exports, packages, file layout, shared code, or dependency edges
+changed, include the `architecture-boundaries` evidence and reviewer verdict.
 
 ### Documentation
 
-[x] JSDoc updated on createUser
-[x] README usage section updated
+State whether public usage, API docs, README, migrations, or operator guidance
+changed. Mark non-applicable areas as such; do not silently omit them.
 
 ### Scope Control
 
-Planned scope budget: touch `src/users/create.ts` and `tests/users/create.test.ts` for create-user validation only.
-Scope control: changed only the planned files; no unrelated cleanup, new abstraction, dependency, or configuration surface added.
+Quote the planned scope budget, list changed files, explain justified expansion,
+and confirm no unrelated cleanup, abstraction, dependency, or configuration was
+added.
 
-### Unverified Areas & Risk Justification
+### Unverified Areas
 
-List the important things you did not verify, and say whether each one is safe to leave unchecked:
-1. <unverified area> — <why it is safe to skip now / risk justification>
-```
+List every important unchecked area with its risk justification. Unverified is a
+visible state, not a euphemism for pass.
 
-If anything is `[ ]` or tests are missing, the implementation is not ready.
-Do not open the PR until verification is complete.
+For generators, CLIs, and MCP work, include one visible manual acceptance check.
 
-For bug fixes and docs/chore changes, include a shorter verification
-block in the same PR section.
+## Small Batch and Long-Running Work
 
----
+For an explicitly routed Small Batch, include the batch-spec path and one binary
+proof row per behavior. Show the whole matrix RED before implementation and each
+row GREEN before the single final report/gate run.
 
-## Make "Done" Mean Evidence, Not Confidence
+For long-running work, checkpoint against the specification before changes grow
+beyond one refactor cycle. Every in-flight progress claim must map to a tool
+result from the current session.
 
-Do not say a task is "done" until you provide structured evidence of correctness.
+## Durable Output
 
-**Storage:**
-- In **autonomous loops**, write this evidence summary directly to `.agents/verification.md` or populate it in the PR description/comments via API/CLI, ensuring it is preserved durably in the repository rather than printed only as ephemeral stdout.
-- In **interactive sessions**, output it to the user or save to `.agents/verification.md` for later reference.
+Put the final report in the PR body under `## Verification`, in
+`.agents/verification.md` for autonomous work, or in the user response for an
+interactive session. Include:
 
-You must provide:
-- **Commands run**: <exact test/lint/build commands executed>
-- **Output summary**: <pasted or excerpted passing console output>
-- **Files changed**: <exact diff files list>
-- **Tests added or updated**: <test suite names and case count>
-- **Behavior proven**: <the actual hit/clean verification trace>
-- **Known gaps**: <remaining edge cases or undocumented limitations>
+- exact commands and concise outputs;
+- changed files;
+- tests added/updated;
+- hit and clean behavior proof;
+- integration, boundary, docs, and scope evidence;
+- known gaps and risk justification.
 
-For generator, CLI, or MCP work, include one manual acceptance check with visible pass/fail console/terminal output.
+Do not commit local verification state unless requested. A PR should not be
+opened while required evidence is missing.
 
----
+## Quality-Gate Rules
 
-## In-Flight Progress Claims
+Fix the pattern a linter/static-analysis finding identifies. Do not suppress the
+rule, weaken configuration, or perform cosmetic rewrites unless the project
+explicitly permits the exception and the reason is documented. Separate
+pre-existing debt from regressions introduced by the current change.
 
-Before reporting progress on a long-running task, audit each claim against a
-tool result from this session. Only report work you can point to evidence for;
-if something is not yet verified, say so explicitly. If tests fail, say so
-with the output; if a step was skipped, say that.
-
----
-
-## Autonomous Operation
-
-When operating autonomously (cron-driven, delegated, or no human in the loop):
-the user is not watching and cannot answer questions mid-task. For reversible
-actions that follow from the original request, proceed without asking. Before
-ending your turn, check your last paragraph: if it is a plan, a question, or a
-promise about work you have not done, do that work now with tool calls. End only
-when the task is complete or you are blocked on input only the user can provide.
-
----
-
-## Interval-Based Verification (Long-Running Tasks)
-
-For tasks that span many cycles or a long duration, establish a verification
-checkpoint at regular intervals. Run a focused subagent or self-check against
-the specification at each checkpoint. Treat each checkpoint as a
-mini-verification: functional proof, test passage, scope control. Stop
-accumulating changes if findings exceed what a single REFACTOR cycle can
-address.
-
----
-
-## Canonical Final Quality Gates
-
-This directive and its helper own the generic final-gate procedure. After
-phase-specific proof, run project-native test, lint, type-check, build,
-static-analysis, and review-bot gates selected by
-`.agents/directives/adaptive-routing.md`.
-
-If `.agents/directives/scripts/gates.sh` is present, run it. It discovers those
-gates, collapses passing checks to one line, and caps failed output at
-`MAX_LINES` (150 by default). Pass a subset such as
-`bash .agents/directives/scripts/gates.sh lint typecheck static-analysis` when
-needed. An unavailable requested gate fails; report an unrequested undetected
-gate rather than inventing a command. Without the helper, run documented
-commands directly and cap failure excerpts to their actionable tail.
-
-When a linter or static-analysis rule explains an issue, fix the underlying
-pattern. Do not suppress the rule, weaken configuration, or make superficial
-rewrites unless the project explicitly allows that exception and the reason is
-documented.
-
-If a finding is pre-existing or outside the task scope, state that classification
-and show that the current change did not make it worse.
-
----
+In autonomous operation, complete reversible in-scope verification before
+ending. Do not finish with a promise to run checks later; stop only when complete
+or blocked on authority/input only the user can provide.
 
 ## Forbidden Patterns
 
-| Pattern                                      | Why Forbidden                                         |
-| -------------------------------------------- | ----------------------------------------------------- |
-| "Tests pass, ship it"                        | Passing tests ≠ production-ready                      |
-| Skipping functional proof                    | Must show both expected behavior AND no false positive |
-| Skipping integration proof                   | Misconfigured code passes tests but fails in production |
-| Skipping boundary proof for dependency changes | Passing tests do not prove architectural validity       |
-| Claiming verification without showing output | Evidence, not claims                                  |
-| Running GATES before verification            | Verification catches issues GATES misses              |
-| Reporting progress without tool evidence     | Claims must map to session tool results               |
-| Ending autonomous turn with a plan or question | The work must be done, not described               |
-| Accumulating changes without checkpoints in long tasks | Verification must happen at intervals, not only at the end |
+| Pattern | Why forbidden |
+| --- | --- |
+| Treating report exit `0` as complete verification | Judgment fields may remain unverified |
+| “Tests pass, ship it” | Tests do not prove integration, boundaries, docs, or scope |
+| Claiming checks without output | Evidence must be inspectable |
+| Running only generic gates before phase-specific proof | Gates cannot replace behavior evidence |
+| Hiding skipped checks or pre-existing failures | Distorts risk |
+| Reporting progress without current tool evidence | Converts plans into false claims |
+| Ending autonomous work with an unfinished plan | Work must be completed or genuinely blocked |
 
----
-
-_This directive is mandatory for all implementations, bug fixes, and configuration changes._
+The command owns deterministic execution and report scaffolding. This directive
+owns proof quality, interpretation, risk judgment, and delivery readiness.

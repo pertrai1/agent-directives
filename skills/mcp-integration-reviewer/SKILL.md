@@ -1,7 +1,7 @@
 ---
 name: "mcp-integration-reviewer"
 description: "Load when adding or reviewing MCP servers, agent tools, tool schemas, internal API bridges, structured search, docs/ticketing/analytics connectors, or agent-accessible write tools."
-version: 1.0.0
+version: 1.1.0
 required: false
 category: review
 tools:
@@ -26,132 +26,97 @@ routing:
 
 # MCP Integration Reviewer
 
-You are a specialist in reviewing Model Context Protocol (MCP) servers and other
-agent-accessible tool surfaces. Your job is to make sure the agent can call the
-right tool safely, with strict schemas, least privilege, bounded output, and clear
-failure behavior.
+Review MCP servers and similar agent tool bridges for reliable routing, strict
+schemas, least privilege, bounded output, safe writes, and visible failures.
 
-This skill applies to MCP specifically and to similar internal tool bridges that
-expose APIs, search, tickets, analytics, docs, deploys, or data systems to agents.
+## Deterministic Protocol and Schema Pass
 
----
+When the server can run over stdio, validate it directly without registering it
+with an MCP client:
 
-## When to Use
+```bash
+agent-directives mcp-validate <executable> [server-args...] \
+  --timeout-ms 5000 \
+  --max-output-bytes 65536 \
+  --format json
+```
 
-Use this skill when work adds, changes, or reviews:
+The command launches without a shell, performs initialize and tools/list
+JSON-RPC requests, bounds stdout/stderr, terminates timeouts, and deterministically
+checks tool names/descriptions, duplicate/vague routing, object schemas, required
+properties, common bounds, collection limits, and supplied annotation types.
 
-- MCP servers, tool definitions, resources, prompts, or transports
-- agent-callable wrappers around internal APIs, search, docs, ticketing, analytics,
-  deploy, data, or operational systems
-- tool schemas, descriptions, argument validation, output contracts, or permissions
-- write-capable tools or tools that can expose sensitive data
+Interpret exit classes:
 
-Do not use this skill for ordinary application APIs unless they are exposed to an
-agent as tools.
+- `0`: protocol completed and deterministic schema checks found no issue;
+- `1`: tool-quality findings require review/fix;
+- `2`: invalid options, launch/timeout/output, malformed protocol, or missing
+  required responses make the evidence unusable.
 
----
+Exit `0` is not security or production approval. If the server is not stdio or
+the command is unavailable, exercise the equivalent initialization/tool-list
+path with the project's own harness and record the missing automated coverage.
 
-## Review Process
+## Manual Review the Command Cannot Replace
 
-### Step 1: Inventory the Tool Surface
+### Surface and Routing
 
-List only the exposed agent-facing capabilities:
+Inventory exposed tools/resources/prompts, read vs write behavior, systems
+touched, auth identity, and expected output size. Names and descriptions must
+tell an agent when to use the capability, when not to, required identifiers, and
+side effects.
 
-- tool/resource/prompt names
-- read vs write behavior
-- external/internal systems touched
-- auth identity and permission scope
-- expected output shape and size
+### Runtime Validation and Output
 
-### Step 2: Check Tool Routing Quality
+Confirm server-side validation—not only JSON Schema hints—plus structured errors,
+pagination/limits for reads, stable bounded output, cancellation/timeouts,
+rate/concurrency controls, and dependency-failure behavior.
 
-Verify tool names and descriptions tell an agent when to use the tool and when not
-to. A good tool description includes task intent, boundaries, required identifiers,
-and important side effects.
+### Auth, Secrets, and Data Boundaries
 
-Flag vague names like `run`, `query`, `doThing`, or broad descriptions like
-"access internal systems" unless the surrounding schema strongly disambiguates.
+Review least privilege, user/service/admin identity separation, tenant/project
+scoping, secret redaction from logs/errors/model output, and audit logging for
+sensitive reads and meaningful writes.
 
-### Step 3: Check Schemas and Validation
+### Write Safety
 
-Require:
+For mutations, require safeguards proportional to impact: preview/dry-run,
+explicit confirmation for destructive/deploy/billing/permission/data actions,
+idempotency or retry protection, auditability, and rollback/recovery guidance.
+Prefer separate read and write tools over an ambiguous generic operation.
 
-- strict argument schemas with required fields, enums, bounds, and formats
-- server-side validation, not only client-side hints
-- pagination or limits for large reads
-- structured errors with actionable codes/messages
-- stable output fields that avoid dumping unbounded raw documents by default
-
-### Step 4: Check Auth, Secrets, and Data Boundaries
-
-Review:
-
-- least-privilege auth for the tool's real blast radius
-- separation between user identity, service identity, and elevated/admin identity
-- secret handling and redaction in logs, errors, traces, and model-visible output
-- tenant/user/project scoping for internal data
-- audit logging for sensitive reads and all meaningful writes
-
-### Step 5: Check Write Safety
-
-For write-capable tools, require appropriate safeguards:
-
-- dry-run or preview mode when practical
-- explicit confirmation for destructive, deploy, billing, permission, or data writes
-- idempotency keys or duplicate-call protection when retries are plausible
-- rollback/recovery notes for high-impact changes
-- clear distinction between create/update/delete operations
-
-### Step 6: Check Operational Behavior
-
-Look for timeouts, retries, rate limits, cancellation, concurrency limits,
-backpressure, and dependency-failure behavior. Tool errors should be visible to
-the agent as implementation feedback, not hidden behind generic failure text.
-
-### Step 7: Recommend Minimal Fixes
-
-Prefer narrow fixes: split read/write tools, tighten schema, add limits, redact a
-field, add dry-run, lower permissions, add audit logging, or improve descriptions.
-Do not require a platform rewrite when a small contract change handles the risk.
-
----
-
-## Output Format
+## Output
 
 ```md
 ## MCP Integration Review
 
 ### Tool Surface
-- Tools/resources reviewed: <names>
-- Write-capable: <yes/no + which>
-- Sensitive systems/data: <none or list>
+- Tools/resources: <names>
+- Write-capable: <which>
+- Auth and sensitive data: <scope>
+
+### Deterministic Validation
+- Command/transport: <exact invocation or fallback>
+- Protocol: <ok/findings/error>
+- Schema/routing findings: <summary>
+- Bounds/cleanup evidence: <summary>
 
 ### Findings
-#### BLOCKER: <unsafe tool surface>
-- Evidence: `<file:line>` or reviewed behavior
-- Agent/tool risk: <misuse, data exposure, destructive write, ambiguity, etc.>
-- Fix: <smallest safe fix>
-
-#### SHOULD FIX: <schema/routing/operational gap>
-- Evidence: <specific evidence>
-- Risk: <why this affects agent reliability or safety>
-- Fix: <smallest safe fix>
+#### BLOCKER / SHOULD FIX: <title>
+- Evidence: <file:line, behavior, or report finding>
+- Agent/tool risk: <misuse/exposure/write/ambiguity>
+- Smallest fix: <specific change>
 
 ### Verification Needed
-- <schema test, dry-run proof, permission check, audit-log check, etc.>
+- <permission, validation, dry-run, audit, retry, or failure proof>
 
 ### Verdict
 - APPROVE / COMMENT / REQUEST_CHANGES
 ```
 
----
+Prefer narrow fixes: split tools, tighten schema, add bounds, redact a field,
+lower permissions, add preview/idempotency/audit, or improve descriptions.
 
-## Common Pitfalls
-
-- Exposing broad internal APIs as one generic tool.
-- Trusting tool descriptions instead of validating arguments server-side.
-- Returning huge raw search/docs payloads directly into the model context.
-- Mixing read and write operations under the same ambiguous tool.
-- Letting write tools mutate production systems without dry-run, confirmation,
-  audit logging, or rollback/recovery expectations.
-- Logging secrets or sensitive tool outputs where they can re-enter prompts.
+The command replaces ad hoc MCP registration, protocol probing, schema scanning,
+and output bounding. This skill still owns security, authorization, operational,
+write-safety, and production-readiness judgment.

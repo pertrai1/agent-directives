@@ -110,6 +110,12 @@ npx agent-directives sync --tool claude --yes
 npx agent-directives sync --tool claude --yes --rules auto
 npx agent-directives sync --tool claude --force
 npx agent-directives verify                                    # Programmatically run verification gates
+npx agent-directives verification-report --format json         # Gates plus bounded structured evidence
+npx agent-directives workspace-preflight --format json          # Read-only isolation facts
+npx agent-directives boundary-diff --base main --format json    # Changed dependency edges
+npx agent-directives mcp-validate node server.mjs --format json # Local stdio MCP protocol/schema checks
+npx agent-directives agent-state handoff --format text          # Handoff facts and scaffold
+npx agent-directives agent-state decisions list --format json   # Active decision metadata
 ```
 
 ### Context budget audit
@@ -146,6 +152,25 @@ The verification engine:
 3. Runs `git status --porcelain` to identify changed, staged, or untracked files.
 4. Matches the changed files against the glob filters specified in `files` under each gate command. (If a gate has no `files` filter, it is global and always runs).
 5. Executes matched gates in sequence, stream-pipes outputs in real-time, and exits with code 1 if any gate fails (or 0 if all pass).
+
+### Deterministic Agent Evidence
+
+Five additive command surfaces replace repeated Markdown mechanics with bounded,
+stable local reports:
+
+| Command | Deterministic responsibility |
+| --- | --- |
+| `verification-report` | Execute installed gates and scaffold ordered text/JSON evidence without converting missing proof into a pass |
+| `workspace-preflight` | Inspect git/worktree/submodule/branch/cleanliness facts without mutating the repository |
+| `boundary-diff` | Extract changed JS/TS imports, re-exports, package dependencies, and test-leak candidates from git |
+| `mcp-validate` | Launch a local stdio server without shell interpolation or MCP client registration and check protocol/tool schemas |
+| `agent-state` | Collect/validate handoff state and list, validate, or scaffold decision records without writing them |
+
+These commands use exit `0` for complete non-blocking evidence, `1` for findings
+or recommendations that need review, and `2` for invalid or unavailable required
+evidence. The owning directives and reviewer skills retain consent, architecture,
+security, production, risk, and user-intent judgment; a successful report is not
+automatic approval.
 
 ### Tool auto-detection
 
@@ -184,6 +209,7 @@ For `cursor`, directive, skill, and rule entries are flattened to single files i
 ```bash
 npm install
 npm run cli -- list                       # invoke the CLI via npm
+npm run test:deterministic                # focused deterministic module tests
 npm run test:cli                          # run CLI integration tests
 npm run pack:check                        # build and inspect package contents
 ```
@@ -227,9 +253,8 @@ Review, and Exploration work does not load that companion.
 ### Workspace Isolation (`directives/workspace-isolation.md`)
 
 Protects mutable work from leaking into a shared checkout. Detects existing
-isolation first, prefers native workspace/worktree tooling when available, falls
-back to `git worktree` only when needed, and requires setup/baseline proof in the
-workspace where implementation will actually run.
+isolation with `workspace-preflight`, then applies consent and native-tool-first
+policy before any worktree mutation.
 
 ### Agent Permissions (`directives/agent-permissions.md`)
 
@@ -280,10 +305,9 @@ irrelevant code before starting work.
 ### Architecture Boundaries (`directives/architecture-boundaries.md`)
 
 Preserve the project's directed architecture graph before changing imports,
-exports, folders, packages, services, or shared code. Requires agents to classify
-touched files into zones, identify changed dependency edges, and verify no upward,
-sideways, cyclic, or public-API-bypassing dependency was introduced. Includes
-optional Fallow and GitNexus checks for tool-assisted boundary evidence.
+exports, folders, packages, services, or shared code. `boundary-diff` supplies
+changed-edge facts; agents still classify zones and judge those edges against
+explicit or clearly labeled inferred contracts.
 
 ### Accessibility (`directives/accessibility.md`)
 
@@ -309,8 +333,8 @@ this directive defines what and why.
 ### Verification Protocol (`directives/verification.md`)
 
 Structured evidence of correctness before running quality gates. Produces a
-verification summary a reviewer can scan in 30 seconds. Generic proof framework
-covering functional, test coverage, integration, and documentation proof.
+bounded `verification-report` and requires direct functional, integration,
+architecture, documentation, scope, and risk proof where mechanics cannot decide.
 
 ### Error Memory (`directives/error-memory.md`)
 
@@ -321,8 +345,8 @@ review with retirement mechanism.
 ### Session Decisions (`directives/session-decisions.md`)
 
 Durable decision capture at task completion. Four-condition write criteria, YAML
-frontmatter schema for retrieval, progressive-disclosure workflow, and five
-required sections (Title, Context, Decision, Rejected Alternatives, Consequences).
+frontmatter schema for retrieval, progressive-disclosure command support, and
+validation of the required reasoning sections.
 
 
 ## Rules

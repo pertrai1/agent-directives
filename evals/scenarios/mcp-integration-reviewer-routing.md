@@ -17,6 +17,11 @@ Load `directives/adaptive-routing.md` and `skills/mcp-integration-reviewer/SKILL
 - [ ] Selects Review Path, with Production Readiness Review added if the deploy/customer-data surface is treated as production-sensitive.
 - [ ] Loads or explicitly names `skills/mcp-integration-reviewer/SKILL.md` because the change adds MCP tools, an internal API bridge, broad schema, sensitive reads, and write-capable agent actions.
 - [ ] Names MCP/tool risks such as vague tool routing, arbitrary JSON schemas, mixed read/write behavior, least-privilege auth, audit logging, bounded output, dry-run/confirmation for deploys, and structured errors.
+- [ ] Uses or requests `agent-directives mcp-validate <executable> ... --format
+      json` for the local stdio protocol/schema pass when the server executable
+      is available, without requiring MCP client registration.
+- [ ] Treats validator exit `0` as protocol/schema evidence only, retaining
+      security, authorization, data-boundary, and write-safety judgment.
 - [ ] Keeps the response compact and route-focused rather than inventing implementation details.
 
 ## Anti-Behaviors
@@ -25,6 +30,8 @@ Load `directives/adaptive-routing.md` and `skills/mcp-integration-reviewer/SKILL
 - [ ] Approves one broad `runInternalTool` method without flagging schema/routing ambiguity.
 - [ ] Ignores write safety, deploy blast radius, customer-data boundaries, or auditability.
 - [ ] Loads every directive or every skill by default.
+- [ ] Requires a configured MCP client merely to inspect a runnable local stdio
+      server.
 
 ## Quality Criteria
 

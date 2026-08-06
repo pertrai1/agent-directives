@@ -1,7 +1,7 @@
 ---
 name: context-handoff
 description: Compresses task state at directive or session boundaries so later phases can continue from a compact, current-state handoff instead of drifting through accumulated chat history.
-version: 1.3.0
+version: 1.4.0
 scripts:
   - scripts/handoff-state.sh
 required: false
@@ -29,234 +29,109 @@ routing:
 
 ## Purpose
 
-Use this directive to compact the current task state before switching major
-workflow phases, handing work to another agent/session, pausing a long task, or
-starting a new directive that should not inherit stale context.
+Use a handoff at major phase/session boundaries, before another agent continues,
+when pausing long work, or when stale context could distort the next step. A
+handoff is a compact current-state capsule, not a transcript and not proof by
+itself.
 
-A handoff capsule is a current-state summary, not a transcript. It preserves the
-facts, decisions, evidence, and open risks that still matter while explicitly
-retiring obsolete plans and rejected paths.
+Markdown cannot erase active model context. A fresh session should start from
+the user's current request, the latest capsule, routed project instructions, and
+fresh repository evidence.
 
-## Important Limitation
+Light Path one-step work usually does not need a handoff unless requested.
 
-Markdown instructions cannot erase a model's active context. This directive is a
-discipline mechanism for reducing context drift.
+## Command-First Scaffold
 
-When a true fresh session is available, start the next session with only:
+At handoff time, generate a fresh read-only repository snapshot and scaffold:
 
-1. the user's current request,
-2. the latest handoff capsule,
-3. project instructions required by the router, and
-4. repository evidence discovered by the new session.
-
-When a true fresh session is not available, treat the latest handoff capsule as
-the authoritative summary and ignore unstated prior assumptions.
-
-Before starting or resuming work, list the `.agents/` directory and inspect any
-existing handoff, verification, blocked-choice, risky-choice, or cleanup files
-before assuming clean state. When the task or handoff points to a repeated
-failure pattern, load the relevant `docs/ERRORS.md` entries through
-`.agents/directives/error-memory.md` during orientation.
-
----
-
-## When to Use
-
-Create or update a handoff capsule when any of these apply:
-
-- The router switches between major phases or directives on Full, Debugging,
-  Boundary, Review, Exploration, or Policy paths.
-- The task spans enough steps that accumulated chat context may become noisy.
-- Work is paused and may resume later.
-- Another agent/session will continue the work.
-- A review, PR, or human handoff needs a compact summary of current state.
-- The agent changed direction and needs to retire stale assumptions or rejected
-  approaches.
-
-For Light Path work, a handoff is optional unless the user asks for one or the
-work will continue in another session.
-
----
-
-## Storage
-
-Use the first available storage location:
-
-1. `.agents/handoff.md` — preferred when local file access is available.
-2. The final assistant response — when file access is unavailable.
-3. A PR comment — when handing off review context to humans or review agents.
-
-Do not commit `.agents/handoff.md` or `.agents/handoff-log.md` unless the user
-explicitly requests committed agent-state artifacts. These files are session
-state, not project source.
-
-If project conventions already define another agent state directory, use that
-instead and state the chosen path in the handoff.
-
----
-
-## Update Semantics
-
-`.agents/handoff.md` is the active, authoritative handoff document. Rewrite it at
-handoff boundaries so it always represents the latest compact current state.
-
-Do not append indefinitely to the active handoff. Endless append-only handoffs
-recreate context drift by preserving stale assumptions, obsolete plans, and
-superseded evidence.
-
-If an audit trail is needed, append historical entries to
-`.agents/handoff-log.md`, but treat that log as historical only. The active
-handoff supersedes the log, prior plans, stale tool output, and abandoned
-approaches.
-
----
-
-## Gathering Current State
-
-To fill the "Current Task State" and "Files and Surfaces Involved" sections, you
-need the live git state: branch, staged/unstaged/untracked files, recent
-commits, diffstat, and stash. If
-`.agents/directives/scripts/handoff-state.sh` is present, run it once to collect
-all of that in a single capped, read-only snapshot instead of separate
-`git status` / `git log` / `git diff` calls. If the script is absent, gather the
-same facts with those commands directly. Run it at handoff time and paste the
-result into the capsule — never cache the snapshot and reuse it later, since it
-goes stale silently.
-
----
-
-## Handoff Capsule Template
-
-```md
-# Agent Handoff
-
-Last updated: <date/time if available>
-Storage: <path, response, or PR comment>
-Current workflow route: <Light | Full | Debugging | Boundary | Review | Exploration | Policy | combined>
-Current directive/phase: <directive or phase completing now>
-Next recommended directive/phase: <directive or phase to load next>
-
-## User Intent
-
-<The user's current request in 1-3 sentences.>
-
-## Current Task State
-
-<What is true now. Include branch/PR, changed files, relevant commands, and the
-current implementation/review status.>
-
-## Decisions That Still Matter
-
-- <Decision and why it remains relevant.>
-
-## Evidence Collected
-
-- <Command/tool/check>: <result and why it matters>
-
-## Files and Surfaces Involved
-
-- `<path>` — <changed/read/relevant and why>
-
-## Open Risks / Unknowns
-
-- <Risk, missing evidence, or uncertainty that the next phase must handle>
-
-## Rejected or Superseded Context
-
-- <Old approach, stale failure output, or assumption the next phase should ignore>
-
-## Next Directive Input
-
-The next directive should:
-1. <specific next action>
-2. <specific verification or question>
-
-The next directive should not rely on:
-- <unstated prior chat, obsolete plan, or old tool output>
+```bash
+agent-directives agent-state handoff --format text > .agents/handoff.md
 ```
 
-Use concise bullets. Keep the capsule short enough to paste into a new session.
-Prefer current facts over narrative history.
+Use `--format json` when another tool will compose the capsule. The report
+collects branch, upstream, ahead/behind, staged/unstaged/untracked paths,
+diffstat, recent commits, stash, and bounded diagnostics in stable order.
 
----
+The scaffold intentionally contains unresolved judgment prompts. Fill them with
+current intent, decisions, evidence, risks, rejected context, and the exact next
+directive input. Then validate:
 
-## Phase Boundary Rules
+```bash
+agent-directives agent-state handoff validate .agents/handoff.md --format json
+```
 
-Before switching from one major directive/phase to another:
+Exit `1` means required sections or placeholders remain. Do not call the capsule
+complete until validation passes and the facts still match the live repository.
 
-1. Identify whether a handoff is required by the route.
-2. Rewrite the active handoff with only current relevant state.
-3. Mark stale plans, old failures, and rejected approaches as superseded.
-4. Name the next directive/phase and the exact inputs it needs.
-5. If file storage is unavailable, print the capsule in the response.
+### Compact Fallback
 
-The next directive must start from:
+If the CLI is unavailable, run
+`.agents/directives/scripts/handoff-state.sh` when installed. Otherwise collect
+`git status --short`, branch/upstream, recent commits, diffstat, and stash
+directly. Never reuse a cached snapshot; repository facts go stale silently.
 
-1. the latest handoff capsule,
-2. the user's current request, and
-3. repository evidence it independently inspects when needed.
+## Judgment the Command Cannot Supply
 
-The next directive must not rely on hidden chat context that is absent from the
-handoff.
+Complete these sections concisely:
 
----
+- **Intent:** the user's current outcome in one to three sentences.
+- **Current state:** implementation/review status and relevant branch/PR.
+- **Decisions:** only choices that still constrain later work.
+- **Evidence:** command/check plus result and why it matters.
+- **Files/surfaces:** changed or important paths and their roles.
+- **Risks/unknowns:** missing proof, uncertainty, or required authority.
+- **Rejected context:** obsolete plans, old failures, and approaches not to reopen.
+- **Next input:** exact next action, directive, and evidence it needs.
 
-## PR and Review Handoffs
+Do not prefill intent or judgment from repository heuristics.
 
-For PR workflows, the final handoff may be placed in the PR body or a PR comment
-when it helps reviewers. Keep it focused on:
+## Storage and Update Semantics
 
-- workflow route used,
-- files/surfaces changed,
-- verification evidence,
-- known risks or skipped checks,
-- review focus for humans or bots.
+Use the first available location:
 
-Do not post per-directive handoffs as repeated PR comments. Use a single compact
-review handoff unless the user requests a detailed audit trail.
+1. `.agents/handoff.md` for local file access;
+2. the user response when file storage is unavailable;
+3. one PR body/comment for reviewer handoff.
 
----
+Rewrite the active capsule rather than appending indefinitely. If history is
+required, keep `.agents/handoff-log.md` as non-authoritative history. Do not
+commit session-state files unless the user requests it or project policy says so.
 
-## Feature Cleanup Phase
+Before resuming, inspect the configured agent-state directory for existing
+handoff, verification, blocked-choice, risky-choice, or cleanup artifacts.
 
-After a feature PR merges (or when preparing the final handoff capsule), execute a cleanup review of the branch/context state to combat additive-only bloat. Scan for and report:
-- **Obsolete files**: temporary task files (`tasks/tasks-*.md`), build/temp assets, or unused test mocks.
-- **Duplicated docs**: instructions that overlap with newly updated files or main READMEs.
-- **Dead config paths**: unused imports, exports, or stale `.env` variables.
-- **Repeated agent instructions**: rules that can be collapsed into single core guidelines.
+## Phase and Review Handoffs
 
-Produce a brief summary:
-- **Safe deletions**: <files or lines that can be deleted immediately>
-- **Safe consolidations**: <duplicated docs or instructions to merge>
-- **Risky cleanup candidates**: <requires separate human decision>
-- **Things to keep and why**: <why they remain necessary>
+Before a major phase switch:
 
-**Execution and Storage:**
-- In **interactive sessions**, present this list in chat for user approval.
-- In **autonomous loops**, do not output this to standard output; instead, write this cleanup report directly to `.agents/cleanup-suggestions.md` (or submit it as a PR comment via API) for later review. Do not perform the actual deletions/modifications autonomously unless explicitly configured to run in an automatic prune/force mode.
+1. regenerate facts;
+2. retire stale plans and evidence;
+3. name the next phase/directive;
+4. provide the precise input it requires;
+5. validate the capsule.
 
----
+For PR/review handoffs, include route, changed surfaces, verification evidence,
+known risks/skips, and requested review focus. Do not post one comment per phase.
+
+## Cleanup Review
+
+At final handoff or after merge, identify—but do not automatically delete—safe
+temporary-file removals, duplicated docs, dead config paths, and repeated agent
+instructions. Separate safe cleanup from risky candidates requiring a decision.
+In autonomous work, store suggestions in `.agents/cleanup-suggestions.md`; do not
+perform unrequested pruning.
 
 ## Forbidden Patterns
 
-| Pattern | Why Forbidden |
+| Pattern | Why forbidden |
 | --- | --- |
-| Appending forever to the active handoff | Recreates context drift and makes stale state look relevant |
-| Treating the handoff as proof without evidence | The capsule summarizes evidence; it does not replace running checks |
-| Carrying forward assumptions not written in the capsule | Defeats the purpose of compaction |
-| Committing session-state handoff files by default | Pollutes project history with local agent state |
-| Using handoff ceremony for tiny one-step Light Path work | Adds boilerplate without reducing risk |
-| Hiding unresolved risks to make the handoff look clean | The next phase needs accurate open questions |
+| Treating the generated scaffold as complete | Intent and risk fields are deliberate placeholders |
+| Reusing an old state report | Repository facts may be stale |
+| Appending forever to the active capsule | Reintroduces context drift |
+| Carrying assumptions absent from the capsule | Defeats compaction |
+| Treating a handoff as verification proof | It summarizes, not replaces, evidence |
+| Committing session state by default | Pollutes project history |
+| Hiding unresolved risk to make validation pass | Misleads the next phase |
 
----
-
-## Quick Reference
-
-| Situation | Handoff required? | Storage |
-| --- | --- | --- |
-| Tiny docs/typo Light Path | Usually no | Response summary if useful |
-| Full Path behavior change | Yes at major phase boundaries | `.agents/handoff.md` when available |
-| Debugging/failing CI | Yes after reproduction, before fix, and after verification | `.agents/handoff.md` |
-| Boundary-sensitive refactor | Yes before boundary review and final verification | `.agents/handoff.md` |
-| PR handoff to humans/review bots | Yes when useful | PR body/comment |
-| True new session | Yes | Paste latest capsule into new session |
+The command replaces git-state collection and placeholder detection. This
+directive still owns selection, compaction, judgment, storage, and handoff truth.
