@@ -10,7 +10,7 @@ interface JsonRecord { jsonrpc?: unknown; id?: unknown; method?: unknown; result
 const REQUEST_IDS = [1, 2] as const;
 const DETAIL_PREVIEW_CHARS = 120;
 const MIN_VAGUE_NAME_LENGTH = 4;
-const VAGUE_TOOL_NAMES = new Set(['run', 'query', 'doThing', 'tool', 'action', 'task', 'execute', 'command']);
+const VAGUE_TOOL_NAMES = new Set(['run', 'query', 'dothing', 'tool', 'action', 'task', 'execute', 'command']);
 const VAGUE_DESCRIPTIONS = new Set(['', 'todo', 'tbd', 'placeholder', 'tool', 'command', 'mcp tool']);
 const STRING_BOUNDS = ['minLength', 'maxLength', 'pattern', 'enum'] as const;
 const NUMERIC_BOUNDS = ['minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum'] as const;

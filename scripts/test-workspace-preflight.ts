@@ -9,6 +9,7 @@ import {
   renderWorkspacePreflight,
   workspacePreflightExitCode,
 } from '../src/workspace-preflight.js';
+import { parsePorcelainStatus } from '../src/workspace-status-parsing.js';
 
 type TestFn = () => void;
 
@@ -128,6 +129,33 @@ test('dirty default branch recommends isolation and preserves spaces in paths', 
   assert.equal(workspacePreflightExitCode(report), 1);
   assert.deepEqual(report.cleanliness?.staged, ['tracked file.txt']);
   assert.deepEqual(report.cleanliness?.untracked, ['untracked file with spaces.txt']);
+  rmSync(cwd, { recursive: true, force: true });
+});
+
+test('staged rename with unstaged edits reports only the destination path', () => {
+  const cwd = tempDir();
+  initRepo(cwd);
+  writeFileSync(join(cwd, 'original.txt'), 'base\n');
+  git({ cwd, args: ['add', 'original.txt'] });
+  git({ cwd, args: ['commit', '-m', 'add original'] });
+  git({ cwd, args: ['mv', 'original.txt', 'renamed.txt'] });
+  writeFileSync(join(cwd, 'renamed.txt'), 'base\nunstaged\n');
+
+  const report = inspectWorkspace({ cwd });
+  assert.deepEqual(report.cleanliness?.staged, ['renamed.txt']);
+  assert.deepEqual(report.cleanliness?.unstaged, ['renamed.txt']);
+  assert.deepEqual(report.cleanliness?.untracked, []);
+  rmSync(cwd, { recursive: true, force: true });
+});
+
+test('copy records consume source paths that begin with record markers', () => {
+  const cwd = tempDir();
+  const output = '2 C. N... 100644 100644 100644 abc abc C100 copied.txt\0' + '1-original.txt\0';
+  assert.deepEqual(parsePorcelainStatus(cwd, output), {
+    staged: ['copied.txt'],
+    unstaged: [],
+    untracked: [],
+  });
   rmSync(cwd, { recursive: true, force: true });
 });
 

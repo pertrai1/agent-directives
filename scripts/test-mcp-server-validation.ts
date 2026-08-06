@@ -56,13 +56,15 @@ try {
     process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { capabilities: {} } }) + '\\n');
     process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id: 2, result: { tools: [
       { name: 'run', description: '', inputSchema: { type: 'object', properties: { limit: { type: 'integer' } }, required: ['limit'] } },
-      { name: 'run', description: 'tool', inputSchema: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'] } }
+      { name: 'run', description: 'tool', inputSchema: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'] } },
+      { name: 'doThing', description: 'Perform a bounded action', inputSchema: { type: 'object', properties: {}, required: [] } }
     ] } }) + '\\n');
   `);
   const findingsReport = runFixture(findings);
   assert.equal(mcpValidationExitCode(findingsReport), 1);
   assert.equal(findingsReport.status, 'findings');
   assert.ok(findingsReport.findings.length > 0);
+  assert.ok(findingsReport.findings.some((finding) => finding.name === 'doThing' && finding.issues.some((issue) => issue.code === 'vague-tool-name')));
   assert.equal(renderMcpValidation(findingsReport, 'json'), renderMcpValidation(findingsReport, 'json'));
 
   const malformed = makeFixture('malformed', `

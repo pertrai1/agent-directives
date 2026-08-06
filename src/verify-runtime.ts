@@ -31,9 +31,9 @@ function parsePorcelain(parts: string[]): string[] {
     }
     const status = part.slice(0, 2);
     const file = part.slice(PORCELAIN_STATUS_LENGTH);
-    const destination = parts[index + 1];
-    if (status.startsWith('R') && destination) {
-      files.push(destination);
+    const source = parts[index + 1];
+    if ((status.includes('R') || status.includes('C')) && source) {
+      files.push(file);
       index += 2;
       continue;
     }

@@ -1,6 +1,7 @@
 import { isAbsolute, normalize, relative, resolve, sep } from 'node:path';
 
 const PORCELAIN_FIXED_FIELDS = 8;
+const PORCELAIN_RENAME_FIXED_FIELDS = 9;
 const STATUS_CODE_END = 4;
 const STATUS_PREFIX_LENGTH = 2;
 const UNTRACKED_PREFIX_LENGTH = 2;
@@ -16,8 +17,8 @@ function markUntracked(options: { cwd: string; record: string; untracked: Set<st
   return 0;
 }
 
-function markTracked(options: { cwd: string; record: string; staged: Set<string>; unstaged: Set<string> }): number {
-  const pathValue = options.record.split(' ').slice(PORCELAIN_FIXED_FIELDS).join(' ');
+function markTracked(options: { cwd: string; record: string; staged: Set<string>; unstaged: Set<string> }, fixedFields = PORCELAIN_FIXED_FIELDS): number {
+  const pathValue = options.record.split(' ').slice(fixedFields).join(' ');
   const status = options.record.slice(STATUS_PREFIX_LENGTH, STATUS_CODE_END);
   if (status[0] !== '.') options.staged.add(normalizePathForReport(options.cwd, pathValue));
   if (status[1] !== '.') options.unstaged.add(normalizePathForReport(options.cwd, pathValue));
@@ -25,13 +26,9 @@ function markTracked(options: { cwd: string; record: string; staged: Set<string>
 }
 
 function markRename(options: { cwd: string; record: string; index: number; records: string[]; staged: Set<string>; unstaged: Set<string> }): number {
-  markTracked(options);
+  markTracked(options, PORCELAIN_RENAME_FIXED_FIELDS);
   const source = options.records[options.index + 1];
-  if (source && source[0] !== '1' && source[0] !== '2' && source[0] !== '?' && source[0] !== '#') {
-    options.staged.add(normalizePathForReport(options.cwd, source));
-    return 1;
-  }
-  return 0;
+  return source ? 1 : 0;
 }
 
 function parseRecord(options: { cwd: string; record: string; index: number; records: string[]; staged: Set<string>; unstaged: Set<string>; untracked: Set<string> }): number {

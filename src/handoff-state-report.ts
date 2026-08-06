@@ -104,8 +104,7 @@ function parseStatusLines(output?: string): { staged: string[]; unstaged: string
       continue;
     }
     if (code.includes("R") || code.includes("C")) {
-      const fromPath = records[index + 1] ?? "";
-      const path = fromPath.trim();
+      const path = record.slice(STATUS_PATH_INDEX);
       if (code[STATUS_STAGED_INDEX] !== " ") staged.push(path);
       if (code[STATUS_UNSTAGED_INDEX] !== " ") unstaged.push(path);
       index += 1;

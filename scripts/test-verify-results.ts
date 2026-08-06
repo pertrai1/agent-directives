@@ -1,10 +1,11 @@
 #!/usr/bin/env tsx
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { collectVerifyResults } from '../src/verify-results.js';
-import { runGates } from '../src/verify-runtime.js';
+import { getModifiedFiles, runGates } from '../src/verify-runtime.js';
 
 const root = mkdtempSync(join(tmpdir(), 'verify-results-'));
 
@@ -52,6 +53,21 @@ try {
   });
   assert.equal(skipped.hasFailures, false);
   assert.equal(skipped.results[0].status, 'skipped');
+
+  const renameRepo = mkdtempSync(join(tmpdir(), 'verify-rename-'));
+  try {
+    execFileSync('git', ['init'], { cwd: renameRepo });
+    execFileSync('git', ['config', 'user.email', 'agent@example.com'], { cwd: renameRepo });
+    execFileSync('git', ['config', 'user.name', 'Agent'], { cwd: renameRepo });
+    writeFileSync(join(renameRepo, 'original.txt'), 'base\n');
+    execFileSync('git', ['add', 'original.txt'], { cwd: renameRepo });
+    execFileSync('git', ['commit', '-m', 'base'], { cwd: renameRepo });
+    execFileSync('git', ['mv', 'original.txt', 'renamed.txt'], { cwd: renameRepo });
+    writeFileSync(join(renameRepo, 'renamed.txt'), 'base\nunstaged\n');
+    assert.deepEqual(getModifiedFiles(renameRepo), ['renamed.txt']);
+  } finally {
+    rmSync(renameRepo, { recursive: true, force: true });
+  }
 
   console.log('verify result collection tests passed');
 } finally {
